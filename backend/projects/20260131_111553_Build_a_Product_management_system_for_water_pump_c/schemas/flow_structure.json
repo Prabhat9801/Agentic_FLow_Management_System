@@ -1,0 +1,245 @@
+{
+  "system_name": "Water Pump Product Management System",
+  "description": "A comprehensive management system for overseeing the production aspects of a water pump manufacturing company, tracking processes from order acquisition to product dispatch.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Products",
+      "columns": [
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Unique identifier for each product",
+          "required": true,
+          "validation": "REGEX(\"^PRD-\\d{5}$\")",
+          "default_value": null
+        },
+        {
+          "name": "ProductName",
+          "type": "text",
+          "description": "The name of the product",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "ProductType",
+          "type": "dropdown",
+          "description": "Type/category of the product",
+          "required": true,
+          "validation": "{'Water Pump', 'Component', 'Accessory'}",
+          "default_value": null
+        },
+        {
+          "name": "UnitPrice",
+          "type": "currency",
+          "description": "Price per unit of the product",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "CreatedDate",
+          "type": "date",
+          "description": "Date of product entry",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "ModifiedDate",
+          "type": "date",
+          "description": "Date when the product details were last modified",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Status",
+          "type": "dropdown",
+          "description": "Current status of the product",
+          "required": true,
+          "validation": "{'Active', 'Inactive'}",
+          "default_value": null
+        }
+      ],
+      "description": "Stores detailed information about each product",
+      "primary_key": "ProductID",
+      "relationships": [
+        "BOMComponents",
+        "WorkOrders",
+        "QualityChecks"
+      ]
+    },
+    {
+      "name": "BOMComponents",
+      "columns": [
+        {
+          "name": "ComponentID",
+          "type": "text",
+          "description": "Unique identifier for each component",
+          "required": true,
+          "validation": "REGEX(\"^CMP-\\d{5}$\")",
+          "default_value": null
+        },
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Related product ID",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "ComponentName",
+          "type": "text",
+          "description": "Name of this component",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity needed for product assembly",
+          "required": true,
+          "validation": "GREATER_THAN(0)",
+          "default_value": null
+        }
+      ],
+      "description": "Bill of Materials for each product",
+      "primary_key": "ComponentID",
+      "relationships": [
+        "Products"
+      ]
+    },
+    {
+      "name": "WorkOrders",
+      "columns": [
+        {
+          "name": "WorkOrderID",
+          "type": "text",
+          "description": "Unique identifier for each work order",
+          "required": true,
+          "validation": "REGEX(\"^WO-\\d{5}$\")",
+          "default_value": null
+        },
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Identifier for the product to be manufactured",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "PlannedStartDate",
+          "type": "date",
+          "description": "Scheduled start date for manufacturing",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "PlannedEndDate",
+          "type": "date",
+          "description": "Scheduled completion date for manufacturing",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "ActualEndDate",
+          "type": "date",
+          "description": "Actual completion date for manufacturing",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Status",
+          "type": "dropdown",
+          "description": "Current status of the work order",
+          "required": true,
+          "validation": "{'Planned', 'In Progress', 'Completed', 'Canceled'}",
+          "default_value": null
+        }
+      ],
+      "description": "Tracks production work orders associated with products",
+      "primary_key": "WorkOrderID",
+      "relationships": [
+        "Products"
+      ]
+    },
+    {
+      "name": "QualityChecks",
+      "columns": [
+        {
+          "name": "QualityCheckID",
+          "type": "text",
+          "description": "Unique identifier for each quality check",
+          "required": true,
+          "validation": "REGEX(\"^QC-\\d{5}$\")",
+          "default_value": null
+        },
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Identifier for the product being checked",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "WorkOrderID",
+          "type": "text",
+          "description": "Associated work order ID",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "CheckDate",
+          "type": "date",
+          "description": "Date of the quality check",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "dropdown",
+          "description": "Result status of the quality check",
+          "required": true,
+          "validation": "{'Passed', 'Failed', 'Pending'}",
+          "default_value": null
+        },
+        {
+          "name": "Remarks",
+          "type": "text",
+          "description": "Additional remarks or observations",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks the quality assurance checks performed on products",
+      "primary_key": "QualityCheckID",
+      "relationships": [
+        "Products",
+        "WorkOrders"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Order Reception",
+    "Production Planning",
+    "Manufacturing",
+    "Quality Assurance",
+    "Dispatch"
+  ],
+  "integrations": [
+    "Supply Chain Management System",
+    "Accounting Software"
+  ]
+}

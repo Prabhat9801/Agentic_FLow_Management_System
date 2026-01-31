@@ -1,0 +1,252 @@
+{
+  "project_info": {
+    "prompt": "Build a Product management system for water pump company for the production level",
+    "created_at": "2026-01-31T11:08:53.139295",
+    "execution_time_seconds": 64.77
+  },
+  "spreadsheet": {
+    "id": "1WjTIUuE_1Ksy0KnxALsnKlHQuGesaGy6KYIi56X5pgA",
+    "url": "https://docs.google.com/spreadsheets/d/1WjTIUuE_1Ksy0KnxALsnKlHQuGesaGy6KYIi56X5pgA",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1WjTIUuE_1Ksy0KnxALsnKlHQuGesaGy6KYIi56X5pgA/edit"
+  },
+  "system": {
+    "name": "Water Pump Product Management System",
+    "description": "A comprehensive system to manage the production processes of a water pump company, from product design and materials requisition to production tracking and quality control.",
+    "version": "1.0",
+    "total_sheets": 4,
+    "workflow_stages": [
+      "Design",
+      "Materials Requisition",
+      "Production",
+      "Quality Control",
+      "Dispatch"
+    ],
+    "integrations": [
+      "ERP System",
+      "Supply Chain Management System"
+    ]
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Products",
+        "description": "Master data for all water pump products",
+        "columns": [
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each product"
+          },
+          {
+            "name": "ProductName",
+            "type": "text",
+            "required": true,
+            "description": "Name of the product"
+          },
+          {
+            "name": "ProductType",
+            "type": "text",
+            "required": true,
+            "description": "Type or category of the water pump"
+          },
+          {
+            "name": "CreatedDate",
+            "type": "date",
+            "required": true,
+            "description": "The date the product record was created"
+          },
+          {
+            "name": "ModifiedDate",
+            "type": "date",
+            "required": false,
+            "description": "The date the product record was last modified"
+          },
+          {
+            "name": "Status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of the product"
+          }
+        ],
+        "primary_key": "ProductID",
+        "relationships": [
+          "Materials",
+          "ProductionOrders"
+        ]
+      },
+      {
+        "name": "Materials",
+        "description": "List and details of materials required for production",
+        "columns": [
+          {
+            "name": "MaterialID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each material"
+          },
+          {
+            "name": "MaterialName",
+            "type": "text",
+            "required": true,
+            "description": "Name of the material"
+          },
+          {
+            "name": "UnitCost",
+            "type": "currency",
+            "required": true,
+            "description": "Cost per unit of material"
+          },
+          {
+            "name": "StockQuantity",
+            "type": "number",
+            "required": true,
+            "description": "Current stock level of the material"
+          },
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to the ProductID that uses this material"
+          },
+          {
+            "name": "CreatedDate",
+            "type": "date",
+            "required": true,
+            "description": "The date the material record was created"
+          },
+          {
+            "name": "ModifiedDate",
+            "type": "date",
+            "required": false,
+            "description": "The date the material record was last modified"
+          }
+        ],
+        "primary_key": "MaterialID",
+        "relationships": [
+          "Products"
+        ]
+      },
+      {
+        "name": "ProductionOrders",
+        "description": "Track production orders from initiation to completion",
+        "columns": [
+          {
+            "name": "OrderID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each production order"
+          },
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to the ProductID being produced"
+          },
+          {
+            "name": "Quantity",
+            "type": "number",
+            "required": true,
+            "description": "Number of units to be produced"
+          },
+          {
+            "name": "StartDate",
+            "type": "date",
+            "required": true,
+            "description": "Date when production is scheduled to start"
+          },
+          {
+            "name": "EndDate",
+            "type": "date",
+            "required": false,
+            "description": "Date when production is scheduled to end"
+          },
+          {
+            "name": "Status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of the production order"
+          },
+          {
+            "name": "CreatedDate",
+            "type": "date",
+            "required": true,
+            "description": "The date the production order record was created"
+          },
+          {
+            "name": "ModifiedDate",
+            "type": "date",
+            "required": false,
+            "description": "The date the production order record was last modified"
+          }
+        ],
+        "primary_key": "OrderID",
+        "relationships": [
+          "Products"
+        ]
+      },
+      {
+        "name": "QualityChecks",
+        "description": "Registry of quality control checks conducted on products",
+        "columns": [
+          {
+            "name": "CheckID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each quality check"
+          },
+          {
+            "name": "OrderID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to the OrderID being checked"
+          },
+          {
+            "name": "CheckDate",
+            "type": "date",
+            "required": true,
+            "description": "Date when the quality check was conducted"
+          },
+          {
+            "name": "CheckResult",
+            "type": "dropdown",
+            "required": true,
+            "description": "Result of the quality check"
+          },
+          {
+            "name": "Inspector",
+            "type": "text",
+            "required": true,
+            "description": "Name of the inspector conducting the check"
+          },
+          {
+            "name": "Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Additional remarks or comments"
+          },
+          {
+            "name": "CreatedDate",
+            "type": "date",
+            "required": true,
+            "description": "The date the quality check record was created"
+          },
+          {
+            "name": "ModifiedDate",
+            "type": "date",
+            "required": false,
+            "description": "The date the quality check record was last modified"
+          }
+        ],
+        "primary_key": "CheckID",
+        "relationships": [
+          "ProductionOrders"
+        ]
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 29,
+    "sheets_with_relationships": 4
+  }
+}

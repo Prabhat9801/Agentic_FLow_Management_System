@@ -1,0 +1,42 @@
+{
+  "formulas": [
+    {
+      "sheet": "Materials",
+      "target_column": "TotalCost",
+      "start_row": 2,
+      "formula": "=IFERROR(B2*D2, 0)",
+      "description": "Calculates the total cost of current stock for each material by multiplying UnitCost and StockQuantity.",
+      "dependencies": [
+        "UnitCost",
+        "StockQuantity"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "ProductionOrders",
+      "target_column": "DaysToCompletion",
+      "start_row": 2,
+      "formula": "=IF(AND(NOT(ISBLANK(E2)), NOT(ISBLANK(D2))), DATEDIF(D2, E2, \"D\"), \"\")",
+      "description": "Calculates the number of days scheduled for the production order from StartDate to EndDate.",
+      "dependencies": [
+        "StartDate",
+        "EndDate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "QualityChecks",
+      "target_column": "ConcatenatedComments",
+      "start_row": 2,
+      "formula": "=IFERROR(CONCATENATE(Inspector, \": \", Remarks), \"\")",
+      "description": "Concatenates the Inspector's name and Remarks for quick reference.",
+      "dependencies": [
+        "Inspector",
+        "Remarks"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

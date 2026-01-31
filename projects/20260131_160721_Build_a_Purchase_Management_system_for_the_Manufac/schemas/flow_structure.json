@@ -1,0 +1,1483 @@
+{
+  "system_name": "Manufacturing Purchase Management Workflow System",
+  "description": "A single-sheet, multi-stage workflow to manage end-to-end purchasing in a manufacturing company—from requisition to vendor selection, PO issuance, goods receipt, invoice verification, and payment—using planned vs actual dates with automatic delay tracking and master-data lookups.",
+  "version": "1.0",
+  "main_sheet": {
+    "name": "Purchase Workflow",
+    "description": "Main workflow tracking sheet for purchase requisitions, purchase orders, receipts, invoices, and payments with stage-wise planned/actual/delay dates.",
+    "core_columns": [
+      {
+        "name": "Purchase Case ID",
+        "type": "text",
+        "description": "Unique end-to-end purchase tracking ID (one row per purchase case/PO line group as defined by policy).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "PR Number",
+        "type": "text",
+        "description": "Purchase Requisition (PR) reference number raised by the requester.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "PR Date",
+        "type": "date",
+        "description": "Date the PR was created/raised.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Plant Code",
+        "type": "dropdown",
+        "description": "Manufacturing plant/site requesting the purchase.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Plant Master",
+        "lookup_key": "Plant Code",
+        "lookup_return_columns": [
+          "Plant Name",
+          "City",
+          "State"
+        ]
+      },
+      {
+        "name": "Plant Name",
+        "type": "text",
+        "description": "Plant name auto-filled from Plant Master based on Plant Code.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Plant Master",
+        "lookup_key": "Plant Code",
+        "lookup_return_columns": [
+          "Plant Name"
+        ]
+      },
+      {
+        "name": "Department",
+        "type": "dropdown",
+        "description": "Requesting department (e.g., Production, Maintenance, Quality, R&D).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Department Master",
+        "lookup_key": "Department",
+        "lookup_return_columns": [
+          "Cost Center"
+        ]
+      },
+      {
+        "name": "Cost Center",
+        "type": "text",
+        "description": "Cost center mapped to the department for accounting allocation.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Department Master",
+        "lookup_key": "Department",
+        "lookup_return_columns": [
+          "Cost Center"
+        ]
+      },
+      {
+        "name": "Requester Employee ID",
+        "type": "text",
+        "description": "Employee ID of the person raising the PR.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Employee Master",
+        "lookup_key": "Employee ID",
+        "lookup_return_columns": [
+          "Employee Name",
+          "Email",
+          "Manager Employee ID"
+        ]
+      },
+      {
+        "name": "Requester Name",
+        "type": "text",
+        "description": "Requester name auto-filled from Employee Master.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Employee Master",
+        "lookup_key": "Employee ID",
+        "lookup_return_columns": [
+          "Employee Name"
+        ]
+      },
+      {
+        "name": "Purchase Category",
+        "type": "dropdown",
+        "description": "High-level category (e.g., Raw Material, Packaging, MRO, Capex, Services).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Purchase Category Master",
+        "lookup_key": "Purchase Category",
+        "lookup_return_columns": [
+          "Approval Level",
+          "Default Buyer"
+        ]
+      },
+      {
+        "name": "Material Code",
+        "type": "text",
+        "description": "Material/service code (ERP item code) for the requested item/service.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Material Master",
+        "lookup_key": "Material Code",
+        "lookup_return_columns": [
+          "Material Description",
+          "UOM",
+          "Material Group",
+          "HSN/SAC"
+        ]
+      },
+      {
+        "name": "Material Description",
+        "type": "text",
+        "description": "Material description auto-filled from Material Master.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Material Master",
+        "lookup_key": "Material Code",
+        "lookup_return_columns": [
+          "Material Description"
+        ]
+      },
+      {
+        "name": "UOM",
+        "type": "text",
+        "description": "Unit of measure auto-filled from Material Master.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Material Master",
+        "lookup_key": "Material Code",
+        "lookup_return_columns": [
+          "UOM"
+        ]
+      },
+      {
+        "name": "Quantity Requested",
+        "type": "number",
+        "description": "Requested quantity as per PR.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Required By Date",
+        "type": "date",
+        "description": "Date by which the material/service is required at site.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Budget Type",
+        "type": "dropdown",
+        "description": "Budget classification (Budgeted/Unbudgeted).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Estimated Unit Price",
+        "type": "number",
+        "description": "Estimated unit price for planning/approval (pre-quote).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Currency",
+        "type": "dropdown",
+        "description": "Transaction currency.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Currency Master",
+        "lookup_key": "Currency",
+        "lookup_return_columns": [
+          "Currency"
+        ]
+      },
+      {
+        "name": "Assigned Buyer",
+        "type": "dropdown",
+        "description": "Procurement buyer responsible for executing the purchase.",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Buyer Master",
+        "lookup_key": "Buyer Name",
+        "lookup_return_columns": [
+          "Buyer Email",
+          "Buyer Employee ID"
+        ]
+      },
+      {
+        "name": "Priority",
+        "type": "dropdown",
+        "description": "Priority of the purchase (Low/Normal/High/Critical).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": true,
+        "lookup_sheet": "Priority Master",
+        "lookup_key": "Priority",
+        "lookup_return_columns": [
+          "SLA Days"
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "stage_number": 1,
+        "stage_name": "PR Validation & Completeness Check",
+        "description": "Procurement validates PR details (specs, quantity, budget, required-by date) and confirms it is complete for processing."
+      },
+      {
+        "stage_number": 2,
+        "stage_name": "Technical/Specification Approval",
+        "description": "Engineering/QA validates technical specifications, drawings, and compliance requirements (as applicable)."
+      },
+      {
+        "stage_number": 3,
+        "stage_name": "Commercial Approval (Budget/Finance)",
+        "description": "Finance/budget owner approves funding, cost center allocation, and commercial justification (especially for unbudgeted items)."
+      },
+      {
+        "stage_number": 4,
+        "stage_name": "RFQ Issued to Vendors",
+        "description": "Buyer issues RFQ to shortlisted vendors with required specs, delivery terms, and quote submission deadline."
+      },
+      {
+        "stage_number": 5,
+        "stage_name": "Quotation Received & Comparative Statement",
+        "description": "Quotes are received and a comparative statement (CS) is prepared for evaluation."
+      },
+      {
+        "stage_number": 6,
+        "stage_name": "Vendor Finalization & Negotiation",
+        "description": "Commercial negotiation, selection of vendor, and finalization of price, lead time, and terms."
+      },
+      {
+        "stage_number": 7,
+        "stage_name": "Purchase Order (PO) Release",
+        "description": "PO is created/released in ERP and sent to vendor; order acknowledgement is obtained."
+      },
+      {
+        "stage_number": 8,
+        "stage_name": "Delivery & Goods Receipt (GRN)",
+        "description": "Material/service is delivered; stores/receiving performs GRN and records received quantity/date."
+      },
+      {
+        "stage_number": 9,
+        "stage_name": "Quality Inspection & Acceptance",
+        "description": "Incoming quality inspection is completed; material is accepted/rejected and disposition is recorded."
+      },
+      {
+        "stage_number": 10,
+        "stage_name": "Invoice Receipt & 3-Way Match",
+        "description": "Vendor invoice is received and matched against PO and GRN; discrepancies are resolved."
+      },
+      {
+        "stage_number": 11,
+        "stage_name": "Payment Approval & Release",
+        "description": "Payment is approved and released as per agreed payment terms; transaction reference is captured."
+      }
+    ],
+    "additional_columns": [
+      {
+        "name": "Planned1",
+        "type": "date",
+        "description": "Planned date for PR Validation & Completeness Check.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual1",
+        "type": "date",
+        "description": "Actual completion date for PR Validation & Completeness Check.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay1",
+        "type": "formula",
+        "description": "Delay in days for stage 1. Formula pattern: =IF(AND(Planned1<>\"\",Actual1<>\"\"),Actual1-Planned1,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned2",
+        "type": "date",
+        "description": "Planned date for Technical/Specification Approval.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual2",
+        "type": "date",
+        "description": "Actual completion date for Technical/Specification Approval.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay2",
+        "type": "formula",
+        "description": "Delay in days for stage 2. Formula pattern: =IF(AND(Planned2<>\"\",Actual2<>\"\"),Actual2-Planned2,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned3",
+        "type": "date",
+        "description": "Planned date for Commercial Approval (Budget/Finance).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual3",
+        "type": "date",
+        "description": "Actual completion date for Commercial Approval (Budget/Finance).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay3",
+        "type": "formula",
+        "description": "Delay in days for stage 3. Formula pattern: =IF(AND(Planned3<>\"\",Actual3<>\"\"),Actual3-Planned3,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned4",
+        "type": "date",
+        "description": "Planned date for RFQ Issued to Vendors.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual4",
+        "type": "date",
+        "description": "Actual completion date for RFQ Issued to Vendors.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay4",
+        "type": "formula",
+        "description": "Delay in days for stage 4. Formula pattern: =IF(AND(Planned4<>\"\",Actual4<>\"\"),Actual4-Planned4,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned5",
+        "type": "date",
+        "description": "Planned date for Quotation Received & Comparative Statement.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual5",
+        "type": "date",
+        "description": "Actual completion date for Quotation Received & Comparative Statement.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay5",
+        "type": "formula",
+        "description": "Delay in days for stage 5. Formula pattern: =IF(AND(Planned5<>\"\",Actual5<>\"\"),Actual5-Planned5,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned6",
+        "type": "date",
+        "description": "Planned date for Vendor Finalization & Negotiation.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual6",
+        "type": "date",
+        "description": "Actual completion date for Vendor Finalization & Negotiation.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay6",
+        "type": "formula",
+        "description": "Delay in days for stage 6. Formula pattern: =IF(AND(Planned6<>\"\",Actual6<>\"\"),Actual6-Planned6,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned7",
+        "type": "date",
+        "description": "Planned date for Purchase Order (PO) Release.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual7",
+        "type": "date",
+        "description": "Actual completion date for Purchase Order (PO) Release.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay7",
+        "type": "formula",
+        "description": "Delay in days for stage 7. Formula pattern: =IF(AND(Planned7<>\"\",Actual7<>\"\"),Actual7-Planned7,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned8",
+        "type": "date",
+        "description": "Planned date for Delivery & Goods Receipt (GRN).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual8",
+        "type": "date",
+        "description": "Actual completion date for Delivery & Goods Receipt (GRN).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay8",
+        "type": "formula",
+        "description": "Delay in days for stage 8. Formula pattern: =IF(AND(Planned8<>\"\",Actual8<>\"\"),Actual8-Planned8,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned9",
+        "type": "date",
+        "description": "Planned date for Quality Inspection & Acceptance.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual9",
+        "type": "date",
+        "description": "Actual completion date for Quality Inspection & Acceptance.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay9",
+        "type": "formula",
+        "description": "Delay in days for stage 9. Formula pattern: =IF(AND(Planned9<>\"\",Actual9<>\"\"),Actual9-Planned9,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned10",
+        "type": "date",
+        "description": "Planned date for Invoice Receipt & 3-Way Match.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual10",
+        "type": "date",
+        "description": "Actual completion date for Invoice Receipt & 3-Way Match.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay10",
+        "type": "formula",
+        "description": "Delay in days for stage 10. Formula pattern: =IF(AND(Planned10<>\"\",Actual10<>\"\"),Actual10-Planned10,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Planned11",
+        "type": "date",
+        "description": "Planned date for Payment Approval & Release.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Actual11",
+        "type": "date",
+        "description": "Actual completion date for Payment Approval & Release.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Delay11",
+        "type": "formula",
+        "description": "Delay in days for stage 11. Formula pattern: =IF(AND(Planned11<>\"\",Actual11<>\"\"),Actual11-Planned11,\"\")",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "PO Number",
+        "type": "text",
+        "description": "ERP Purchase Order number once released.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "PO Date",
+        "type": "date",
+        "description": "Date the PO was released/created in ERP.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Vendor Code",
+        "type": "text",
+        "description": "Selected vendor code (ERP supplier code).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Vendor Name",
+        "type": "text",
+        "description": "Vendor name (recommended to auto-fill from Vendor Master using Vendor Code).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "IncotermsDelivery Terms",
+        "type": "dropdown",
+        "description": "Delivery terms agreed with vendor (e.g., EXW, FOB, CIF, DDP) or internal delivery term set.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Payment Terms",
+        "type": "dropdown",
+        "description": "Payment terms agreed (e.g., Advance, Net 30, Net 45, Against Delivery).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Final Unit Price",
+        "type": "number",
+        "description": "Negotiated final unit price on PO.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Tax Code",
+        "type": "dropdown",
+        "description": "Applicable tax code (GST/VAT) for the item/service.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "PO Total Value",
+        "type": "number",
+        "description": "Total PO value including taxes/charges as per policy.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Promised Delivery Date Vendor",
+        "type": "date",
+        "description": "Delivery date committed by vendor (from PO acknowledgement).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "GRN Number",
+        "type": "text",
+        "description": "Goods Receipt Note number generated at receipt.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Received Quantity",
+        "type": "number",
+        "description": "Quantity received against the PO/PR.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Rejected Quantity",
+        "type": "number",
+        "description": "Quantity rejected during inspection (if any).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Invoice Number",
+        "type": "text",
+        "description": "Vendor invoice number.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Invoice Date",
+        "type": "date",
+        "description": "Vendor invoice date.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Invoice Amount",
+        "type": "number",
+        "description": "Invoice amount submitted by vendor.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Payment Reference Number",
+        "type": "text",
+        "description": "Payment transaction reference (bank/ERP document number).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Payment Date",
+        "type": "date",
+        "description": "Date payment was executed.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Status",
+        "type": "dropdown",
+        "description": "Overall case status (e.g., Open, On Hold, Cancelled, Completed).",
+        "required": true,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Hold Reason",
+        "type": "text",
+        "description": "Reason for hold (if Status is On Hold).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Document Links",
+        "type": "text",
+        "description": "Links to PR, RFQ, quotes, CS, PO, GRN, inspection report, invoice, and approvals (Drive/URL).",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      },
+      {
+        "name": "Remarks",
+        "type": "text",
+        "description": "Free-text notes for exceptions, escalations, and decisions.",
+        "required": false,
+        "validation": null,
+        "default_value": null,
+        "is_lookup": false,
+        "lookup_sheet": null,
+        "lookup_key": null,
+        "lookup_return_columns": null
+      }
+    ],
+    "is_reference_sheet": false,
+    "primary_key": "Purchase Case ID"
+  },
+  "reference_sheets": [
+    {
+      "name": "Plant Master",
+      "description": "Master list of manufacturing plants/sites for consistent plant selection and reporting.",
+      "core_columns": [
+        {
+          "name": "Plant Code",
+          "type": "text",
+          "description": "Unique plant/site code.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Plant Name",
+          "type": "text",
+          "description": "Plant/site name.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "City",
+          "type": "text",
+          "description": "Plant city.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "State",
+          "type": "text",
+          "description": "Plant state/region.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Plant Code"
+    },
+    {
+      "name": "Department Master",
+      "description": "Department and cost center mapping for purchase allocation and approvals.",
+      "core_columns": [
+        {
+          "name": "Department",
+          "type": "text",
+          "description": "Department name.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Cost Center",
+          "type": "text",
+          "description": "Default cost center for the department.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Department"
+    },
+    {
+      "name": "Employee Master",
+      "description": "Employee directory for requester and approval routing references.",
+      "core_columns": [
+        {
+          "name": "Employee ID",
+          "type": "text",
+          "description": "Unique employee identifier.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Employee Name",
+          "type": "text",
+          "description": "Employee full name.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Email",
+          "type": "text",
+          "description": "Work email address.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Manager Employee ID",
+          "type": "text",
+          "description": "Manager's employee ID for escalation/approval mapping.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Employee ID"
+    },
+    {
+      "name": "Material Master",
+      "description": "Item/service master for consistent material codes, descriptions, UOM, and classification.",
+      "core_columns": [
+        {
+          "name": "Material Code",
+          "type": "text",
+          "description": "Unique material/service code (ERP).",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Material Description",
+          "type": "text",
+          "description": "Standard description.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "UOM",
+          "type": "text",
+          "description": "Unit of measure.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Material Group",
+          "type": "text",
+          "description": "Material grouping for sourcing and reporting.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "HSNSAC",
+          "type": "text",
+          "description": "Tax classification code (HSN for goods / SAC for services).",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Material Code"
+    },
+    {
+      "name": "Vendor Master",
+      "description": "Approved vendor list with compliance and contact details.",
+      "core_columns": [
+        {
+          "name": "Vendor Code",
+          "type": "text",
+          "description": "Unique vendor/supplier code (ERP).",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Vendor Name",
+          "type": "text",
+          "description": "Legal/vendor name.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "GSTINTax ID",
+          "type": "text",
+          "description": "Vendor tax identifier.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Payment Terms Default",
+          "type": "text",
+          "description": "Default payment terms for the vendor.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "City",
+          "type": "text",
+          "description": "Vendor city.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Contact Email",
+          "type": "text",
+          "description": "Primary vendor contact email.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Contact Phone",
+          "type": "text",
+          "description": "Primary vendor contact phone.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Vendor Status",
+          "type": "dropdown",
+          "description": "Vendor status (Active/Inactive/Blocked).",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Vendor Code"
+    },
+    {
+      "name": "Buyer Master",
+      "description": "Procurement buyer list for assignment and accountability.",
+      "core_columns": [
+        {
+          "name": "Buyer Name",
+          "type": "text",
+          "description": "Buyer full name.",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Buyer Employee ID",
+          "type": "text",
+          "description": "Buyer employee ID.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Buyer Email",
+          "type": "text",
+          "description": "Buyer email.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Buyer Name"
+    },
+    {
+      "name": "Purchase Category Master",
+      "description": "Purchase categories with default approval level and buyer mapping.",
+      "core_columns": [
+        {
+          "name": "Purchase Category",
+          "type": "text",
+          "description": "Category name (Raw Material, Packaging, MRO, Capex, Services).",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Approval Level",
+          "type": "text",
+          "description": "Indicative approval level required (e.g., Dept Head, Plant Head, CFO).",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "Default Buyer",
+          "type": "text",
+          "description": "Default buyer for the category.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Purchase Category"
+    },
+    {
+      "name": "Currency Master",
+      "description": "Allowed currencies for purchasing transactions.",
+      "core_columns": [
+        {
+          "name": "Currency",
+          "type": "text",
+          "description": "Currency code (e.g., INR, USD, EUR).",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Currency"
+    },
+    {
+      "name": "Priority Master",
+      "description": "Priority levels with indicative SLA days for planning.",
+      "core_columns": [
+        {
+          "name": "Priority",
+          "type": "text",
+          "description": "Priority label (Low/Normal/High/Critical).",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        },
+        {
+          "name": "SLA Days",
+          "type": "number",
+          "description": "Target SLA days for end-to-end processing or planning baseline.",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "is_lookup": false,
+          "lookup_sheet": null,
+          "lookup_key": null,
+          "lookup_return_columns": null
+        }
+      ],
+      "stages": [],
+      "additional_columns": [],
+      "is_reference_sheet": true,
+      "primary_key": "Priority"
+    }
+  ]
+}

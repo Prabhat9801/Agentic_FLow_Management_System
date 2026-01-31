@@ -1,0 +1,410 @@
+{
+  "formulas": [
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned1",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned1\",{A6:A}))",
+      "description": "Stage 1 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay1",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay1\",if((Actual1!7:Actual1<>\"\")*(Planned1!7:Planned1<>\"\"),Actual1!7:Actual1-Planned1!7:Planned1,\"\")))",
+      "description": "Stage 1 delay in days = Actual1 - Planned1; blank if either is missing.",
+      "dependencies": [
+        "Planned1",
+        "Actual1"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned2",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned2\",{A6:A}))",
+      "description": "Stage 2 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay2",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay2\",if((Actual2!7:Actual2<>\"\")*(Planned2!7:Planned2<>\"\"),Actual2!7:Actual2-Planned2!7:Planned2,\"\")))",
+      "description": "Stage 2 delay in days = Actual2 - Planned2; blank if either is missing.",
+      "dependencies": [
+        "Planned2",
+        "Actual2"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned3",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned3\",{A6:A}))",
+      "description": "Stage 3 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 3
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay3",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay3\",if((Actual3!7:Actual3<>\"\")*(Planned3!7:Planned3<>\"\"),Actual3!7:Actual3-Planned3!7:Planned3,\"\")))",
+      "description": "Stage 3 delay in days = Actual3 - Planned3; blank if either is missing.",
+      "dependencies": [
+        "Planned3",
+        "Actual3"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 3
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned4",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned4\",{A6:A}))",
+      "description": "Stage 4 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 4
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay4",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay4\",if((Actual4!7:Actual4<>\"\")*(Planned4!7:Planned4<>\"\"),Actual4!7:Actual4-Planned4!7:Planned4,\"\")))",
+      "description": "Stage 4 delay in days = Actual4 - Planned4; blank if either is missing.",
+      "dependencies": [
+        "Planned4",
+        "Actual4"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 4
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned5",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned5\",{A6:A}))",
+      "description": "Stage 5 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 5
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay5",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay5\",if((Actual5!7:Actual5<>\"\")*(Planned5!7:Planned5<>\"\"),Actual5!7:Actual5-Planned5!7:Planned5,\"\")))",
+      "description": "Stage 5 delay in days = Actual5 - Planned5; blank if either is missing.",
+      "dependencies": [
+        "Planned5",
+        "Actual5"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 5
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned6",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned6\",{A6:A}))",
+      "description": "Stage 6 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 6
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay6",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay6\",if((Actual6!7:Actual6<>\"\")*(Planned6!7:Planned6<>\"\"),Actual6!7:Actual6-Planned6!7:Planned6,\"\")))",
+      "description": "Stage 6 delay in days = Actual6 - Planned6; blank if either is missing.",
+      "dependencies": [
+        "Planned6",
+        "Actual6"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 6
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned7",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned7\",{A6:A}))",
+      "description": "Stage 7 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 7
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay7",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay7\",if((Actual7!7:Actual7<>\"\")*(Planned7!7:Planned7<>\"\"),Actual7!7:Actual7-Planned7!7:Planned7,\"\")))",
+      "description": "Stage 7 delay in days = Actual7 - Planned7; blank if either is missing.",
+      "dependencies": [
+        "Planned7",
+        "Actual7"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 7
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned8",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned8\",{A6:A}))",
+      "description": "Stage 8 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 8
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay8",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay8\",if((Actual8!7:Actual8<>\"\")*(Planned8!7:Planned8<>\"\"),Actual8!7:Actual8-Planned8!7:Planned8,\"\")))",
+      "description": "Stage 8 delay in days = Actual8 - Planned8; blank if either is missing.",
+      "dependencies": [
+        "Planned8",
+        "Actual8"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 8
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned9",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned9\",{A6:A}))",
+      "description": "Stage 9 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 9
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay9",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay9\",if((Actual9!7:Actual9<>\"\")*(Planned9!7:Planned9<>\"\"),Actual9!7:Actual9-Planned9!7:Planned9,\"\")))",
+      "description": "Stage 9 delay in days = Actual9 - Planned9; blank if either is missing.",
+      "dependencies": [
+        "Planned9",
+        "Actual9"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 9
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned10",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned10\",{A6:A}))",
+      "description": "Stage 10 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 10
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay10",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay10\",if((Actual10!7:Actual10<>\"\")*(Planned10!7:Planned10<>\"\"),Actual10!7:Actual10-Planned10!7:Planned10,\"\")))",
+      "description": "Stage 10 delay in days = Actual10 - Planned10; blank if either is missing.",
+      "dependencies": [
+        "Planned10",
+        "Actual10"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 10
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned11",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned11\",{A6:A}))",
+      "description": "Stage 11 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 11
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay11",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay11\",if((Actual11!7:Actual11<>\"\")*(Planned11!7:Planned11<>\"\"),Actual11!7:Actual11-Planned11!7:Planned11,\"\")))",
+      "description": "Stage 11 delay in days = Actual11 - Planned11; blank if either is missing.",
+      "dependencies": [
+        "Planned11",
+        "Actual11"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 11
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned12",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned12\",{A6:A}))",
+      "description": "Stage 12 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 12
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay12",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay12\",if((Actual12!7:Actual12<>\"\")*(Planned12!7:Planned12<>\"\"),Actual12!7:Actual12-Planned12!7:Planned12,\"\")))",
+      "description": "Stage 12 delay in days = Actual12 - Planned12; blank if either is missing.",
+      "dependencies": [
+        "Planned12",
+        "Actual12"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 12
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Planned13",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(if(row(A6:A)=6,\"Planned13\",{A6:A}))",
+      "description": "Stage 13 planned date based on Timestamp (copies Timestamp down for planning baseline).",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 13
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Delay13",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Delay13\",if((Actual13!7:Actual13<>\"\")*(Planned13!7:Planned13<>\"\"),Actual13!7:Actual13-Planned13!7:Planned13,\"\")))",
+      "description": "Stage 13 delay in days = Actual13 - Planned13; blank if either is missing.",
+      "dependencies": [
+        "Planned13",
+        "Actual13"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 13
+    },
+    {
+      "sheet": "Purchase Workflow Register",
+      "target_column": "Overall Delay Days",
+      "start_row": 7,
+      "formula": "=ARRAYFORMULA(if(row(A7:A)=7,\"Overall Delay Days\",if(C7:C=\"\",\"\",N(Delay1!7:Delay1)+N(Delay2!7:Delay2)+N(Delay3!7:Delay3)+N(Delay4!7:Delay4)+N(Delay5!7:Delay5)+N(Delay6!7:Delay6)+N(Delay7!7:Delay7)+N(Delay8!7:Delay8)+N(Delay9!7:Delay9)+N(Delay10!7:Delay10)+N(Delay11!7:Delay11)+N(Delay12!7:Delay12)+N(Delay13!7:Delay13))))",
+      "description": "Total delay across stages (sum of Delay1..Delay13; blanks treated as 0).",
+      "dependencies": [
+        "Purchase Case ID",
+        "Delay1",
+        "Delay2",
+        "Delay3",
+        "Delay4",
+        "Delay5",
+        "Delay6",
+        "Delay7",
+        "Delay8",
+        "Delay9",
+        "Delay10",
+        "Delay11",
+        "Delay12",
+        "Delay13"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": false,
+      "stage_number": null
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

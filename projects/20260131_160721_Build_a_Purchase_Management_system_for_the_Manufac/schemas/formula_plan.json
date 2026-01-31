@@ -1,0 +1,265 @@
+{
+  "formulas": [
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Plant Name",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Plant Code'!A2:A<>\"\", IFERROR(VLOOKUP('Plant Code'!A2:A, 'Plant Master'!A:B, 2, 0), \"\"), \"\"))",
+      "description": "Auto-fills Plant Name from Plant Master based on Plant Code.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Plant Code"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Cost Center",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(Department!A2:A<>\"\", IFERROR(VLOOKUP(Department!A2:A, 'Department Master'!A:B, 2, 0), \"\"), \"\"))",
+      "description": "Auto-fills Cost Center from Department Master based on Department.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Department"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Requester Name",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Requester Employee ID'!A2:A<>\"\", IFERROR(VLOOKUP('Requester Employee ID'!A2:A, 'Employee Master'!A:B, 2, 0), \"\"), \"\"))",
+      "description": "Auto-fills Requester Name from Employee Master based on Requester Employee ID.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Requester Employee ID"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Material Description",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Material Code'!A2:A<>\"\", IFERROR(VLOOKUP('Material Code'!A2:A, 'Material Master'!A:C, 2, 0), \"\"), \"\"))",
+      "description": "Auto-fills Material Description from Material Master based on Material Code.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Material Code"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "UOM",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Material Code'!A2:A<>\"\", IFERROR(VLOOKUP('Material Code'!A2:A, 'Material Master'!A:C, 3, 0), \"\"), \"\"))",
+      "description": "Auto-fills UOM from Material Master based on Material Code.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Material Code"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Vendor Name",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Vendor Code'!A2:A<>\"\", IFERROR(VLOOKUP('Vendor Code'!A2:A, 'Vendor Master'!A:B, 2, 0), \"\"), \"\"))",
+      "description": "Auto-fills Vendor Name from Vendor Master based on Vendor Code.",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Vendor Code"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Payment Terms",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Vendor Code'!A2:A<>\"\", IF(LEN('Payment Terms'!A2:A), 'Payment Terms'!A2:A, IFERROR(VLOOKUP('Vendor Code'!A2:A, 'Vendor Master'!A:D, 4, 0), \"\")), \"\"))",
+      "description": "Defaults Payment Terms from Vendor Master when Payment Terms is blank (keeps manually entered Payment Terms if present).",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Vendor Code",
+        "Payment Terms"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Assigned Buyer",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Purchase Category'!A2:A<>\"\", IF(LEN('Assigned Buyer'!A2:A), 'Assigned Buyer'!A2:A, IFERROR(VLOOKUP('Purchase Category'!A2:A, 'Purchase Category Master'!A:C, 3, 0), \"\")), \"\"))",
+      "description": "Defaults Assigned Buyer from Purchase Category Master when Assigned Buyer is blank (keeps manual override if present).",
+      "formula_type": "lookup",
+      "dependencies": [
+        "Purchase Category",
+        "Assigned Buyer"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay1",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned1!A2:A), IF(AND(Planned1!A2:A<>\"\", Actual1!A2:A<>\"\"), Actual1!A2:A-Planned1!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned1 and Actual1 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned1",
+        "Actual1"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay2",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned2!A2:A), IF(AND(Planned2!A2:A<>\"\", Actual2!A2:A<>\"\"), Actual2!A2:A-Planned2!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned2 and Actual2 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned2",
+        "Actual2"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay3",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned3!A2:A), IF(AND(Planned3!A2:A<>\"\", Actual3!A2:A<>\"\"), Actual3!A2:A-Planned3!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned3 and Actual3 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned3",
+        "Actual3"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay4",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned4!A2:A), IF(AND(Planned4!A2:A<>\"\", Actual4!A2:A<>\"\"), Actual4!A2:A-Planned4!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned4 and Actual4 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned4",
+        "Actual4"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay5",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned5!A2:A), IF(AND(Planned5!A2:A<>\"\", Actual5!A2:A<>\"\"), Actual5!A2:A-Planned5!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned5 and Actual5 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned5",
+        "Actual5"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay6",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned6!A2:A), IF(AND(Planned6!A2:A<>\"\", Actual6!A2:A<>\"\"), Actual6!A2:A-Planned6!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned6 and Actual6 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned6",
+        "Actual6"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay7",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned7!A2:A), IF(AND(Planned7!A2:A<>\"\", Actual7!A2:A<>\"\"), Actual7!A2:A-Planned7!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned7 and Actual7 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned7",
+        "Actual7"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay8",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned8!A2:A), IF(AND(Planned8!A2:A<>\"\", Actual8!A2:A<>\"\"), Actual8!A2:A-Planned8!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned8 and Actual8 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned8",
+        "Actual8"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay9",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned9!A2:A), IF(AND(Planned9!A2:A<>\"\", Actual9!A2:A<>\"\"), Actual9!A2:A-Planned9!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned9 and Actual9 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned9",
+        "Actual9"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay10",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned10!A2:A), IF(AND(Planned10!A2:A<>\"\", Actual10!A2:A<>\"\"), Actual10!A2:A-Planned10!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned10 and Actual10 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned10",
+        "Actual10"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay11",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF(ROW(Planned11!A2:A), IF(AND(Planned11!A2:A<>\"\", Actual11!A2:A<>\"\"), Actual11!A2:A-Planned11!A2:A, \"\"), ))",
+      "description": "Calculates delay in days between Planned11 and Actual11 when both dates are present.",
+      "formula_type": "delay",
+      "dependencies": [
+        "Planned11",
+        "Actual11"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "PO Total Value",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Quantity Requested'!A2:A<>\"\", IFERROR('Quantity Requested'!A2:A*'Final Unit Price'!A2:A, \"\"), \"\"))",
+      "description": "Calculates PO Total Value as Quantity Requested × Final Unit Price (basic total; excludes tax unless Final Unit Price already includes it).",
+      "formula_type": "calculation",
+      "dependencies": [
+        "Quantity Requested",
+        "Final Unit Price"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Purchase Case ID'!A2:A=\"\", \"\", IF(Actual11!A2:A<>\"\", \"Completed\", IF(Actual7!A2:A<>\"\", \"Open\", \"Open\"))))",
+      "description": "Sets Status to Completed when stage 11 is completed; otherwise Open when a case exists (does not override manual On Hold/Cancelled if you keep those as manual entries).",
+      "formula_type": "calculation",
+      "dependencies": [
+        "Purchase Case ID",
+        "Actual7",
+        "Actual11"
+      ]
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Remarks",
+      "start_row": 2,
+      "formula": "=ARRAYFORMULA(IF('Purchase Case ID'!A2:A=\"\", \"\", IF(AND(Status!A2:A=\"On Hold\", 'Hold Reason'!A2:A=\"\"), \"Hold Reason missing\", \"\")))",
+      "description": "Flags missing Hold Reason when Status is On Hold (writes a prompt into Remarks; remove if Remarks must be purely manual).",
+      "formula_type": "validation",
+      "dependencies": [
+        "Purchase Case ID",
+        "Status",
+        "Hold Reason"
+      ]
+    }
+  ],
+  "validation_rules": []
+}

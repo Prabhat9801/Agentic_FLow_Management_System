@@ -1,0 +1,409 @@
+{
+  "system_name": "OrderToCollection Management System",
+  "description": "A comprehensive system to manage the order to collection process for the company, facilitating order placement, tracking, invoicing, and collection activities.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Customers",
+      "columns": [
+        {
+          "name": "CustomerID",
+          "type": "text",
+          "description": "Unique identifier for each customer.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "CustomerName",
+          "type": "text",
+          "description": "Full name of the customer.",
+          "required": true,
+          "validation": "LEN(CustomerName) >= 3",
+          "default_value": null
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "description": "Email address of the customer.",
+          "required": true,
+          "validation": "IS_EMAIL(Email)",
+          "default_value": null
+        },
+        {
+          "name": "Phone",
+          "type": "text",
+          "description": "Contact number of the customer.",
+          "required": true,
+          "validation": "REGEX('[0-9]{10}')",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the customer.",
+          "required": true,
+          "validation": "IN('Active', 'Inactive')",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Stores customer details for order management.",
+      "primary_key": "CustomerID",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Products",
+      "columns": [
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Unique identifier for each product.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "ProductName",
+          "type": "text",
+          "description": "Name of the product.",
+          "required": true,
+          "validation": "LEN(ProductName) >= 3",
+          "default_value": null
+        },
+        {
+          "name": "Price",
+          "type": "currency",
+          "description": "Price of the product.",
+          "required": true,
+          "validation": "Price > 0",
+          "default_value": null
+        },
+        {
+          "name": "StockQuantity",
+          "type": "number",
+          "description": "Available stock quantity.",
+          "required": true,
+          "validation": "StockQuantity >= 0",
+          "default_value": "0"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Details of products available for order.",
+      "primary_key": "ProductID",
+      "relationships": [
+        "OrderItems"
+      ]
+    },
+    {
+      "name": "Orders",
+      "columns": [
+        {
+          "name": "OrderID",
+          "type": "text",
+          "description": "Unique identifier for each order.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "CustomerID",
+          "type": "text",
+          "description": "Identifier for the customer placing the order.",
+          "required": true,
+          "validation": "VLOOKUP(CustomerID, Customers!A:A, 1, FALSE)",
+          "default_value": null
+        },
+        {
+          "name": "OrderDate",
+          "type": "date",
+          "description": "Date the order was placed.",
+          "required": true,
+          "validation": "OrderDate <= TODAY()",
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "TotalAmount",
+          "type": "currency",
+          "description": "Total amount of the order.",
+          "required": true,
+          "validation": "TotalAmount >= 0",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the order.",
+          "required": true,
+          "validation": "IN('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')",
+          "default_value": "Pending"
+        }
+      ],
+      "description": "Records of customer orders.",
+      "primary_key": "OrderID",
+      "relationships": [
+        "Customers",
+        "OrderItems",
+        "Invoices"
+      ]
+    },
+    {
+      "name": "OrderItems",
+      "columns": [
+        {
+          "name": "LineItemID",
+          "type": "text",
+          "description": "Unique identifier for each line item.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "OrderID",
+          "type": "text",
+          "description": "Identifier for the associated order.",
+          "required": true,
+          "validation": "VLOOKUP(OrderID, Orders!A:A, 1, FALSE)",
+          "default_value": null
+        },
+        {
+          "name": "ProductID",
+          "type": "text",
+          "description": "Identifier for the product in the order.",
+          "required": true,
+          "validation": "VLOOKUP(ProductID, Products!A:A, 1, FALSE)",
+          "default_value": null
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity of the product ordered.",
+          "required": true,
+          "validation": "Quantity > 0",
+          "default_value": "1"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Details of products included in each order.",
+      "primary_key": "LineItemID",
+      "relationships": [
+        "Orders",
+        "Products"
+      ]
+    },
+    {
+      "name": "Invoices",
+      "columns": [
+        {
+          "name": "InvoiceID",
+          "type": "text",
+          "description": "Unique identifier for each invoice.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "OrderID",
+          "type": "text",
+          "description": "Identifier for the associated order.",
+          "required": true,
+          "validation": "VLOOKUP(OrderID, Orders!A:A, 1, FALSE)",
+          "default_value": null
+        },
+        {
+          "name": "InvoiceDate",
+          "type": "date",
+          "description": "Date when the invoice was issued.",
+          "required": true,
+          "validation": "InvoiceDate <= TODAY()",
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "DueDate",
+          "type": "date",
+          "description": "Date when the invoice is due.",
+          "required": true,
+          "validation": "DueDate >= InvoiceDate",
+          "default_value": null
+        },
+        {
+          "name": "AmountDue",
+          "type": "currency",
+          "description": "Total amount due for the invoice.",
+          "required": true,
+          "validation": "AmountDue >= 0",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the invoice.",
+          "required": true,
+          "validation": "IN('Unpaid', 'Paid', 'Overdue', 'Cancelled')",
+          "default_value": "Unpaid"
+        }
+      ],
+      "description": "Stores invoicing details for orders.",
+      "primary_key": "InvoiceID",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Payments",
+      "columns": [
+        {
+          "name": "PaymentID",
+          "type": "text",
+          "description": "Unique identifier for each payment.",
+          "required": true,
+          "validation": "REGEX('[A-Z0-9]{8}')",
+          "default_value": null
+        },
+        {
+          "name": "InvoiceID",
+          "type": "text",
+          "description": "Identifier of the invoice associated with the payment.",
+          "required": true,
+          "validation": "VLOOKUP(InvoiceID, Invoices!A:A, 1, FALSE)",
+          "default_value": null
+        },
+        {
+          "name": "PaymentDate",
+          "type": "date",
+          "description": "Date when the payment was made.",
+          "required": true,
+          "validation": "PaymentDate <= TODAY()",
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "AmountPaid",
+          "type": "currency",
+          "description": "Amount paid in this transaction.",
+          "required": true,
+          "validation": "AmountPaid >= 0",
+          "default_value": null
+        },
+        {
+          "name": "PaymentMethod",
+          "type": "dropdown",
+          "description": "Method used for the payment.",
+          "required": true,
+          "validation": "IN('Credit Card', 'Bank Transfer', 'Cash', 'Cheque')",
+          "default_value": "Credit Card"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks payment transactions related to invoices.",
+      "primary_key": "PaymentID",
+      "relationships": [
+        "Invoices"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Order Placement",
+    "Order Fulfillment",
+    "Invoicing",
+    "Payment Collection",
+    "Order Completion"
+  ],
+  "integrations": [
+    "Payment Gateway API",
+    "CRM System"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "formulas": [
+    {
+      "sheet": "Orders",
+      "target_column": "TotalAmount",
+      "start_row": 2,
+      "formula": "=IFERROR(SUMIF(OrderItems!B:B, A2, OrderItems!D:D) * VLOOKUP(VLOOKUP(INDEX(OrderItems!C:C, MATCH(A2, OrderItems!B:B, 0)), Products!A:B, 2, FALSE), Products!A:C, 3, FALSE), 0)",
+      "description": "Calculates the total amount for the order by summing the quantity of each product in the OrderItems sheet multiplied by the product price from the Products sheet.",
+      "dependencies": [
+        "OrderItems!B",
+        "OrderItems!C",
+        "OrderItems!D",
+        "Products!A",
+        "Products!B",
+        "Products!C"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Invoices",
+      "target_column": "DueDate",
+      "start_row": 2,
+      "formula": "=IFERROR(WORKDAY(C2, 30), C2 + 30)",
+      "description": "Sets the due date of the invoice to be 30 working days after the invoice date.",
+      "dependencies": [
+        "InvoiceDate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Payments",
+      "target_column": "AmountPaid",
+      "start_row": 2,
+      "formula": "=IFERROR(SUMIF(Payments!B:B, A2, Payments!D:D), 0)",
+      "description": "Calculates the total amount paid for each invoice by summing all payment transactions associated with an invoice.",
+      "dependencies": [
+        "InvoiceID",
+        "AmountPaid"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

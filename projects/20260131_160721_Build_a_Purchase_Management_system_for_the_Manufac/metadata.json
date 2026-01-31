@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "prompt": "Build a Purchase Management system for the Manufacturing Company",
+    "created_at": "2026-01-31T16:09:36.718309",
+    "execution_time_seconds": 146.42
+  },
+  "spreadsheet": {
+    "id": "1awRYynWOYeujHpHMWYQRmVYB9j0hqHxdVYXyTCnKpYs",
+    "url": "https://docs.google.com/spreadsheets/d/1awRYynWOYeujHpHMWYQRmVYB9j0hqHxdVYXyTCnKpYs",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1awRYynWOYeujHpHMWYQRmVYB9j0hqHxdVYXyTCnKpYs/edit"
+  },
+  "system": {
+    "name": "Manufacturing Purchase Management Workflow System",
+    "description": "A single-sheet, multi-stage workflow to manage end-to-end purchasing in a manufacturing company—from requisition to vendor selection, PO issuance, goods receipt, invoice verification, and payment—using planned vs actual dates with automatic delay tracking and master-data lookups.",
+    "version": "1.0",
+    "total_sheets": 10,
+    "workflow_stages": [
+      "PR Validation & Completeness Check",
+      "Technical/Specification Approval",
+      "Commercial Approval (Budget/Finance)",
+      "RFQ Issued to Vendors",
+      "Quotation Received & Comparative Statement",
+      "Vendor Finalization & Negotiation",
+      "Purchase Order (PO) Release",
+      "Delivery & Goods Receipt (GRN)",
+      "Quality Inspection & Acceptance",
+      "Invoice Receipt & 3-Way Match",
+      "Payment Approval & Release"
+    ]
+  }
+}

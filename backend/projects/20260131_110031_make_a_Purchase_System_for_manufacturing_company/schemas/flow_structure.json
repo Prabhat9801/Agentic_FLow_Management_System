@@ -1,0 +1,405 @@
+{
+  "system_name": "Manufacturing Purchase Flow Management System",
+  "description": "A system designed to streamline and automate the purchase processes for a manufacturing company, ensuring efficient tracking of purchase requests, orders, and supplier interactions.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Suppliers",
+      "columns": [
+        {
+          "name": "Supplier_ID",
+          "type": "text",
+          "description": "Unique identifier for each supplier.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Supplier_Name",
+          "type": "text",
+          "description": "The official name of the supplier company.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Contact_Email",
+          "type": "email",
+          "description": "Email address of the supplier's primary contact.",
+          "required": true,
+          "validation": "must be a valid email address",
+          "default_value": null
+        },
+        {
+          "name": "Phone_Number",
+          "type": "text",
+          "description": "Contact phone number for the supplier.",
+          "required": true,
+          "validation": "must be a valid phone number",
+          "default_value": null
+        },
+        {
+          "name": "Address",
+          "type": "text",
+          "description": "Supplier's business address.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date supplier was added to the system.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date of last modification to supplier details.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the supplier, e.g., Active or Inactive.",
+          "required": true,
+          "validation": "must be one of Active, Inactive",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Lists all approved suppliers for the manufacturing company's procurement activities.",
+      "primary_key": "Supplier_ID",
+      "relationships": [
+        "Purchase_Orders"
+      ]
+    },
+    {
+      "name": "Purchase_Requests",
+      "columns": [
+        {
+          "name": "Request_ID",
+          "type": "text",
+          "description": "Unique identifier for each purchase request.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Requested_By",
+          "type": "text",
+          "description": "Name of the employee who initiated the purchase request.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Department",
+          "type": "text",
+          "description": "Department requesting the purchase.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Request_Date",
+          "type": "date",
+          "description": "The date when the request was submitted.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "Item_Description",
+          "type": "text",
+          "description": "Description of the items requested.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Number of units requested.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Estimated_Cost",
+          "type": "currency",
+          "description": "Estimated total cost of the request.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Approval_Status",
+          "type": "dropdown",
+          "description": "Current status of the request's approval workflow.",
+          "required": true,
+          "validation": "must be one of Pending, Approved, Rejected",
+          "default_value": "Pending"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the request record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the request details were last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Captures all purchase requisitions submitted by departments for review and approval.",
+      "primary_key": "Request_ID",
+      "relationships": [
+        "Purchase_Orders"
+      ]
+    },
+    {
+      "name": "Purchase_Orders",
+      "columns": [
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Unique identifier for each purchase order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Supplier_ID",
+          "type": "text",
+          "description": "Reference ID of the supplier from whom the order is placed.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Request_ID",
+          "type": "text",
+          "description": "Reference ID of the purchase request leading to this order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Order_Date",
+          "type": "date",
+          "description": "Date when the order was officially placed.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "Expected_Delivery",
+          "type": "date",
+          "description": "Expected date for goods to be received.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Total_Amount",
+          "type": "currency",
+          "description": "Total cost of the order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Order_Status",
+          "type": "dropdown",
+          "description": "Current status of the order process.",
+          "required": true,
+          "validation": "must be one of Processing, Completed, Cancelled",
+          "default_value": "Processing"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the order record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the order details were last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Records details of approved purchases and their conversion into orders sent to suppliers.",
+      "primary_key": "Order_ID",
+      "relationships": [
+        "Purchase_Requests",
+        "Suppliers"
+      ]
+    },
+    {
+      "name": "Goods_Receipt",
+      "columns": [
+        {
+          "name": "Receipt_ID",
+          "type": "text",
+          "description": "Unique identifier for each goods receipt record.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Reference ID of the order these goods are associated with.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Receipt_Date",
+          "type": "date",
+          "description": "Date when the goods were received.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "Received_Quantity",
+          "type": "number",
+          "description": "Total quantity of goods received.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Quality_Check",
+          "type": "checkbox",
+          "description": "Indicator of whether a quality check was successful.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the receipt record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the receipt details were last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks the receipt of goods against an order, verifying quantities and condition.",
+      "primary_key": "Receipt_ID",
+      "relationships": [
+        "Purchase_Orders"
+      ]
+    },
+    {
+      "name": "Invoices",
+      "columns": [
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Unique identifier for each invoice.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Reference ID of the order to which this invoice relates.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Invoice_Date",
+          "type": "date",
+          "description": "Date the invoice was issued by the supplier.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Total_Amount",
+          "type": "currency",
+          "description": "Total billed amount as per the invoice.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "Payment_Status",
+          "type": "dropdown",
+          "description": "Current payment status of the invoice.",
+          "required": true,
+          "validation": "must be one of Unpaid, Paid, Overdue",
+          "default_value": "Unpaid"
+        },
+        {
+          "name": "Verification_Status",
+          "type": "dropdown",
+          "description": "Status of the invoice verification process.",
+          "required": true,
+          "validation": "must be one of Pending, Verified, Disputed",
+          "default_value": "Pending"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the invoice record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the invoice details were last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Consolidates data on supplier invoices for received goods, including verification status.",
+      "primary_key": "Invoice_ID",
+      "relationships": [
+        "Purchase_Orders",
+        "Suppliers"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Purchase Requisition",
+    "Purchase Order Approval",
+    "Goods Receipt",
+    "Invoice Verification"
+  ],
+  "integrations": [
+    "Supplier ERP System",
+    "Accounting Software"
+  ]
+}

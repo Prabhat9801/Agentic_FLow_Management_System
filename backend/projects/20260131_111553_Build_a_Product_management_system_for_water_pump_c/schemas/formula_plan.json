@@ -1,0 +1,53 @@
+{
+  "formulas": [
+    {
+      "sheet": "Products",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(AND(ISBLANK(ModifiedDate), ISBLANK(UnitPrice)), \"Inactive\", \"Active\")",
+      "description": "Determines the product status based on whether the product details have been filled out or not.",
+      "dependencies": [
+        "ModifiedDate",
+        "UnitPrice"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "WorkOrders",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(ISBLANK(ActualEndDate), IF(TODAY() > PlannedEndDate, \"Overdue\", \"In Progress\"), \"Completed\")",
+      "description": "Automatically updates the status of a work order based on whether it is overdue, in progress, or completed.",
+      "dependencies": [
+        "ActualEndDate",
+        "PlannedEndDate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "WorkOrders",
+      "target_column": "PlannedEndDate",
+      "start_row": 2,
+      "formula": "=IFERROR(WORKDAY(PlannedStartDate, 5), PlannedStartDate)",
+      "description": "Calculates the planned end date as 5 business days after the planned start date.",
+      "dependencies": [
+        "PlannedStartDate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "QualityChecks",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(AND(NOT(ISBLANK(CheckDate)), NOT(ISBLANK(Remarks))), \"Reviewed\", \"Pending\")",
+      "description": "Sets the quality check status to 'Reviewed' if there is a check date and remarks; otherwise, 'Pending'.",
+      "dependencies": [
+        "CheckDate",
+        "Remarks"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

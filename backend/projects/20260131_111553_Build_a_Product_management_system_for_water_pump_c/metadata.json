@@ -1,0 +1,218 @@
+{
+  "project_info": {
+    "prompt": "Build a Product management system for water pump company for the production level",
+    "created_at": "2026-01-31T11:16:32.413262",
+    "execution_time_seconds": 39.21
+  },
+  "spreadsheet": {
+    "id": "1WeAiSkWBtI2yVndFisdhWkIDmgrWigqk0zDAVb45fcY",
+    "url": "https://docs.google.com/spreadsheets/d/1WeAiSkWBtI2yVndFisdhWkIDmgrWigqk0zDAVb45fcY",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1WeAiSkWBtI2yVndFisdhWkIDmgrWigqk0zDAVb45fcY/edit"
+  },
+  "system": {
+    "name": "Water Pump Product Management System",
+    "description": "A comprehensive management system for overseeing the production aspects of a water pump manufacturing company, tracking processes from order acquisition to product dispatch.",
+    "version": "1.0",
+    "total_sheets": 4,
+    "workflow_stages": [
+      "Order Reception",
+      "Production Planning",
+      "Manufacturing",
+      "Quality Assurance",
+      "Dispatch"
+    ],
+    "integrations": [
+      "Supply Chain Management System",
+      "Accounting Software"
+    ]
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Products",
+        "description": "Stores detailed information about each product",
+        "columns": [
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each product"
+          },
+          {
+            "name": "ProductName",
+            "type": "text",
+            "required": true,
+            "description": "The name of the product"
+          },
+          {
+            "name": "ProductType",
+            "type": "dropdown",
+            "required": true,
+            "description": "Type/category of the product"
+          },
+          {
+            "name": "UnitPrice",
+            "type": "currency",
+            "required": true,
+            "description": "Price per unit of the product"
+          },
+          {
+            "name": "CreatedDate",
+            "type": "date",
+            "required": true,
+            "description": "Date of product entry"
+          },
+          {
+            "name": "ModifiedDate",
+            "type": "date",
+            "required": false,
+            "description": "Date when the product details were last modified"
+          },
+          {
+            "name": "Status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of the product"
+          }
+        ],
+        "primary_key": "ProductID",
+        "relationships": [
+          "BOMComponents",
+          "WorkOrders",
+          "QualityChecks"
+        ]
+      },
+      {
+        "name": "BOMComponents",
+        "description": "Bill of Materials for each product",
+        "columns": [
+          {
+            "name": "ComponentID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each component"
+          },
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Related product ID"
+          },
+          {
+            "name": "ComponentName",
+            "type": "text",
+            "required": true,
+            "description": "Name of this component"
+          },
+          {
+            "name": "Quantity",
+            "type": "number",
+            "required": true,
+            "description": "Quantity needed for product assembly"
+          }
+        ],
+        "primary_key": "ComponentID",
+        "relationships": [
+          "Products"
+        ]
+      },
+      {
+        "name": "WorkOrders",
+        "description": "Tracks production work orders associated with products",
+        "columns": [
+          {
+            "name": "WorkOrderID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each work order"
+          },
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the product to be manufactured"
+          },
+          {
+            "name": "PlannedStartDate",
+            "type": "date",
+            "required": true,
+            "description": "Scheduled start date for manufacturing"
+          },
+          {
+            "name": "PlannedEndDate",
+            "type": "date",
+            "required": true,
+            "description": "Scheduled completion date for manufacturing"
+          },
+          {
+            "name": "ActualEndDate",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for manufacturing"
+          },
+          {
+            "name": "Status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of the work order"
+          }
+        ],
+        "primary_key": "WorkOrderID",
+        "relationships": [
+          "Products"
+        ]
+      },
+      {
+        "name": "QualityChecks",
+        "description": "Tracks the quality assurance checks performed on products",
+        "columns": [
+          {
+            "name": "QualityCheckID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each quality check"
+          },
+          {
+            "name": "ProductID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the product being checked"
+          },
+          {
+            "name": "WorkOrderID",
+            "type": "text",
+            "required": true,
+            "description": "Associated work order ID"
+          },
+          {
+            "name": "CheckDate",
+            "type": "date",
+            "required": true,
+            "description": "Date of the quality check"
+          },
+          {
+            "name": "Status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Result status of the quality check"
+          },
+          {
+            "name": "Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Additional remarks or observations"
+          }
+        ],
+        "primary_key": "QualityCheckID",
+        "relationships": [
+          "Products",
+          "WorkOrders"
+        ]
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 23,
+    "sheets_with_relationships": 4
+  }
+}

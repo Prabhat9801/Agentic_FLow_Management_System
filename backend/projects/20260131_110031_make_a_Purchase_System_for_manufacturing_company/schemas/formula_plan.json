@@ -1,0 +1,55 @@
+{
+  "formulas": [
+    {
+      "sheet": "Purchase_Requests",
+      "target_column": "Approval_Status",
+      "start_row": 2,
+      "formula": "=IF(TODAY()-Request_Date>30, IF(Error_Type='NO ERROR', 'Automatically Approved', Approval_Status), Approval_Status)",
+      "description": "Automatically sets the approval status to 'Automatically Approved' for requests older than 30 days without errors.",
+      "dependencies": [
+        "Request_Date",
+        "Approval_Status"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Purchase_Orders",
+      "target_column": "Expected_Delivery",
+      "start_row": 2,
+      "formula": "=IFERROR(WORKDAY(Order_Date, 10), '')",
+      "description": "Calculates the expected delivery date as 10 business days from the order date.",
+      "dependencies": [
+        "Order_Date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Goods_Receipt",
+      "target_column": "Quality_Check",
+      "start_row": 2,
+      "formula": "=IF(AND(Received_Quantity=Ordered_Quantity, Quality_Assessment='PASS'), TRUE, FALSE)",
+      "description": "Sets the quality check indicator to TRUE if received quantity matches ordered quantity and quality assessment passes.",
+      "dependencies": [
+        "Received_Quantity",
+        "Ordered_Quantity",
+        "Quality_Assessment"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Invoices",
+      "target_column": "Verification_Status",
+      "start_row": 2,
+      "formula": "=IF(IFERROR(VLOOKUP(Order_ID, Goods_Receipt!A:B, 2, FALSE), 0) = Received_Quantity, 'Verified', 'Pending')",
+      "description": "Sets verification status to 'Verified' if the total received quantity matches the expected quantity for the order.",
+      "dependencies": [
+        "Order_ID",
+        "Received_Quantity",
+        "Total_Amount"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

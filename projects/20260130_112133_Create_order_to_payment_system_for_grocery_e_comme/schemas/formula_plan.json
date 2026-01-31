@@ -1,0 +1,55 @@
+{
+  "formulas": [
+    {
+      "sheet": "Orders",
+      "target_column": "total_amount",
+      "start_row": 2,
+      "formula": "=IFERROR(SUMIF(OrderItems!A:A, A2, OrderItems!E:E), 0)",
+      "description": "Calculates the total amount for each order by summing the price of all order items associated with the order.",
+      "dependencies": [
+        "order_id",
+        "OrderItems!order_id",
+        "OrderItems!price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Customers",
+      "target_column": "status",
+      "start_row": 2,
+      "formula": "=IF(TODAY() - created_date > 365, \"Inactive\", \"Active\")",
+      "description": "Determines the status of the customer as 'Inactive' if the account was created more than a year ago, otherwise 'Active'.",
+      "dependencies": [
+        "created_date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Products",
+      "target_column": "status",
+      "start_row": 2,
+      "formula": "=IF(stock_quantity > 0, \"Available\", \"Out of Stock\")",
+      "description": "Sets the product status to 'Available' if stock quantity is greater than zero, otherwise 'Out of Stock'.",
+      "dependencies": [
+        "stock_quantity"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Payments",
+      "target_column": "payment_status",
+      "start_row": 2,
+      "formula": "=IF(amount >= VLOOKUP(order_id, Orders!A:B, 2, FALSE), \"Paid\", \"Pending\")",
+      "description": "Sets the payment status to 'Paid' if the payment amount is greater than or equal to the total amount of the order, otherwise 'Pending'.",
+      "dependencies": [
+        "amount",
+        "order_id",
+        "Orders!order_id",
+        "Orders!total_amount"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

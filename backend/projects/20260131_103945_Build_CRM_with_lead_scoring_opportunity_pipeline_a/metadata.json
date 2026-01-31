@@ -1,0 +1,218 @@
+{
+  "project_info": {
+    "prompt": "Build CRM with lead scoring, opportunity pipeline, and revenue forecasting",
+    "created_at": "2026-01-31T10:40:35.677913",
+    "execution_time_seconds": 49.74
+  },
+  "spreadsheet": {
+    "id": "1qVZEwBYHdRxBzXQhxND8bEJYRY7S44ceikSADbXO_bI",
+    "url": "https://docs.google.com/spreadsheets/d/1qVZEwBYHdRxBzXQhxND8bEJYRY7S44ceikSADbXO_bI",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1qVZEwBYHdRxBzXQhxND8bEJYRY7S44ceikSADbXO_bI/edit"
+  },
+  "system": {
+    "name": "Advanced CRM Management System",
+    "description": "A comprehensive CRM system with lead scoring, an opportunity pipeline, and revenue forecasting capabilities.",
+    "version": "1.0",
+    "total_sheets": 5,
+    "workflow_stages": [
+      "Lead Capture",
+      "Lead Qualification",
+      "Opportunity Tracking",
+      "Revenue Forecasting",
+      "Reporting"
+    ],
+    "integrations": [
+      "Email Marketing Platform",
+      "Sales Dashboard"
+    ]
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Leads",
+        "description": "This sheet captures and manages potential customer leads.",
+        "columns": [
+          {
+            "name": "lead_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each lead"
+          },
+          {
+            "name": "lead_name",
+            "type": "text",
+            "required": true,
+            "description": "Full name of the lead"
+          },
+          {
+            "name": "email",
+            "type": "email",
+            "required": true,
+            "description": "Email address of the lead"
+          },
+          {
+            "name": "phone_number",
+            "type": "text",
+            "required": false,
+            "description": "Contact number of the lead"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the lead was added"
+          },
+          {
+            "name": "status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of the lead"
+          }
+        ],
+        "primary_key": "lead_id",
+        "relationships": [
+          "Opportunities",
+          "Lead Scoring"
+        ]
+      },
+      {
+        "name": "Opportunities",
+        "description": "Tracks the sales opportunities related to leads.",
+        "columns": [
+          {
+            "name": "opportunity_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each opportunity"
+          },
+          {
+            "name": "lead_id",
+            "type": "text",
+            "required": true,
+            "description": "Identifier of the related lead"
+          },
+          {
+            "name": "opportunity_name",
+            "type": "text",
+            "required": true,
+            "description": "Descriptive name for the opportunity"
+          },
+          {
+            "name": "expected_revenue",
+            "type": "currency",
+            "required": true,
+            "description": "Estimated revenue from this opportunity"
+          },
+          {
+            "name": "close_date",
+            "type": "date",
+            "required": true,
+            "description": "Projected close date for the opportunity"
+          },
+          {
+            "name": "stage",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current stage of the opportunity"
+          }
+        ],
+        "primary_key": "opportunity_id",
+        "relationships": [
+          "Leads"
+        ]
+      },
+      {
+        "name": "Lead Scoring",
+        "description": "This sheet calculates and stores scores for each lead based on multiple criteria.",
+        "columns": [
+          {
+            "name": "lead_id",
+            "type": "text",
+            "required": true,
+            "description": "Identifier of the related lead"
+          },
+          {
+            "name": "score",
+            "type": "number",
+            "required": true,
+            "description": "Calculated score for the lead"
+          },
+          {
+            "name": "last_updated",
+            "type": "date",
+            "required": true,
+            "description": "Date when the score was last updated"
+          }
+        ],
+        "primary_key": "lead_id",
+        "relationships": [
+          "Leads"
+        ]
+      },
+      {
+        "name": "Revenue Forecasting",
+        "description": "Provides revenue forecasts based on opportunities.",
+        "columns": [
+          {
+            "name": "forecast_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each revenue forecast record"
+          },
+          {
+            "name": "opportunity_id",
+            "type": "text",
+            "required": true,
+            "description": "Identifier of the related opportunity"
+          },
+          {
+            "name": "forecasted_revenue",
+            "type": "currency",
+            "required": true,
+            "description": "Projected revenue figure"
+          },
+          {
+            "name": "forecast_date",
+            "type": "date",
+            "required": true,
+            "description": "Date of the forecast creation"
+          }
+        ],
+        "primary_key": "forecast_id",
+        "relationships": [
+          "Opportunities"
+        ]
+      },
+      {
+        "name": "Reports",
+        "description": "Summarized data for visualizing CRM metrics and KPI analysis.",
+        "columns": [
+          {
+            "name": "report_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each report"
+          },
+          {
+            "name": "report_name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the report"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "Date of report generation"
+          }
+        ],
+        "primary_key": "report_id",
+        "relationships": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 22,
+    "sheets_with_relationships": 4
+  }
+}

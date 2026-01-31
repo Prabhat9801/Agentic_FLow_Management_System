@@ -1,0 +1,359 @@
+{
+  "system_name": "Grocery E-Commerce Order-to-Payment System",
+  "description": "A comprehensive system to manage the order-to-payment process for a grocery e-commerce platform, including inventory tracking.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Customers",
+      "columns": [
+        {
+          "name": "customer_id",
+          "type": "text",
+          "description": "Unique identifier for each customer.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "customer_name",
+          "type": "text",
+          "description": "Full name of the customer.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "description": "Email address of the customer.",
+          "required": true,
+          "validation": "must be a valid email format",
+          "default_value": null
+        },
+        {
+          "name": "phone_number",
+          "type": "text",
+          "description": "Contact number of the customer.",
+          "required": true,
+          "validation": "must be a valid phone number format",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date when the customer was added.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date when the customer information was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the customer account.",
+          "required": true,
+          "validation": "Active, Inactive",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Stores customer information for order processing.",
+      "primary_key": "customer_id",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Products",
+      "columns": [
+        {
+          "name": "product_id",
+          "type": "text",
+          "description": "Unique identifier for each product.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "product_name",
+          "type": "text",
+          "description": "Name of the product.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "description": "Category to which the product belongs.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "price",
+          "type": "currency",
+          "description": "Price of the product.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "stock_quantity",
+          "type": "number",
+          "description": "Available stock quantity of the product.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date when the product was added.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date when the product information was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of the product.",
+          "required": true,
+          "validation": "Available, Discontinued",
+          "default_value": "Available"
+        }
+      ],
+      "description": "Catalog of products available for purchase.",
+      "primary_key": "product_id",
+      "relationships": [
+        "OrderItems"
+      ]
+    },
+    {
+      "name": "Orders",
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "text",
+          "description": "Unique identifier for each order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "customer_id",
+          "type": "text",
+          "description": "Identifier of the customer who placed the order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "order_date",
+          "type": "date",
+          "description": "Date when the order was placed.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "total_amount",
+          "type": "currency",
+          "description": "Total amount for the order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "order_status",
+          "type": "dropdown",
+          "description": "Current status of the order.",
+          "required": true,
+          "validation": "Pending, Confirmed, Shipped, Delivered, Cancelled",
+          "default_value": "Pending"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date when the order record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date when the order record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks customer orders from creation to completion.",
+      "primary_key": "order_id",
+      "relationships": [
+        "Customers",
+        "OrderItems",
+        "Payments"
+      ]
+    },
+    {
+      "name": "OrderItems",
+      "columns": [
+        {
+          "name": "order_item_id",
+          "type": "text",
+          "description": "Unique identifier for each order item.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "order_id",
+          "type": "text",
+          "description": "Identifier of the order to which this item belongs.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "product_id",
+          "type": "text",
+          "description": "Identifier of the product included in the order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "quantity",
+          "type": "number",
+          "description": "Quantity of the product ordered.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "price",
+          "type": "currency",
+          "description": "Price of the product at the time of order.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date when the order item was added.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date when the order item was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Details of products included in each order.",
+      "primary_key": "order_item_id",
+      "relationships": [
+        "Orders",
+        "Products"
+      ]
+    },
+    {
+      "name": "Payments",
+      "columns": [
+        {
+          "name": "payment_id",
+          "type": "text",
+          "description": "Unique identifier for each payment transaction.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "order_id",
+          "type": "text",
+          "description": "Identifier of the order for which the payment was made.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "payment_date",
+          "type": "date",
+          "description": "Date when the payment was processed.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "amount",
+          "type": "currency",
+          "description": "Amount paid in the transaction.",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "payment_status",
+          "type": "dropdown",
+          "description": "Status of the payment transaction.",
+          "required": true,
+          "validation": "Pending, Completed, Failed",
+          "default_value": "Pending"
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date when the payment record was created.",
+          "required": true,
+          "validation": null,
+          "default_value": "today()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date when the payment record was last modified.",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Records payment transactions for orders.",
+      "primary_key": "payment_id",
+      "relationships": [
+        "Orders"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Order Creation",
+    "Inventory Check",
+    "Payment Processing",
+    "Order Fulfillment",
+    "Order Completion"
+  ],
+  "integrations": [
+    "Payment Gateway API",
+    "Inventory Management System"
+  ]
+}

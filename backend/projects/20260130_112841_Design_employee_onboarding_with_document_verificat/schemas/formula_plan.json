@@ -1,0 +1,51 @@
+{
+  "formulas": [
+    {
+      "sheet": "Employees",
+      "target_column": "full_name",
+      "start_row": 2,
+      "formula": "=CONCATENATE(IFERROR(A2, \"\"), \" \", IFERROR(B2, \"\"))",
+      "description": "Concatenates the first name and last name into a full name",
+      "dependencies": [
+        "first_name",
+        "last_name"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Document Verification",
+      "target_column": "days_since_verification",
+      "start_row": 2,
+      "formula": "=IF(ISDATE(E2), TODAY() - E2, \"\")",
+      "description": "Calculates the number of days since document verification",
+      "dependencies": [
+        "verified_date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Training Schedule",
+      "target_column": "days_until_training_end",
+      "start_row": 2,
+      "formula": "=IF(ISDATE(E2), E2 - TODAY(), \"\")",
+      "description": "Calculates the days remaining until the training ends",
+      "dependencies": [
+        "end_date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Onboarding Process Tracking",
+      "target_column": "days_in_current_stage",
+      "start_row": 2,
+      "formula": "=IF(ISDATE(G2), TODAY() - G2, \"\")",
+      "description": "Calculates the number of days spent in the current onboarding stage",
+      "dependencies": [
+        "modified_date"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

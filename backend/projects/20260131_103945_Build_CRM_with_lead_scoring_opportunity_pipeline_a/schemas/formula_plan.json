@@ -1,0 +1,39 @@
+{
+  "formulas": [
+    {
+      "sheet": "Lead Scoring",
+      "target_column": "score",
+      "start_row": 2,
+      "formula": "=IFERROR(IF(DATEDIF(INDIRECT(\"A\"&ROW()), TODAY(), \"D\") <= 30, 10, 5), 0)",
+      "description": "Calculate the lead score based on the recency of the lead creation date. Recent leads (added within the last 30 days) get a score of 10, others get 5.",
+      "dependencies": [
+        "created_date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Revenue Forecasting",
+      "target_column": "forecasted_revenue",
+      "start_row": 2,
+      "formula": "=IFERROR(VLOOKUP(INDIRECT(\"B\"&ROW()), Opportunities!A2:E, 4, FALSE), 0)",
+      "description": "Pulls the expected revenue from the Opportunities sheet into the Revenue Forecasting sheet based on the opportunity_id match.",
+      "dependencies": [
+        "opportunity_id"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Leads",
+      "target_column": "status",
+      "start_row": 2,
+      "formula": "=IFERROR(IF(DATEDIF(INDIRECT(\"E\"&ROW()), TODAY(), \"D\") > 60, \"Inactive\", \"Active\"), \"Undefined\")",
+      "description": "Automatically sets the lead status to 'Inactive' if the lead is older than 60 days from the created_date, otherwise 'Active'.",
+      "dependencies": [
+        "created_date"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

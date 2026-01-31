@@ -1,0 +1,32 @@
+{
+  "formulas": [
+    {
+      "sheet": "Orders",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(Total>100, 'High Value', IF(Total>50, 'Medium Value', 'Low Value'))",
+      "description": "Categorize orders based on total value"
+    },
+    {
+      "sheet": "Payments",
+      "target_column": "Amount",
+      "start_row": 2,
+      "formula": "=IF(Payment Method='Credit Card', Amount*0.95, Amount)",
+      "description": "Apply 5% discount for credit card payments"
+    },
+    {
+      "sheet": "Invoices",
+      "target_column": "Total",
+      "start_row": 2,
+      "formula": "=Orders!Total",
+      "description": "Reference total from Orders sheet"
+    },
+    {
+      "sheet": "Order Items",
+      "target_column": "Subtotal",
+      "start_row": 2,
+      "formula": "=Quantity*Unit Price",
+      "description": "Calculate subtotal for each item"
+    }
+  ]
+}

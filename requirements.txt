@@ -1,0 +1,24 @@
+# Core Dependencies
+python-dotenv==1.0.0
+pydantic==2.10.4
+
+# OpenAI
+openai==1.59.5
+
+# LangGraph for workflow orchestration
+langgraph==0.2.60
+langchain-core==0.3.29
+
+# Google APIs
+google-auth==2.37.0
+google-auth-oauthlib==1.2.1
+google-auth-httplib2==0.2.0
+google-api-python-client==2.156.0
+
+# FastAPI & Server
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+websockets==14.1
+
+# Production deployment
+gunicorn==23.0.0

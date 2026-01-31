@@ -1,0 +1,389 @@
+{
+  "project_info": {
+    "prompt": "Create order to payment system",
+    "created_at": "2026-01-29T22:24:58.133258",
+    "execution_time_seconds": 133.36
+  },
+  "spreadsheet": {
+    "id": "1xVeVFJJ_2s-RJ_i-grJ2T8MAyuGrmg66wYDufkbW9Bs",
+    "url": "https://docs.google.com/spreadsheets/d/1xVeVFJJ_2s-RJ_i-grJ2T8MAyuGrmg66wYDufkbW9Bs",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1xVeVFJJ_2s-RJ_i-grJ2T8MAyuGrmg66wYDufkbW9Bs/edit"
+  },
+  "system": {
+    "name": "Order to Payment Management System",
+    "description": "A comprehensive system designed to manage the entire order processing workflow from order creation to payment receipt, ensuring efficient tracking, approval, and reporting.",
+    "version": "1.0",
+    "total_sheets": 6,
+    "workflow_stages": [
+      "Order Creation",
+      "Order Approval",
+      "Payment Processing",
+      "Order Completion"
+    ],
+    "integrations": [
+      "Payment Gateway API",
+      "Inventory Management System"
+    ]
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Customers",
+        "description": "Stores customer information for order processing.",
+        "columns": [
+          {
+            "name": "Customer_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each customer."
+          },
+          {
+            "name": "Customer_Name",
+            "type": "text",
+            "required": true,
+            "description": "Full name of the customer."
+          },
+          {
+            "name": "Email",
+            "type": "email",
+            "required": true,
+            "description": "Customer's email address."
+          },
+          {
+            "name": "Phone_Number",
+            "type": "text",
+            "required": false,
+            "description": "Customer's contact number."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the customer record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the customer record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the customer (Active/Inactive)."
+          }
+        ],
+        "primary_key": "Customer_ID",
+        "relationships": [
+          "Orders"
+        ]
+      },
+      {
+        "name": "Products",
+        "description": "Stores product details available for ordering.",
+        "columns": [
+          {
+            "name": "Product_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each product."
+          },
+          {
+            "name": "Product_Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the product."
+          },
+          {
+            "name": "Price",
+            "type": "currency",
+            "required": true,
+            "description": "Price of the product."
+          },
+          {
+            "name": "Stock_Quantity",
+            "type": "number",
+            "required": true,
+            "description": "Available stock quantity of the product."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the product record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the product record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the product (Available/Unavailable)."
+          }
+        ],
+        "primary_key": "Product_ID",
+        "relationships": [
+          "Orders"
+        ]
+      },
+      {
+        "name": "Orders",
+        "description": "Tracks orders placed by customers.",
+        "columns": [
+          {
+            "name": "Order_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each order."
+          },
+          {
+            "name": "Customer_ID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the customer placing the order."
+          },
+          {
+            "name": "Product_ID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the product being ordered."
+          },
+          {
+            "name": "Order_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the order was placed."
+          },
+          {
+            "name": "Quantity",
+            "type": "number",
+            "required": true,
+            "description": "Quantity of the product ordered."
+          },
+          {
+            "name": "Total_Amount",
+            "type": "currency",
+            "required": true,
+            "description": "Total amount for the order (calculated)."
+          },
+          {
+            "name": "Order_Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the order (Pending, Approved, Completed)."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the order record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the order record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the order (Active/Cancelled)."
+          }
+        ],
+        "primary_key": "Order_ID",
+        "relationships": [
+          "Customers",
+          "Products",
+          "Invoices"
+        ]
+      },
+      {
+        "name": "Invoices",
+        "description": "Manages invoice records for completed orders.",
+        "columns": [
+          {
+            "name": "Invoice_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each invoice."
+          },
+          {
+            "name": "Order_ID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the order associated with the invoice."
+          },
+          {
+            "name": "Invoice_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the invoice was generated."
+          },
+          {
+            "name": "Total_Amount",
+            "type": "currency",
+            "required": true,
+            "description": "Total amount of the invoice."
+          },
+          {
+            "name": "Payment_Status",
+            "type": "text",
+            "required": true,
+            "description": "Current payment status of the invoice (Paid, Unpaid)."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the invoice record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the invoice record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the invoice (Active/Cancelled)."
+          }
+        ],
+        "primary_key": "Invoice_ID",
+        "relationships": [
+          "Orders"
+        ]
+      },
+      {
+        "name": "Process Tracking",
+        "description": "Tracks the status and approvals of orders and invoices.",
+        "columns": [
+          {
+            "name": "Tracking_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each tracking record."
+          },
+          {
+            "name": "Order_ID",
+            "type": "text",
+            "required": true,
+            "description": "Identifier for the order being tracked."
+          },
+          {
+            "name": "Invoice_ID",
+            "type": "text",
+            "required": false,
+            "description": "Identifier for the invoice being tracked."
+          },
+          {
+            "name": "Current_Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the order/invoice (Pending, Approved, Completed)."
+          },
+          {
+            "name": "Approval_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the order/invoice was approved."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the tracking record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the tracking record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the tracking record (Active/Cancelled)."
+          }
+        ],
+        "primary_key": "Tracking_ID",
+        "relationships": [
+          "Orders",
+          "Invoices"
+        ]
+      },
+      {
+        "name": "Reporting",
+        "description": "Aggregates data for reporting and analytics purposes.",
+        "columns": [
+          {
+            "name": "Report_ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each report."
+          },
+          {
+            "name": "Report_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the report was generated."
+          },
+          {
+            "name": "Total_Orders",
+            "type": "number",
+            "required": true,
+            "description": "Total number of orders processed."
+          },
+          {
+            "name": "Total_Sales",
+            "type": "currency",
+            "required": true,
+            "description": "Total sales amount from processed orders."
+          },
+          {
+            "name": "Total_Customers",
+            "type": "number",
+            "required": true,
+            "description": "Total number of unique customers."
+          },
+          {
+            "name": "Created_Date",
+            "type": "date",
+            "required": true,
+            "description": "Date when the report record was created."
+          },
+          {
+            "name": "Modified_Date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the report record was last modified."
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Current status of the report (Active/Cancelled)."
+          }
+        ],
+        "primary_key": "Report_ID",
+        "relationships": [
+          "Orders",
+          "Invoices",
+          "Customers"
+        ]
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 48,
+    "sheets_with_relationships": 6
+  }
+}

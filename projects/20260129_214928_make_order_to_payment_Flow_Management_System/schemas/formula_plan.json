@@ -1,0 +1,862 @@
+{
+  "formulas": [
+    {
+      "sheet": "MD_Company_Settings",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(E2=\"\",TODAY(),E2))",
+      "description": "Auto-stamps Created_At when Setting_Key is present (keeps existing date if already set).",
+      "dependencies": [
+        "Setting_Key",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Company_Settings",
+      "target_column": "Modified_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",TODAY())",
+      "description": "Sets Modified_At to today when the row has a Setting_Key (simple timestamp helper).",
+      "dependencies": [
+        "Setting_Key"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Users",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2=\"\",TODAY(),F2))",
+      "description": "Auto-stamps Created_At when User_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "User_ID",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Customers",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(K2=\"\",TODAY(),K2))",
+      "description": "Auto-stamps Created_At when Customer_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "Customer_ID",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Customer_Contacts",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(I2=\"\",TODAY(),I2))",
+      "description": "Auto-stamps Created_At when Contact_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "Contact_ID",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Addresses",
+      "target_column": "Line2",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2=\"\",\"\",F2))",
+      "description": "Keeps Line2 blank if empty; placeholder normalization to avoid stray zeros/false values from imports.",
+      "dependencies": [
+        "Address_ID",
+        "Line2"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Products",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(H2=\"\",TODAY(),H2))",
+      "description": "Auto-stamps Created_At when Product_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "Product_ID",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Price_Lists",
+      "target_column": "Is_Active",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",FALSE,IF(AND(D2<=\"\",E2=\"\"),TRUE,AND(TODAY()>=D2,OR(E2=\"\",TODAY()<=E2))))",
+      "description": "Auto-determines whether the price list is active based on Effective_From/Effective_To (blank dates treated as open-ended).",
+      "dependencies": [
+        "Price_List_ID",
+        "Effective_From",
+        "Effective_To"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "MD_Product_Prices",
+      "target_column": "Created_At",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2=\"\",TODAY(),F2))",
+      "description": "Auto-stamps Created_At when Product_Price_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "Product_Price_ID",
+        "Created_At"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quotes",
+      "target_column": "Currency_Code",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(H2<>\",\",H2,IFERROR(INDEX(MD_Price_Lists!C:C,MATCH(E2,MD_Price_Lists!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_CURRENCY\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults quote currency: use existing Currency_Code; else take currency from selected Price_List_ID; else fallback to company DEFAULT_CURRENCY setting.",
+      "dependencies": [
+        "Quote_ID",
+        "Currency_Code",
+        "Price_List_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quotes",
+      "target_column": "Valid_Until",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(DATEVALUE(B2)+VALUE(INDEX(MD_Company_Settings!B:B,MATCH(\"QUOTE_VALID_DAYS\",MD_Company_Settings!A:A,0))),B2)))",
+      "description": "Defaults Valid_Until to Quote_Date + QUOTE_VALID_DAYS setting; if setting missing, uses Quote_Date.",
+      "dependencies": [
+        "Quote_ID",
+        "Quote_Date",
+        "Valid_Until"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quotes",
+      "target_column": "Subtotal",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Quote_Lines!B:B,A2,TX_Quote_Lines!K:K),0))",
+      "description": "Sums Net_Amount from quote lines for this Quote_ID.",
+      "dependencies": [
+        "Quote_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quotes",
+      "target_column": "Tax_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Quote_Lines!B:B,A2,TX_Quote_Lines!L:L),0))",
+      "description": "Sums Tax_Amount from quote lines for this Quote_ID.",
+      "dependencies": [
+        "Quote_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quotes",
+      "target_column": "Grand_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(I2+J2,0))",
+      "description": "Calculates quote Grand_Total = Subtotal + Tax_Total.",
+      "dependencies": [
+        "Subtotal",
+        "Tax_Total"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Description",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(E2<>\",\",E2,IFERROR(INDEX(MD_Products!B:B,MATCH(D2,MD_Products!A:A,0)),\"\")))",
+      "description": "Defaults line Description from product name when blank.",
+      "dependencies": [
+        "Quote_Line_ID",
+        "Product_ID",
+        "Description"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Unit_Price",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(INDEX(MD_Products!E:E,MATCH(D2,MD_Products!A:A,0)),0)))",
+      "description": "Defaults Unit_Price from product Default_Unit_Price when blank.",
+      "dependencies": [
+        "Quote_Line_ID",
+        "Product_ID",
+        "Unit_Price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Tax_Code_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(I2<>\",\",I2,IFERROR(INDEX(MD_Products!F:F,MATCH(D2,MD_Products!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_TAX_CODE\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults Tax_Code_ID from product default; if missing, falls back to DEFAULT_TAX_CODE setting.",
+      "dependencies": [
+        "Quote_Line_ID",
+        "Product_ID",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Net_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(F2*G2*(1-IF(H2=\"\",0,H2)),0))",
+      "description": "Calculates Net_Amount = Quantity * Unit_Price * (1 - Discount_Rate).",
+      "dependencies": [
+        "Quantity",
+        "Unit_Price",
+        "Discount_Rate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Tax_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(K2*IFERROR(INDEX(MD_Tax_Codes!C:C,MATCH(I2,MD_Tax_Codes!A:A,0)),0),0))",
+      "description": "Calculates Tax_Amount = Net_Amount * Tax_Rate (looked up from MD_Tax_Codes).",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Quote_Lines",
+      "target_column": "Gross_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(K2+L2,0))",
+      "description": "Calculates Gross_Amount = Net_Amount + Tax_Amount.",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Amount"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Billing_Address_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(E2<>\",\",E2,IFERROR(INDEX(MD_Customers!H:H,MATCH(C2,MD_Customers!A:A,0)),\"\")))",
+      "description": "Defaults Billing_Address_ID from customer Primary_Billing_Address_ID when blank.",
+      "dependencies": [
+        "Sales_Order_ID",
+        "Customer_ID",
+        "Billing_Address_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Shipping_Address_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2<>\",\",F2,IFERROR(INDEX(MD_Customers!I:I,MATCH(C2,MD_Customers!A:A,0)),\"\")))",
+      "description": "Defaults Shipping_Address_ID from customer Primary_Shipping_Address_ID when blank.",
+      "dependencies": [
+        "Sales_Order_ID",
+        "Customer_ID",
+        "Shipping_Address_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Payment_Term_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(INDEX(MD_Customers!D:D,MATCH(C2,MD_Customers!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_PAYMENT_TERM\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults Payment_Term_ID from customer; if missing, falls back to DEFAULT_PAYMENT_TERM setting.",
+      "dependencies": [
+        "Sales_Order_ID",
+        "Customer_ID",
+        "Payment_Term_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Currency_Code",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(J2<>\",\",J2,IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_CURRENCY\",MD_Company_Settings!A:A,0)),\"\")))",
+      "description": "Defaults order Currency_Code from DEFAULT_CURRENCY setting when blank.",
+      "dependencies": [
+        "Sales_Order_ID",
+        "Currency_Code"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Subtotal",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Sales_Order_Lines!B:B,A2,TX_Sales_Order_Lines!L:L),0))",
+      "description": "Sums Net_Amount from sales order lines for this Sales_Order_ID.",
+      "dependencies": [
+        "Sales_Order_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Tax_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Sales_Order_Lines!B:B,A2,TX_Sales_Order_Lines!M:M),0))",
+      "description": "Sums Tax_Amount from sales order lines for this Sales_Order_ID.",
+      "dependencies": [
+        "Sales_Order_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Grand_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(K2+L2,0))",
+      "description": "Calculates order Grand_Total = Subtotal + Tax_Total.",
+      "dependencies": [
+        "Subtotal",
+        "Tax_Total"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Orders",
+      "target_column": "Approval_Required",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",FALSE,IFERROR(OR(INDEX(MD_Customers!G:G,MATCH(C2,MD_Customers!A:A,0))=TRUE,M2>IFERROR(VALUE(INDEX(MD_Customers!F:F,MATCH(C2,MD_Customers!A:A,0))),9^9)),FALSE))",
+      "description": "Flags Approval_Required if customer is AR_On_Hold OR order Grand_Total exceeds customer Credit_Limit.",
+      "dependencies": [
+        "Sales_Order_ID",
+        "Customer_ID",
+        "Grand_Total"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Description",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(E2<>\",\",E2,IFERROR(INDEX(MD_Products!B:B,MATCH(D2,MD_Products!A:A,0)),\"\")))",
+      "description": "Defaults line Description from product name when blank.",
+      "dependencies": [
+        "Sales_Order_Line_ID",
+        "Product_ID",
+        "Description"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Unit_Price",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(INDEX(MD_Products!E:E,MATCH(D2,MD_Products!A:A,0)),0)))",
+      "description": "Defaults Unit_Price from product Default_Unit_Price when blank.",
+      "dependencies": [
+        "Sales_Order_Line_ID",
+        "Product_ID",
+        "Unit_Price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Tax_Code_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(I2<>\",\",I2,IFERROR(INDEX(MD_Products!F:F,MATCH(D2,MD_Products!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_TAX_CODE\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults Tax_Code_ID from product default; if missing, falls back to DEFAULT_TAX_CODE setting.",
+      "dependencies": [
+        "Sales_Order_Line_ID",
+        "Product_ID",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Quantity_Fulfilled",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Shipment_Lines!C:C,A2,TX_Shipment_Lines!E:E),0))",
+      "description": "Sums Quantity_Shipped from shipment lines linked to this Sales_Order_Line_ID.",
+      "dependencies": [
+        "Sales_Order_Line_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Quantity_Invoiced",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Invoice_Lines!D:D,A2,TX_Invoice_Lines!G:G),0))",
+      "description": "Sums Quantity from invoice lines linked to this Sales_Order_Line_ID.",
+      "dependencies": [
+        "Sales_Order_Line_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Net_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(F2*G2*(1-IF(H2=\"\",0,H2)),0))",
+      "description": "Calculates Net_Amount = Quantity_Ordered * Unit_Price * (1 - Discount_Rate).",
+      "dependencies": [
+        "Quantity_Ordered",
+        "Unit_Price",
+        "Discount_Rate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Tax_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(L2*IFERROR(INDEX(MD_Tax_Codes!C:C,MATCH(I2,MD_Tax_Codes!A:A,0)),0),0))",
+      "description": "Calculates Tax_Amount = Net_Amount * Tax_Rate (looked up from MD_Tax_Codes).",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Gross_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(L2+M2,0))",
+      "description": "Calculates Gross_Amount = Net_Amount + Tax_Amount.",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Amount"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Sales_Order_Lines",
+      "target_column": "Line_Status",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2<=0,\"Invalid Qty\",IF(AND(J2>=F2,K2>=F2),\"Closed\",IF(OR(J2>0,K2>0),\"In Progress\",\"Open\"))))",
+      "description": "Determines line status based on ordered vs fulfilled/invoiced quantities (Open/In Progress/Closed).",
+      "dependencies": [
+        "Quantity_Ordered",
+        "Quantity_Fulfilled",
+        "Quantity_Invoiced"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Shipments",
+      "target_column": "Ship_To_Address_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(D2<>\",\",D2,IFERROR(INDEX(TX_Sales_Orders!F:F,MATCH(B2,TX_Sales_Orders!A:A,0)),\"\")))",
+      "description": "Defaults Ship_To_Address_ID from the related Sales Order Shipping_Address_ID when blank.",
+      "dependencies": [
+        "Shipment_ID",
+        "Sales_Order_ID",
+        "Ship_To_Address_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Shipment_Lines",
+      "target_column": "Product_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(D2<>\",\",D2,IFERROR(INDEX(TX_Sales_Order_Lines!D:D,MATCH(C2,TX_Sales_Order_Lines!A:A,0)),\"\")))",
+      "description": "Defaults shipment line Product_ID from the referenced Sales Order Line when blank.",
+      "dependencies": [
+        "Shipment_Line_ID",
+        "Sales_Order_Line_ID",
+        "Product_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Payment_Term_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2<>\",\",F2,IFERROR(INDEX(TX_Sales_Orders!G:G,MATCH(D2,TX_Sales_Orders!A:A,0)),IFERROR(INDEX(MD_Customers!D:D,MATCH(C2,MD_Customers!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_PAYMENT_TERM\",MD_Company_Settings!A:A,0)),\"\")))))",
+      "description": "Defaults invoice Payment_Term_ID from Sales Order; else customer default; else DEFAULT_PAYMENT_TERM setting.",
+      "dependencies": [
+        "Invoice_ID",
+        "Sales_Order_ID",
+        "Customer_ID",
+        "Payment_Term_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Due_Date",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(B2+IFERROR(INDEX(MD_Payment_Terms!C:C,MATCH(F2,MD_Payment_Terms!A:A,0)),0),\"\")))",
+      "description": "Calculates Due_Date = Invoice_Date + Days_Until_Due (from MD_Payment_Terms).",
+      "dependencies": [
+        "Invoice_ID",
+        "Invoice_Date",
+        "Payment_Term_ID",
+        "Due_Date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Currency_Code",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(I2<>\",\",I2,IFERROR(INDEX(TX_Sales_Orders!J:J,MATCH(D2,TX_Sales_Orders!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_CURRENCY\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults invoice Currency_Code from Sales Order currency; else DEFAULT_CURRENCY setting.",
+      "dependencies": [
+        "Invoice_ID",
+        "Sales_Order_ID",
+        "Currency_Code"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Subtotal",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Invoice_Lines!B:B,A2,TX_Invoice_Lines!K:K),0))",
+      "description": "Sums Net_Amount from invoice lines for this Invoice_ID.",
+      "dependencies": [
+        "Invoice_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Tax_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Invoice_Lines!B:B,A2,TX_Invoice_Lines!L:L),0))",
+      "description": "Sums Tax_Amount from invoice lines for this Invoice_ID.",
+      "dependencies": [
+        "Invoice_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Grand_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(J2+K2,0))",
+      "description": "Calculates invoice Grand_Total = Subtotal + Tax_Total.",
+      "dependencies": [
+        "Subtotal",
+        "Tax_Total"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Amount_Paid",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Payment_Allocations!F:F,A2,TX_Payment_Allocations!G:G),0))",
+      "description": "Sums Amount_Applied from allocations for this Invoice_ID (payments and credit memos).",
+      "dependencies": [
+        "Invoice_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoices",
+      "target_column": "Balance_Due",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(L2-M2,0))",
+      "description": "Calculates Balance_Due = Grand_Total - Amount_Paid.",
+      "dependencies": [
+        "Grand_Total",
+        "Amount_Paid"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Description",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2<>\",\",F2,IFERROR(INDEX(MD_Products!B:B,MATCH(E2,MD_Products!A:A,0)),\"\")))",
+      "description": "Defaults invoice line Description from product name when blank.",
+      "dependencies": [
+        "Invoice_Line_ID",
+        "Product_ID",
+        "Description"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Unit_Price",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(H2<>\",\",H2,IFERROR(INDEX(MD_Products!E:E,MATCH(E2,MD_Products!A:A,0)),0)))",
+      "description": "Defaults invoice line Unit_Price from product Default_Unit_Price when blank.",
+      "dependencies": [
+        "Invoice_Line_ID",
+        "Product_ID",
+        "Unit_Price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Tax_Code_ID",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(J2<>\",\",J2,IFERROR(INDEX(MD_Products!F:F,MATCH(E2,MD_Products!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_TAX_CODE\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults invoice line Tax_Code_ID from product default; if missing, falls back to DEFAULT_TAX_CODE setting.",
+      "dependencies": [
+        "Invoice_Line_ID",
+        "Product_ID",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Net_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(G2*H2*(1-IF(I2=\"\",0,I2)),0))",
+      "description": "Calculates Net_Amount = Quantity * Unit_Price * (1 - Discount_Rate).",
+      "dependencies": [
+        "Quantity",
+        "Unit_Price",
+        "Discount_Rate"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Tax_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(K2*IFERROR(INDEX(MD_Tax_Codes!C:C,MATCH(J2,MD_Tax_Codes!A:A,0)),0),0))",
+      "description": "Calculates Tax_Amount = Net_Amount * Tax_Rate (looked up from MD_Tax_Codes).",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Invoice_Lines",
+      "target_column": "Gross_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(K2+L2,0))",
+      "description": "Calculates Gross_Amount = Net_Amount + Tax_Amount.",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Amount"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memos",
+      "target_column": "Currency_Code",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(F2<>\",\",F2,IFERROR(INDEX(TX_Invoices!I:I,MATCH(D2,TX_Invoices!A:A,0)),IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_CURRENCY\",MD_Company_Settings!A:A,0)),\"\"))))",
+      "description": "Defaults credit memo currency from related invoice; else DEFAULT_CURRENCY setting.",
+      "dependencies": [
+        "Credit_Memo_ID",
+        "Related_Invoice_ID",
+        "Currency_Code"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memos",
+      "target_column": "Subtotal",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Credit_Memo_Lines!B:B,A2,TX_Credit_Memo_Lines!H:H),0))",
+      "description": "Sums Net_Amount from credit memo lines for this Credit_Memo_ID.",
+      "dependencies": [
+        "Credit_Memo_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memos",
+      "target_column": "Tax_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIF(TX_Credit_Memo_Lines!B:B,A2,TX_Credit_Memo_Lines!I:I),0))",
+      "description": "Sums Tax_Amount from credit memo lines for this Credit_Memo_ID.",
+      "dependencies": [
+        "Credit_Memo_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memos",
+      "target_column": "Grand_Total",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(G2+H2,0))",
+      "description": "Calculates credit memo Grand_Total = Subtotal + Tax_Total.",
+      "dependencies": [
+        "Subtotal",
+        "Tax_Total"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memo_Lines",
+      "target_column": "Unit_Price",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2<>\",\",G2,IFERROR(INDEX(MD_Products!E:E,MATCH(E2,MD_Products!A:A,0)),0)))",
+      "description": "Defaults credit memo line Unit_Price from product Default_Unit_Price when blank.",
+      "dependencies": [
+        "Credit_Memo_Line_ID",
+        "Product_ID",
+        "Unit_Price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memo_Lines",
+      "target_column": "Net_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(F2*G2,0))",
+      "description": "Calculates credit memo Net_Amount = Quantity * Unit_Price.",
+      "dependencies": [
+        "Quantity",
+        "Unit_Price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memo_Lines",
+      "target_column": "Tax_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(H2*IFERROR(INDEX(MD_Tax_Codes!C:C,MATCH(H2,MD_Tax_Codes!A:A,0)),0),0))",
+      "description": "Calculates credit memo Tax_Amount using Tax_Code_ID rate (if Tax_Code_ID is set correctly).",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Code_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Credit_Memo_Lines",
+      "target_column": "Gross_Amount",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(H2+I2,0))",
+      "description": "Calculates credit memo Gross_Amount = Net_Amount + Tax_Amount.",
+      "dependencies": [
+        "Net_Amount",
+        "Tax_Amount"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Payments",
+      "target_column": "Currency_Code",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(E2<>\",\",E2,IFERROR(INDEX(MD_Company_Settings!B:B,MATCH(\"DEFAULT_CURRENCY\",MD_Company_Settings!A:A,0)),\"\")))",
+      "description": "Defaults payment Currency_Code from DEFAULT_CURRENCY setting when blank.",
+      "dependencies": [
+        "Payment_ID",
+        "Currency_Code"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "TX_Bank_Statement_Lines",
+      "target_column": "Match_Status",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(G2=\"\",\"Unmatched\",\"Matched\"))",
+      "description": "Sets Match_Status based on whether Matched_Payment_ID is populated.",
+      "dependencies": [
+        "Bank_Statement_Line_ID",
+        "Matched_Payment_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_AR_Aging",
+      "target_column": "As_Of_Date",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IF(B2=\"\",TODAY(),B2))",
+      "description": "Defaults As_Of_Date to today when Aging_Row_ID is present (keeps existing date if already set).",
+      "dependencies": [
+        "Aging_Row_ID",
+        "As_Of_Date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_AR_Aging",
+      "target_column": "Days_Past_Due",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(MAX(0,B2-F2),0))",
+      "description": "Calculates Days_Past_Due = max(0, As_Of_Date - Due_Date).",
+      "dependencies": [
+        "As_Of_Date",
+        "Due_Date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_AR_Aging",
+      "target_column": "Bucket",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(IFS(G2=0,\"Current\",G2<=30,\"1-30\",G2<=60,\"31-60\",G2<=90,\"61-90\",G2>90,\"90+\"),\"\"))",
+      "description": "Classifies aging bucket based on Days_Past_Due.",
+      "dependencies": [
+        "Days_Past_Due"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_O2P_KPIs",
+      "target_column": "Total_Orders",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(COUNTIFS(TX_Sales_Orders!B:B,\">=\"&B2,TX_Sales_Orders!B:B,\"<=\"&C2),0))",
+      "description": "Counts sales orders with Order_Date within the KPI period.",
+      "dependencies": [
+        "Period_Start",
+        "Period_End"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_O2P_KPIs",
+      "target_column": "Total_Invoices_Posted",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(COUNTIFS(TX_Invoices!B:B,\">=\"&B2,TX_Invoices!B:B,\"<=\"&C2,TX_Invoices!H:H,\"Posted\"),0))",
+      "description": "Counts invoices with Invoice_Date within the KPI period and Invoice_Status = Posted.",
+      "dependencies": [
+        "Period_Start",
+        "Period_End"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_O2P_KPIs",
+      "target_column": "Total_Revenue",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIFS(TX_Invoices!L:L,TX_Invoices!B:B,\">=\"&B2,TX_Invoices!B:B,\"<=\"&C2,TX_Invoices!H:H,\"Posted\"),0))",
+      "description": "Sums posted invoice Grand_Total for invoices dated within the KPI period.",
+      "dependencies": [
+        "Period_Start",
+        "Period_End"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "RPT_O2P_KPIs",
+      "target_column": "Total_Cash_Collected",
+      "start_row": 2,
+      "formula": "=IF(A2=\"\",\"\",IFERROR(SUMIFS(TX_Payments!F:F,TX_Payments!B:B,\">=\"&B2,TX_Payments!B:B,\"<=\"&C2),0))",
+      "description": "Sums Amount_Received for payments dated within the KPI period.",
+      "dependencies": [
+        "Period_Start",
+        "Period_End"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

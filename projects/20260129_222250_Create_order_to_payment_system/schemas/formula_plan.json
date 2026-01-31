@@ -1,0 +1,95 @@
+{
+  "formulas": [
+    {
+      "sheet": "Orders",
+      "target_column": "Total_Amount",
+      "start_row": 2,
+      "formula": "=IFERROR(VLOOKUP(Product_ID, Products!A:C, 3, FALSE) * Quantity, 0)",
+      "description": "Calculates the total amount for the order by multiplying the product price with the ordered quantity.",
+      "dependencies": [
+        "Product_ID",
+        "Quantity"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Reporting",
+      "target_column": "Total_Orders",
+      "start_row": 2,
+      "formula": "=IFERROR(COUNT(Orders!A:A), 0)",
+      "description": "Counts the total number of orders processed.",
+      "dependencies": [
+        "Orders!A:A"
+      ],
+      "apply_to_all_rows": false
+    },
+    {
+      "sheet": "Reporting",
+      "target_column": "Total_Sales",
+      "start_row": 2,
+      "formula": "=IFERROR(SUM(Orders!F:F), 0)",
+      "description": "Calculates the total sales amount from processed orders.",
+      "dependencies": [
+        "Orders!F:F"
+      ],
+      "apply_to_all_rows": false
+    },
+    {
+      "sheet": "Reporting",
+      "target_column": "Total_Customers",
+      "start_row": 2,
+      "formula": "=IFERROR(COUNTA(UNIQUE(Customers!A:A)), 0)",
+      "description": "Counts the total number of unique customers.",
+      "dependencies": [
+        "Customers!A:A"
+      ],
+      "apply_to_all_rows": false
+    },
+    {
+      "sheet": "Invoices",
+      "target_column": "Total_Amount",
+      "start_row": 2,
+      "formula": "=IFERROR(VLOOKUP(Order_ID, Orders!A:F, 6, FALSE), 0)",
+      "description": "Fetches the total amount from the corresponding order for the invoice.",
+      "dependencies": [
+        "Order_ID"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Process Tracking",
+      "target_column": "Approval_Date",
+      "start_row": 2,
+      "formula": "=IF(Current_Status = \"Approved\", TODAY(), \"\")",
+      "description": "Sets the approval date to today if the current status is 'Approved'.",
+      "dependencies": [
+        "Current_Status"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Customers",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(Modified_Date < TODAY() - 365, \"Inactive\", \"Active\")",
+      "description": "Determines the status of the customer based on the last modified date; inactive if modified over a year ago.",
+      "dependencies": [
+        "Modified_Date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Products",
+      "target_column": "Status",
+      "start_row": 2,
+      "formula": "=IF(Stock_Quantity > 0, \"Available\", \"Unavailable\")",
+      "description": "Determines the status of the product based on stock quantity; available if stock is greater than zero.",
+      "dependencies": [
+        "Stock_Quantity"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

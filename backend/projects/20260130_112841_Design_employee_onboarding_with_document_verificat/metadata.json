@@ -1,0 +1,251 @@
+{
+  "project_info": {
+    "prompt": "Design employee onboarding with document verification and training schedules",
+    "created_at": "2026-01-30T11:29:21.914631",
+    "execution_time_seconds": 40.76
+  },
+  "spreadsheet": {
+    "id": "1m7FYfKDix9ZmEzcI2V5i1oOQmGzBp2OWVCv2EMhSN2s",
+    "url": "https://docs.google.com/spreadsheets/d/1m7FYfKDix9ZmEzcI2V5i1oOQmGzBp2OWVCv2EMhSN2s",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1m7FYfKDix9ZmEzcI2V5i1oOQmGzBp2OWVCv2EMhSN2s/edit"
+  },
+  "system": {
+    "name": "Employee Onboarding Management System",
+    "description": "A system to manage the onboarding process of new employees, including document verification and training scheduling.",
+    "version": "1.0",
+    "total_sheets": 4,
+    "workflow_stages": [
+      "Initiation",
+      "Document Verification",
+      "Training Schedule",
+      "Completion"
+    ],
+    "integrations": [
+      "HRIS",
+      "Payroll System"
+    ]
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Employees",
+        "description": "Stores master data of employees being onboarded.",
+        "columns": [
+          {
+            "name": "employee_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for an employee"
+          },
+          {
+            "name": "first_name",
+            "type": "text",
+            "required": true,
+            "description": "The first name of the employee"
+          },
+          {
+            "name": "last_name",
+            "type": "text",
+            "required": true,
+            "description": "The last name of the employee"
+          },
+          {
+            "name": "email",
+            "type": "email",
+            "required": true,
+            "description": "The email address of the employee"
+          },
+          {
+            "name": "start_date",
+            "type": "date",
+            "required": true,
+            "description": "The employment start date"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "The date the employee record was created"
+          },
+          {
+            "name": "modified_date",
+            "type": "date",
+            "required": false,
+            "description": "The date the employee record was last modified"
+          },
+          {
+            "name": "status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current status of employee onboarding"
+          }
+        ],
+        "primary_key": "employee_id",
+        "relationships": [
+          "Document Verification",
+          "Training Schedule"
+        ]
+      },
+      {
+        "name": "Document Verification",
+        "description": "Tracks the verification status of necessary documents for onboarding.",
+        "columns": [
+          {
+            "name": "verification_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for a document verification record"
+          },
+          {
+            "name": "employee_id",
+            "type": "text",
+            "required": true,
+            "description": "Link to the employee being verified"
+          },
+          {
+            "name": "document_type",
+            "type": "text",
+            "required": true,
+            "description": "Type of document being verified (e.g., ID, contract)"
+          },
+          {
+            "name": "verification_status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Status of the document verification"
+          },
+          {
+            "name": "verified_date",
+            "type": "date",
+            "required": false,
+            "description": "Date when the document was verified"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "Date the verification record was created"
+          },
+          {
+            "name": "modified_date",
+            "type": "date",
+            "required": false,
+            "description": "Date the verification record was last modified"
+          }
+        ],
+        "primary_key": "verification_id",
+        "relationships": [
+          "Employees"
+        ]
+      },
+      {
+        "name": "Training Schedule",
+        "description": "Manages the training schedule and status for new employees.",
+        "columns": [
+          {
+            "name": "schedule_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for a training schedule record"
+          },
+          {
+            "name": "employee_id",
+            "type": "text",
+            "required": true,
+            "description": "Link to the employee enrolled in the training"
+          },
+          {
+            "name": "training_program",
+            "type": "text",
+            "required": true,
+            "description": "Name of the training program"
+          },
+          {
+            "name": "start_date",
+            "type": "date",
+            "required": true,
+            "description": "Start date of the training"
+          },
+          {
+            "name": "end_date",
+            "type": "date",
+            "required": true,
+            "description": "End date of the training"
+          },
+          {
+            "name": "completion_status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Status of training completion"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "Date the training schedule was created"
+          },
+          {
+            "name": "modified_date",
+            "type": "date",
+            "required": false,
+            "description": "Date the training schedule was last modified"
+          }
+        ],
+        "primary_key": "schedule_id",
+        "relationships": [
+          "Employees"
+        ]
+      },
+      {
+        "name": "Onboarding Process Tracking",
+        "description": "Tracks the overall status and stages of the onboarding process.",
+        "columns": [
+          {
+            "name": "process_id",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for an onboarding process record"
+          },
+          {
+            "name": "employee_id",
+            "type": "text",
+            "required": true,
+            "description": "Link to the employee undergoing onboarding"
+          },
+          {
+            "name": "current_stage",
+            "type": "dropdown",
+            "required": true,
+            "description": "Current stage of the onboarding process"
+          },
+          {
+            "name": "approval_status",
+            "type": "dropdown",
+            "required": true,
+            "description": "Approval status of the current stage"
+          },
+          {
+            "name": "created_date",
+            "type": "date",
+            "required": true,
+            "description": "Date the process tracking was initiated"
+          },
+          {
+            "name": "modified_date",
+            "type": "date",
+            "required": false,
+            "description": "Date the tracking record was last updated"
+          }
+        ],
+        "primary_key": "process_id",
+        "relationships": [
+          "Employees"
+        ]
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 29,
+    "sheets_with_relationships": 4
+  }
+}

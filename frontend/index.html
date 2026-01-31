@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Management System - Agentic AI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🤖</span>
+                    <div class="logo-text">
+                        <h1>Flow Management System</h1>
+                        <p class="tagline">Agentic AI-Powered Workflow Automation</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="showProjects()" title="View Projects">
+                        <span class="icon">📁</span>
+                        <span class="text">Projects</span>
+                    </button>
+                    <button class="btn-secondary" onclick="toggleLogs()" title="Toggle Logs">
+                        <span class="icon">📋</span>
+                        <span class="text">Logs</span>
+                    </button>
+                    <div class="status-indicator" id="status">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span class="status-text" id="statusText">Connecting...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Chat Area -->
+            <div class="chat-area" id="chatArea">
+                <!-- Welcome Message -->
+                <div class="welcome-card" id="welcomeCard">
+                    <div class="welcome-icon">🤖</div>
+                    <h2>Welcome to FMS Agent</h2>
+                    <p>I'm an intelligent agent that understands your requirements and creates production-ready flow management systems in Google Sheets.</p>
+                    
+                    <div class="capabilities">
+                        <h3>What I can do:</h3>
+                        <div class="capability-grid">
+                            <div class="capability-item">
+                                <span class="cap-icon">🏗️</span>
+                                <span>Design system architecture</span>
+                            </div>
+                            <div class="capability-item">
+                                <span class="cap-icon">📊</span>
+                                <span>Create Google Sheets</span>
+                            </div>
+                            <div class="capability-item">
+                                <span class="cap-icon">⚙️</span>
+                                <span>Generate formulas</span>
+                            </div>
+                            <div class="capability-item">
+                                <span class="cap-icon">📝</span>
+                                <span>Write documentation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-prompts">
+                        <p class="quick-prompts-title">Try these examples:</p>
+                        <button class="quick-prompt-btn" onclick="setPrompt('Create an order-to-payment system for e-commerce')">
+                            🛒 Order-to-Payment System
+                        </button>
+                        <button class="quick-prompt-btn" onclick="setPrompt('Build a customer relationship management system')">
+                            👥 CRM System
+                        </button>
+                        <button class="quick-prompt-btn" onclick="setPrompt('Design inventory management with stock alerts')">
+                            📦 Inventory Management
+</button>
+                        <button class="quick-prompt-btn" onclick="setPrompt('Create employee onboarding workflow')">
+                            👔 Employee Onboarding
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-messages" id="chatMessages"></div>
+            </div>
+
+            <!-- Log Panel (Collapsible) -->
+            <div class="log-panel" id="logPanel">
+                <div class="log-header">
+                    <h3>🔍 Agent Decisions & Logs</h3>
+                    <button class="btn-close" onclick="toggleLogs()">×</button>
+                </div>
+                <div class="log-content" id="logContent">
+                    <div class="log-empty">No logs yet. Start a workflow to see agent decisions in real-time.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-container">
+            <div class="input-area">
+                <textarea
+                    id="promptInput"
+                    placeholder="Describe the workflow system you want to create..."
+                    rows="1"
+                    onkeydown="handleKeyPress(event)"
+                ></textarea>
+                <button class="btn-send" id="sendBtn" onclick="createWorkflow()">
+                    <span class="send-icon" id="sendIcon">🚀</span>
+                    <span class="send-text" id="sendText">Create</span>
+                </button>
+            </div>
+            <div class="input-hint">
+                Press Enter to send, Shift+Enter for new line
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Projects -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Projects</h2>
+                <button class="btn-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

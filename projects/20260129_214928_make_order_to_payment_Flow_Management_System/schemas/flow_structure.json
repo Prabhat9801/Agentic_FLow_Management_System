@@ -1,0 +1,3081 @@
+{
+  "system_name": "Order-to-Payment Flow Management System (O2P-FMS)",
+  "description": "A production-ready Google Sheets-based Order-to-Payment (O2P) flow management system that standardizes and tracks the end-to-end lifecycle from customer order intake through fulfillment, invoicing, collections, and payment reconciliation. The system enforces data integrity via normalized master data, transaction records, workflow status tracking, approvals, and audit fields. It supports multi-role operations (Sales, Operations/Fulfillment, Finance/AR, Management) and provides reporting-ready structures for pipeline, aging, cash forecasting, and performance analytics.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "MD_Company_Settings",
+      "columns": [
+        {
+          "name": "Setting_Key",
+          "type": "text",
+          "description": "Unique key for the setting (e.g., DEFAULT_CURRENCY, DEFAULT_TAX_CODE).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Setting_Value",
+          "type": "text",
+          "description": "Value for the setting (stored as text; parsed by formulas where needed).",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Setting_Description",
+          "type": "text",
+          "description": "Human-readable description of what the setting controls.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the setting is active/used.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Date the setting row was created.",
+          "required": true,
+          "validation": "Must be a valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "User who created the setting row.",
+          "required": false,
+          "validation": "Must be a valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Date the setting row was last modified.",
+          "required": false,
+          "validation": "Must be a valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_By",
+          "type": "email",
+          "description": "User who last modified the setting row.",
+          "required": false,
+          "validation": "Must be a valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "System-wide configuration and defaults (currency, numbering, tax rules, payment terms). Used by formulas and validations across transaction sheets.",
+      "primary_key": "Setting_Key",
+      "relationships": [
+        "MD_Tax_Codes",
+        "MD_Payment_Terms",
+        "MD_Number_Series"
+      ]
+    },
+    {
+      "name": "MD_Number_Series",
+      "columns": [
+        {
+          "name": "Series_Code",
+          "type": "text",
+          "description": "Unique code for the numbering series (e.g., SO, INV, PAY).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Document_Type",
+          "type": "dropdown",
+          "description": "Document type controlled by this series.",
+          "required": true,
+          "validation": "Allowed values: Sales Order, Shipment, Invoice, Payment, Credit Memo.",
+          "default_value": ""
+        },
+        {
+          "name": "Prefix",
+          "type": "text",
+          "description": "Prefix used in generated document numbers (e.g., SO-2026-).",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Next_Number",
+          "type": "number",
+          "description": "Next integer to be used for document number generation.",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": "1"
+        },
+        {
+          "name": "Number_Padding",
+          "type": "number",
+          "description": "Number of digits to pad the sequence (e.g., 5 -> 00001).",
+          "required": true,
+          "validation": "Must be an integer between 0 and 10.",
+          "default_value": "5"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether this series is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Controls document numbering sequences for Orders, Shipments, Invoices, Payments, and Credits.",
+      "primary_key": "Series_Code",
+      "relationships": [
+        "TX_Sales_Orders",
+        "TX_Shipments",
+        "TX_Invoices",
+        "TX_Payments",
+        "TX_Credit_Memos"
+      ]
+    },
+    {
+      "name": "MD_Users",
+      "columns": [
+        {
+          "name": "User_ID",
+          "type": "text",
+          "description": "Unique user identifier (can match Google account or internal ID).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Full_Name",
+          "type": "text",
+          "description": "User full name.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "description": "User email for notifications and audit.",
+          "required": true,
+          "validation": "Must be a valid email.",
+          "default_value": ""
+        },
+        {
+          "name": "Role",
+          "type": "dropdown",
+          "description": "Primary role used for workflow permissions.",
+          "required": true,
+          "validation": "Allowed values: Admin, Sales, Operations, Finance_AR, Finance_AP, Manager, Viewer.",
+          "default_value": "Viewer"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the user is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "User record creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "User record last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "User directory for role-based workflow routing, approvals, and audit attribution.",
+      "primary_key": "User_ID",
+      "relationships": [
+        "WF_Approvals",
+        "TX_Sales_Orders",
+        "TX_Invoices",
+        "TX_Payments",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "MD_Customers",
+      "columns": [
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Unique customer identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_Name",
+          "type": "text",
+          "description": "Legal or trading name of the customer.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_Status",
+          "type": "dropdown",
+          "description": "Lifecycle status of the customer.",
+          "required": true,
+          "validation": "Allowed values: Prospect, Active, On Hold, Inactive.",
+          "default_value": "Prospect"
+        },
+        {
+          "name": "Default_Payment_Term_ID",
+          "type": "text",
+          "description": "Default payment term reference.",
+          "required": false,
+          "validation": "Must exist in MD_Payment_Terms.Payment_Term_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Default_Tax_Code_ID",
+          "type": "text",
+          "description": "Default tax code for the customer.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Credit_Limit",
+          "type": "currency",
+          "description": "Approved credit limit for the customer.",
+          "required": false,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "AR_On_Hold",
+          "type": "checkbox",
+          "description": "If TRUE, blocks new orders/invoices pending review.",
+          "required": true,
+          "validation": "",
+          "default_value": "FALSE"
+        },
+        {
+          "name": "Primary_Billing_Address_ID",
+          "type": "text",
+          "description": "Default billing address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Primary_Shipping_Address_ID",
+          "type": "text",
+          "description": "Default shipping address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Notes",
+          "type": "text",
+          "description": "Internal notes (credit notes, special handling).",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Record creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_By",
+          "type": "email",
+          "description": "Last modifier email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Customer master data including billing/shipping defaults, credit limits, and AR settings.",
+      "primary_key": "Customer_ID",
+      "relationships": [
+        "MD_Customer_Contacts",
+        "MD_Addresses",
+        "TX_Quotes",
+        "TX_Sales_Orders",
+        "TX_Invoices",
+        "TX_Payments",
+        "TX_Credit_Memos"
+      ]
+    },
+    {
+      "name": "MD_Customer_Contacts",
+      "columns": [
+        {
+          "name": "Contact_ID",
+          "type": "text",
+          "description": "Unique contact identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Contact_Name",
+          "type": "text",
+          "description": "Full name of the contact.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "description": "Contact email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Phone",
+          "type": "text",
+          "description": "Contact phone number.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Contact_Type",
+          "type": "dropdown",
+          "description": "Primary purpose of the contact.",
+          "required": true,
+          "validation": "Allowed values: Ordering, Billing, Shipping, Decision Maker, Collections, Other.",
+          "default_value": "Other"
+        },
+        {
+          "name": "Is_Primary",
+          "type": "checkbox",
+          "description": "Marks the primary contact for the given type.",
+          "required": true,
+          "validation": "",
+          "default_value": "FALSE"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the contact is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Customer contact persons used for quoting, ordering, invoicing, and collections communications.",
+      "primary_key": "Contact_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Quotes",
+        "TX_Sales_Orders",
+        "TX_Invoices",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "MD_Addresses",
+      "columns": [
+        {
+          "name": "Address_ID",
+          "type": "text",
+          "description": "Unique address identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_Type",
+          "type": "dropdown",
+          "description": "Owner entity type for the address.",
+          "required": true,
+          "validation": "Allowed values: Customer, Company.",
+          "default_value": "Customer"
+        },
+        {
+          "name": "Entity_ID",
+          "type": "text",
+          "description": "Owner entity ID (e.g., Customer_ID when Entity_Type=Customer).",
+          "required": true,
+          "validation": "If Entity_Type=Customer, must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Address_Type",
+          "type": "dropdown",
+          "description": "Address usage type.",
+          "required": true,
+          "validation": "Allowed values: Billing, Shipping, Both, Other.",
+          "default_value": "Other"
+        },
+        {
+          "name": "Line1",
+          "type": "text",
+          "description": "Address line 1.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Line2",
+          "type": "text",
+          "description": "Address line 2.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "City",
+          "type": "text",
+          "description": "City.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "State_Province",
+          "type": "text",
+          "description": "State/Province/Region.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Postal_Code",
+          "type": "text",
+          "description": "Postal/ZIP code.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Country",
+          "type": "text",
+          "description": "Country.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the address is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Normalized address book for customers (billing/shipping) and internal company locations if needed.",
+      "primary_key": "Address_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Sales_Orders",
+        "TX_Shipments",
+        "TX_Invoices"
+      ]
+    },
+    {
+      "name": "MD_Products",
+      "columns": [
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Unique product/service identifier (SKU).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_Name",
+          "type": "text",
+          "description": "Product/service name.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_Type",
+          "type": "dropdown",
+          "description": "Type of item for fulfillment and accounting behavior.",
+          "required": true,
+          "validation": "Allowed values: Goods, Service, Subscription, Fee, Other.",
+          "default_value": "Goods"
+        },
+        {
+          "name": "UOM",
+          "type": "dropdown",
+          "description": "Unit of measure.",
+          "required": true,
+          "validation": "Allowed values: Each, Hour, Day, Month, Kg, L, Other.",
+          "default_value": "Each"
+        },
+        {
+          "name": "Default_Unit_Price",
+          "type": "currency",
+          "description": "Default selling price per unit (used if no price list applies).",
+          "required": false,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Default_Tax_Code_ID",
+          "type": "text",
+          "description": "Default tax code for this product.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the product is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Product/service catalog with pricing defaults, tax mapping, and fulfillment characteristics.",
+      "primary_key": "Product_ID",
+      "relationships": [
+        "MD_Price_Lists",
+        "MD_Product_Prices",
+        "TX_Quote_Lines",
+        "TX_Sales_Order_Lines",
+        "TX_Invoice_Lines",
+        "TX_Credit_Memo_Lines"
+      ]
+    },
+    {
+      "name": "MD_Price_Lists",
+      "columns": [
+        {
+          "name": "Price_List_ID",
+          "type": "text",
+          "description": "Unique price list identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Price_List_Name",
+          "type": "text",
+          "description": "Name of the price list.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Currency code (e.g., USD, EUR).",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Effective_From",
+          "type": "date",
+          "description": "Start date for the price list validity.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Effective_To",
+          "type": "date",
+          "description": "End date for the price list validity.",
+          "required": false,
+          "validation": "If provided, must be >= Effective_From.",
+          "default_value": ""
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the price list is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Price list headers for customer-specific or channel-specific pricing.",
+      "primary_key": "Price_List_ID",
+      "relationships": [
+        "MD_Product_Prices",
+        "MD_Customers",
+        "TX_Quotes",
+        "TX_Sales_Orders"
+      ]
+    },
+    {
+      "name": "MD_Product_Prices",
+      "columns": [
+        {
+          "name": "Product_Price_ID",
+          "type": "text",
+          "description": "Unique identifier for the product price row.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Price_List_ID",
+          "type": "text",
+          "description": "Reference to the price list.",
+          "required": true,
+          "validation": "Must exist in MD_Price_Lists.Price_List_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Reference to the product.",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Unit_Price",
+          "type": "currency",
+          "description": "Unit price for the product in the price list currency.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether this price row is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Price list lines mapping products to prices (supports overrides from product default price).",
+      "primary_key": "Product_Price_ID",
+      "relationships": [
+        "MD_Price_Lists",
+        "MD_Products",
+        "TX_Quote_Lines",
+        "TX_Sales_Order_Lines"
+      ]
+    },
+    {
+      "name": "MD_Tax_Codes",
+      "columns": [
+        {
+          "name": "Tax_Code_ID",
+          "type": "text",
+          "description": "Unique tax code identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Code_Name",
+          "type": "text",
+          "description": "Tax code name/label.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Rate",
+          "type": "number",
+          "description": "Tax rate as a decimal (e.g., 0.2 for 20%).",
+          "required": true,
+          "validation": "Must be between 0 and 1.",
+          "default_value": "0"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the tax code is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Tax code master defining tax rates and applicability for invoices and credit memos.",
+      "primary_key": "Tax_Code_ID",
+      "relationships": [
+        "MD_Customers",
+        "MD_Products",
+        "TX_Sales_Order_Lines",
+        "TX_Invoice_Lines",
+        "TX_Credit_Memo_Lines"
+      ]
+    },
+    {
+      "name": "MD_Payment_Terms",
+      "columns": [
+        {
+          "name": "Payment_Term_ID",
+          "type": "text",
+          "description": "Unique payment term identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_Term_Name",
+          "type": "text",
+          "description": "Name (e.g., Net 30, Due on Receipt).",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Days_Until_Due",
+          "type": "number",
+          "description": "Number of days from invoice date until due date.",
+          "required": true,
+          "validation": "Must be an integer between 0 and 3650.",
+          "default_value": "0"
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the term is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Payment terms master used to calculate invoice due dates and dunning schedules.",
+      "primary_key": "Payment_Term_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Sales_Orders",
+        "TX_Invoices"
+      ]
+    },
+    {
+      "name": "TX_Quotes",
+      "columns": [
+        {
+          "name": "Quote_ID",
+          "type": "text",
+          "description": "Unique quote identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Quote_Date",
+          "type": "date",
+          "description": "Date the quote was created.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Contact_ID",
+          "type": "text",
+          "description": "Primary customer contact for the quote.",
+          "required": false,
+          "validation": "Must exist in MD_Customer_Contacts.Contact_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Price_List_ID",
+          "type": "text",
+          "description": "Price list used for pricing.",
+          "required": false,
+          "validation": "Must exist in MD_Price_Lists.Price_List_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Quote_Status",
+          "type": "dropdown",
+          "description": "Quote workflow status.",
+          "required": true,
+          "validation": "Allowed values: Draft, Submitted, Approved, Rejected, Expired, Converted, Cancelled.",
+          "default_value": "Draft"
+        },
+        {
+          "name": "Valid_Until",
+          "type": "date",
+          "description": "Quote expiration date.",
+          "required": false,
+          "validation": "If provided, must be >= Quote_Date.",
+          "default_value": ""
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Currency for the quote amounts.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Subtotal",
+          "type": "currency",
+          "description": "Sum of line net amounts before tax.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Total",
+          "type": "currency",
+          "description": "Total tax amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Grand_Total",
+          "type": "currency",
+          "description": "Subtotal + Tax_Total.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Owner_User_ID",
+          "type": "text",
+          "description": "Sales owner responsible for the quote.",
+          "required": false,
+          "validation": "Must exist in MD_Users.User_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Record creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_By",
+          "type": "email",
+          "description": "Last modifier email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Optional quoting stage prior to sales order. Supports approval and conversion to sales order.",
+      "primary_key": "Quote_ID",
+      "relationships": [
+        "MD_Customers",
+        "MD_Customer_Contacts",
+        "MD_Price_Lists",
+        "TX_Quote_Lines",
+        "WF_Approvals",
+        "TX_Documents",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "TX_Quote_Lines",
+      "columns": [
+        {
+          "name": "Quote_Line_ID",
+          "type": "text",
+          "description": "Unique quote line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Quote_ID",
+          "type": "text",
+          "description": "Parent quote reference.",
+          "required": true,
+          "validation": "Must exist in TX_Quotes.Quote_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Line_Number",
+          "type": "number",
+          "description": "Line sequence number within the quote.",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Product/service reference.",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Description",
+          "type": "text",
+          "description": "Line description (defaults from product, editable).",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity quoted.",
+          "required": true,
+          "validation": "Must be > 0.",
+          "default_value": "1"
+        },
+        {
+          "name": "Unit_Price",
+          "type": "currency",
+          "description": "Unit price for the line.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Discount_Rate",
+          "type": "number",
+          "description": "Discount rate as decimal (e.g., 0.1 for 10%).",
+          "required": false,
+          "validation": "If provided, must be between 0 and 1.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Code_ID",
+          "type": "text",
+          "description": "Tax code applied to the line.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Net_Amount",
+          "type": "currency",
+          "description": "Calculated net amount (Quantity * Unit_Price * (1-Discount_Rate)).",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Amount",
+          "type": "currency",
+          "description": "Calculated tax amount for the line.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Gross_Amount",
+          "type": "currency",
+          "description": "Calculated gross amount (Net_Amount + Tax_Amount).",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Quote line items (normalized child table of TX_Quotes).",
+      "primary_key": "Quote_Line_ID",
+      "relationships": [
+        "TX_Quotes",
+        "MD_Products",
+        "MD_Tax_Codes"
+      ]
+    },
+    {
+      "name": "TX_Sales_Orders",
+      "columns": [
+        {
+          "name": "Sales_Order_ID",
+          "type": "text",
+          "description": "Unique sales order identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Order_Date",
+          "type": "date",
+          "description": "Date the order was placed/entered.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Contact_ID",
+          "type": "text",
+          "description": "Customer contact for order communications.",
+          "required": false,
+          "validation": "Must exist in MD_Customer_Contacts.Contact_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Billing_Address_ID",
+          "type": "text",
+          "description": "Billing address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Shipping_Address_ID",
+          "type": "text",
+          "description": "Shipping address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_Term_ID",
+          "type": "text",
+          "description": "Payment term reference for invoices generated from this order.",
+          "required": false,
+          "validation": "Must exist in MD_Payment_Terms.Payment_Term_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Requested_Delivery_Date",
+          "type": "date",
+          "description": "Customer requested delivery date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Order_Status",
+          "type": "dropdown",
+          "description": "Sales order workflow status.",
+          "required": true,
+          "validation": "Allowed values: Draft, Submitted, Approved, Rejected, On Hold, Partially Fulfilled, Fulfilled, Cancelled, Closed.",
+          "default_value": "Draft"
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Currency for the order amounts.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Subtotal",
+          "type": "currency",
+          "description": "Sum of order line net amounts.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Total",
+          "type": "currency",
+          "description": "Total tax amount for the order.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Grand_Total",
+          "type": "currency",
+          "description": "Subtotal + Tax_Total.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Owner_User_ID",
+          "type": "text",
+          "description": "Sales owner responsible for the order.",
+          "required": false,
+          "validation": "Must exist in MD_Users.User_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Approval_Required",
+          "type": "checkbox",
+          "description": "Indicates whether the order requires approval based on rules (e.g., discount/credit).",
+          "required": true,
+          "validation": "",
+          "default_value": "FALSE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Record creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_By",
+          "type": "email",
+          "description": "Last modifier email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Sales order header capturing customer order details, approval status, and fulfillment readiness.",
+      "primary_key": "Sales_Order_ID",
+      "relationships": [
+        "MD_Customers",
+        "MD_Customer_Contacts",
+        "MD_Addresses",
+        "MD_Payment_Terms",
+        "TX_Sales_Order_Lines",
+        "TX_Shipments",
+        "TX_Invoices",
+        "WF_Approvals",
+        "TX_Documents",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "TX_Sales_Order_Lines",
+      "columns": [
+        {
+          "name": "Sales_Order_Line_ID",
+          "type": "text",
+          "description": "Unique sales order line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_ID",
+          "type": "text",
+          "description": "Parent sales order reference.",
+          "required": true,
+          "validation": "Must exist in TX_Sales_Orders.Sales_Order_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Line_Number",
+          "type": "number",
+          "description": "Line sequence number within the order.",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Product/service reference.",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Description",
+          "type": "text",
+          "description": "Line description (defaults from product, editable).",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity_Ordered",
+          "type": "number",
+          "description": "Quantity ordered.",
+          "required": true,
+          "validation": "Must be > 0.",
+          "default_value": "1"
+        },
+        {
+          "name": "Unit_Price",
+          "type": "currency",
+          "description": "Unit price for the line.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Discount_Rate",
+          "type": "number",
+          "description": "Discount rate as decimal.",
+          "required": false,
+          "validation": "If provided, must be between 0 and 1.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Code_ID",
+          "type": "text",
+          "description": "Tax code applied to the line.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity_Fulfilled",
+          "type": "number",
+          "description": "Quantity fulfilled to date (sum of shipment lines).",
+          "required": true,
+          "validation": "Must be >= 0 and <= Quantity_Ordered.",
+          "default_value": "0"
+        },
+        {
+          "name": "Quantity_Invoiced",
+          "type": "number",
+          "description": "Quantity invoiced to date (sum of invoice lines).",
+          "required": true,
+          "validation": "Must be >= 0 and <= Quantity_Ordered.",
+          "default_value": "0"
+        },
+        {
+          "name": "Net_Amount",
+          "type": "currency",
+          "description": "Calculated net amount for ordered quantity.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Amount",
+          "type": "currency",
+          "description": "Calculated tax amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Gross_Amount",
+          "type": "currency",
+          "description": "Calculated gross amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Line_Status",
+          "type": "dropdown",
+          "description": "Line-level status for partial fulfillment/invoicing.",
+          "required": true,
+          "validation": "Allowed values: Open, Partially Fulfilled, Fulfilled, Partially Invoiced, Invoiced, Cancelled, Closed.",
+          "default_value": "Open"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Sales order line items (normalized child table of TX_Sales_Orders).",
+      "primary_key": "Sales_Order_Line_ID",
+      "relationships": [
+        "TX_Sales_Orders",
+        "MD_Products",
+        "MD_Tax_Codes",
+        "TX_Shipment_Lines",
+        "TX_Invoice_Lines"
+      ]
+    },
+    {
+      "name": "TX_Shipments",
+      "columns": [
+        {
+          "name": "Shipment_ID",
+          "type": "text",
+          "description": "Unique shipment/delivery identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_ID",
+          "type": "text",
+          "description": "Related sales order reference.",
+          "required": true,
+          "validation": "Must exist in TX_Sales_Orders.Sales_Order_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Shipment_Date",
+          "type": "date",
+          "description": "Date shipped/delivered.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Ship_To_Address_ID",
+          "type": "text",
+          "description": "Ship-to address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Carrier",
+          "type": "text",
+          "description": "Carrier/provider name.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Tracking_Number",
+          "type": "text",
+          "description": "Carrier tracking number.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Shipment_Status",
+          "type": "dropdown",
+          "description": "Shipment workflow status.",
+          "required": true,
+          "validation": "Allowed values: Draft, Dispatched, Delivered, Cancelled.",
+          "default_value": "Draft"
+        },
+        {
+          "name": "Proof_Of_Delivery_Received",
+          "type": "checkbox",
+          "description": "Whether proof of delivery/service acceptance has been received.",
+          "required": true,
+          "validation": "",
+          "default_value": "FALSE"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Fulfillment/shipment header records for goods delivery or service delivery confirmation.",
+      "primary_key": "Shipment_ID",
+      "relationships": [
+        "TX_Sales_Orders",
+        "TX_Shipment_Lines",
+        "MD_Addresses",
+        "TX_Documents",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "TX_Shipment_Lines",
+      "columns": [
+        {
+          "name": "Shipment_Line_ID",
+          "type": "text",
+          "description": "Unique shipment line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Shipment_ID",
+          "type": "text",
+          "description": "Parent shipment reference.",
+          "required": true,
+          "validation": "Must exist in TX_Shipments.Shipment_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_Line_ID",
+          "type": "text",
+          "description": "Sales order line reference being fulfilled.",
+          "required": true,
+          "validation": "Must exist in TX_Sales_Order_Lines.Sales_Order_Line_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Product reference (should match the sales order line product).",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity_Shipped",
+          "type": "number",
+          "description": "Quantity shipped/delivered for this line.",
+          "required": true,
+          "validation": "Must be > 0 and not exceed remaining unfulfilled quantity on the order line.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Shipment line items mapping fulfilled quantities back to sales order lines.",
+      "primary_key": "Shipment_Line_ID",
+      "relationships": [
+        "TX_Shipments",
+        "TX_Sales_Order_Lines",
+        "MD_Products"
+      ]
+    },
+    {
+      "name": "TX_Invoices",
+      "columns": [
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Unique invoice identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_Date",
+          "type": "date",
+          "description": "Invoice issue date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_ID",
+          "type": "text",
+          "description": "Source sales order reference (if applicable).",
+          "required": false,
+          "validation": "Must exist in TX_Sales_Orders.Sales_Order_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Billing_Address_ID",
+          "type": "text",
+          "description": "Billing address reference.",
+          "required": false,
+          "validation": "Must exist in MD_Addresses.Address_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_Term_ID",
+          "type": "text",
+          "description": "Payment term reference.",
+          "required": false,
+          "validation": "Must exist in MD_Payment_Terms.Payment_Term_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Due_Date",
+          "type": "date",
+          "description": "Calculated due date based on Invoice_Date and payment terms.",
+          "required": true,
+          "validation": "Must be >= Invoice_Date.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_Status",
+          "type": "dropdown",
+          "description": "Invoice workflow status.",
+          "required": true,
+          "validation": "Allowed values: Draft, Submitted, Approved, Posted, Partially Paid, Paid, Overdue, Disputed, Cancelled, Void.",
+          "default_value": "Draft"
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Invoice currency.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Subtotal",
+          "type": "currency",
+          "description": "Sum of invoice line net amounts.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Total",
+          "type": "currency",
+          "description": "Total tax amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Grand_Total",
+          "type": "currency",
+          "description": "Subtotal + Tax_Total.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Amount_Paid",
+          "type": "currency",
+          "description": "Total allocated payments and credits applied to this invoice.",
+          "required": true,
+          "validation": "Must be >= 0 and <= Grand_Total.",
+          "default_value": "0"
+        },
+        {
+          "name": "Balance_Due",
+          "type": "currency",
+          "description": "Grand_Total - Amount_Paid.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Dispute_Flag",
+          "type": "checkbox",
+          "description": "Marks invoice as disputed (pauses dunning if desired).",
+          "required": true,
+          "validation": "",
+          "default_value": "FALSE"
+        },
+        {
+          "name": "External_Accounting_Ref",
+          "type": "text",
+          "description": "Reference ID in external accounting system after export/posting.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Record creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_At",
+          "type": "date",
+          "description": "Last modified date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Modified_By",
+          "type": "email",
+          "description": "Last modifier email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Invoice header records generated from sales orders/shipments; supports posting/approval and AR tracking.",
+      "primary_key": "Invoice_ID",
+      "relationships": [
+        "MD_Customers",
+        "MD_Addresses",
+        "MD_Payment_Terms",
+        "TX_Sales_Orders",
+        "TX_Invoice_Lines",
+        "TX_Payment_Allocations",
+        "TX_Credit_Memos",
+        "WF_Approvals",
+        "TX_Documents",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "TX_Invoice_Lines",
+      "columns": [
+        {
+          "name": "Invoice_Line_ID",
+          "type": "text",
+          "description": "Unique invoice line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Parent invoice reference.",
+          "required": true,
+          "validation": "Must exist in TX_Invoices.Invoice_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Line_Number",
+          "type": "number",
+          "description": "Line sequence number within the invoice.",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_Line_ID",
+          "type": "text",
+          "description": "Optional reference to the originating sales order line.",
+          "required": false,
+          "validation": "Must exist in TX_Sales_Order_Lines.Sales_Order_Line_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Product/service reference.",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Description",
+          "type": "text",
+          "description": "Line description.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity invoiced.",
+          "required": true,
+          "validation": "Must be > 0.",
+          "default_value": "1"
+        },
+        {
+          "name": "Unit_Price",
+          "type": "currency",
+          "description": "Unit price invoiced.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Discount_Rate",
+          "type": "number",
+          "description": "Discount rate as decimal.",
+          "required": false,
+          "validation": "If provided, must be between 0 and 1.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Code_ID",
+          "type": "text",
+          "description": "Tax code applied.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Net_Amount",
+          "type": "currency",
+          "description": "Calculated net amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Amount",
+          "type": "currency",
+          "description": "Calculated tax amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Gross_Amount",
+          "type": "currency",
+          "description": "Calculated gross amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Invoice line items (normalized child table of TX_Invoices), optionally linked to sales order lines for traceability.",
+      "primary_key": "Invoice_Line_ID",
+      "relationships": [
+        "TX_Invoices",
+        "TX_Sales_Order_Lines",
+        "MD_Products",
+        "MD_Tax_Codes",
+        "TX_Credit_Memo_Lines"
+      ]
+    },
+    {
+      "name": "TX_Credit_Memos",
+      "columns": [
+        {
+          "name": "Credit_Memo_ID",
+          "type": "text",
+          "description": "Unique credit memo identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Credit_Memo_Date",
+          "type": "date",
+          "description": "Credit memo issue date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Related_Invoice_ID",
+          "type": "text",
+          "description": "Optional related invoice reference.",
+          "required": false,
+          "validation": "Must exist in TX_Invoices.Invoice_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Credit_Status",
+          "type": "dropdown",
+          "description": "Credit memo workflow status.",
+          "required": true,
+          "validation": "Allowed values: Draft, Submitted, Approved, Posted, Applied, Cancelled, Void.",
+          "default_value": "Draft"
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Currency for the credit memo.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Subtotal",
+          "type": "currency",
+          "description": "Sum of credit memo line net amounts.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Total",
+          "type": "currency",
+          "description": "Total tax amount.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Grand_Total",
+          "type": "currency",
+          "description": "Subtotal + Tax_Total.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Credit memo headers for returns, adjustments, or invoice corrections; can be applied against invoices.",
+      "primary_key": "Credit_Memo_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Invoices",
+        "TX_Credit_Memo_Lines",
+        "TX_Payment_Allocations",
+        "WF_Approvals",
+        "TX_Documents"
+      ]
+    },
+    {
+      "name": "TX_Credit_Memo_Lines",
+      "columns": [
+        {
+          "name": "Credit_Memo_Line_ID",
+          "type": "text",
+          "description": "Unique credit memo line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Credit_Memo_ID",
+          "type": "text",
+          "description": "Parent credit memo reference.",
+          "required": true,
+          "validation": "Must exist in TX_Credit_Memos.Credit_Memo_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Line_Number",
+          "type": "number",
+          "description": "Line sequence number.",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": ""
+        },
+        {
+          "name": "Related_Invoice_Line_ID",
+          "type": "text",
+          "description": "Optional reference to the invoice line being credited.",
+          "required": false,
+          "validation": "Must exist in TX_Invoice_Lines.Invoice_Line_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Product/service reference.",
+          "required": true,
+          "validation": "Must exist in MD_Products.Product_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity credited.",
+          "required": true,
+          "validation": "Must be > 0.",
+          "default_value": "1"
+        },
+        {
+          "name": "Unit_Price",
+          "type": "currency",
+          "description": "Unit price credited.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Tax_Code_ID",
+          "type": "text",
+          "description": "Tax code applied.",
+          "required": false,
+          "validation": "Must exist in MD_Tax_Codes.Tax_Code_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Net_Amount",
+          "type": "currency",
+          "description": "Calculated net amount credited.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Tax_Amount",
+          "type": "currency",
+          "description": "Calculated tax amount credited.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Gross_Amount",
+          "type": "currency",
+          "description": "Calculated gross amount credited.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Credit memo line items (normalized child table of TX_Credit_Memos).",
+      "primary_key": "Credit_Memo_Line_ID",
+      "relationships": [
+        "TX_Credit_Memos",
+        "TX_Invoice_Lines",
+        "MD_Products",
+        "MD_Tax_Codes"
+      ]
+    },
+    {
+      "name": "TX_Payments",
+      "columns": [
+        {
+          "name": "Payment_ID",
+          "type": "text",
+          "description": "Unique payment receipt identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_Date",
+          "type": "date",
+          "description": "Date payment was received.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer who made the payment.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_Method",
+          "type": "dropdown",
+          "description": "Payment method used.",
+          "required": true,
+          "validation": "Allowed values: Bank Transfer, Card, Cash, Check, Payment Processor, Other.",
+          "default_value": "Bank Transfer"
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Payment currency.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Amount_Received",
+          "type": "currency",
+          "description": "Total amount received.",
+          "required": true,
+          "validation": "Must be > 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Reference",
+          "type": "text",
+          "description": "Payment reference/remittance info from customer/bank.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Bank_Statement_Line_ID",
+          "type": "text",
+          "description": "Optional link to imported bank statement line for reconciliation.",
+          "required": false,
+          "validation": "Must exist in TX_Bank_Statement_Lines.Bank_Statement_Line_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Reconciliation_Status",
+          "type": "dropdown",
+          "description": "Reconciliation state against bank statement.",
+          "required": true,
+          "validation": "Allowed values: Unreconciled, Matched, Partially Matched, Exception.",
+          "default_value": "Unreconciled"
+        },
+        {
+          "name": "Allocation_Status",
+          "type": "dropdown",
+          "description": "Allocation state against invoices/credits.",
+          "required": true,
+          "validation": "Allowed values: Unallocated, Partially Allocated, Allocated.",
+          "default_value": "Unallocated"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Payment receipts from customers (bank transfer, card, cash, etc.) with reconciliation status and allocation readiness.",
+      "primary_key": "Payment_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Payment_Allocations",
+        "TX_Bank_Statements",
+        "TX_Documents",
+        "TX_Activities"
+      ]
+    },
+    {
+      "name": "TX_Payment_Allocations",
+      "columns": [
+        {
+          "name": "Allocation_ID",
+          "type": "text",
+          "description": "Unique allocation identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Allocation_Date",
+          "type": "date",
+          "description": "Date the allocation was made.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Allocation_Type",
+          "type": "dropdown",
+          "description": "Type of allocation source.",
+          "required": true,
+          "validation": "Allowed values: Payment, Credit Memo.",
+          "default_value": "Payment"
+        },
+        {
+          "name": "Payment_ID",
+          "type": "text",
+          "description": "Payment reference when Allocation_Type=Payment.",
+          "required": false,
+          "validation": "If Allocation_Type=Payment, must exist in TX_Payments.Payment_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Credit_Memo_ID",
+          "type": "text",
+          "description": "Credit memo reference when Allocation_Type=Credit Memo.",
+          "required": false,
+          "validation": "If Allocation_Type=Credit Memo, must exist in TX_Credit_Memos.Credit_Memo_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Invoice being settled.",
+          "required": true,
+          "validation": "Must exist in TX_Invoices.Invoice_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Amount_Applied",
+          "type": "currency",
+          "description": "Amount applied to the invoice from the source.",
+          "required": true,
+          "validation": "Must be > 0 and not exceed remaining unallocated amount of the source and remaining balance of the invoice.",
+          "default_value": ""
+        },
+        {
+          "name": "Notes",
+          "type": "text",
+          "description": "Allocation notes (e.g., short pay reason).",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_By",
+          "type": "email",
+          "description": "Creator email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        }
+      ],
+      "description": "Allocations applying payments and/or credits to invoices (supports partial allocations and many-to-many relationships).",
+      "primary_key": "Allocation_ID",
+      "relationships": [
+        "TX_Payments",
+        "TX_Invoices",
+        "TX_Credit_Memos"
+      ]
+    },
+    {
+      "name": "TX_Bank_Statements",
+      "columns": [
+        {
+          "name": "Bank_Statement_ID",
+          "type": "text",
+          "description": "Unique bank statement import batch identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Bank_Name",
+          "type": "text",
+          "description": "Bank name.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Account_Last4",
+          "type": "text",
+          "description": "Last 4 digits of the bank account (avoid storing full account numbers).",
+          "required": false,
+          "validation": "If provided, must be 4 digits.",
+          "default_value": ""
+        },
+        {
+          "name": "Statement_Period_Start",
+          "type": "date",
+          "description": "Statement period start date.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Statement_Period_End",
+          "type": "date",
+          "description": "Statement period end date.",
+          "required": false,
+          "validation": "If provided, must be >= Statement_Period_Start.",
+          "default_value": ""
+        },
+        {
+          "name": "Import_Date",
+          "type": "date",
+          "description": "Date the statement was imported.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Imported_By",
+          "type": "email",
+          "description": "User who imported the statement.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Imported bank statement headers for reconciliation batches.",
+      "primary_key": "Bank_Statement_ID",
+      "relationships": [
+        "TX_Bank_Statement_Lines",
+        "TX_Payments"
+      ]
+    },
+    {
+      "name": "TX_Bank_Statement_Lines",
+      "columns": [
+        {
+          "name": "Bank_Statement_Line_ID",
+          "type": "text",
+          "description": "Unique bank statement line identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Bank_Statement_ID",
+          "type": "text",
+          "description": "Parent bank statement batch reference.",
+          "required": true,
+          "validation": "Must exist in TX_Bank_Statements.Bank_Statement_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Transaction_Date",
+          "type": "date",
+          "description": "Bank transaction date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Description",
+          "type": "text",
+          "description": "Bank-provided transaction description.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Amount",
+          "type": "currency",
+          "description": "Transaction amount (positive for receipts, negative for payments out).",
+          "required": true,
+          "validation": "Must not be 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Currency_Code",
+          "type": "text",
+          "description": "Currency code for the transaction.",
+          "required": true,
+          "validation": "Must be 3-letter ISO code format.",
+          "default_value": ""
+        },
+        {
+          "name": "Matched_Payment_ID",
+          "type": "text",
+          "description": "Payment matched to this bank line (if any).",
+          "required": false,
+          "validation": "Must exist in TX_Payments.Payment_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Match_Status",
+          "type": "dropdown",
+          "description": "Matching status for reconciliation.",
+          "required": true,
+          "validation": "Allowed values: Unmatched, Matched, Exception.",
+          "default_value": "Unmatched"
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Imported bank statement transaction lines used to match and reconcile customer payments.",
+      "primary_key": "Bank_Statement_Line_ID",
+      "relationships": [
+        "TX_Bank_Statements",
+        "TX_Payments"
+      ]
+    },
+    {
+      "name": "WF_Status_History",
+      "columns": [
+        {
+          "name": "Status_Event_ID",
+          "type": "text",
+          "description": "Unique status event identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_Type",
+          "type": "dropdown",
+          "description": "Type of entity whose status changed.",
+          "required": true,
+          "validation": "Allowed values: Quote, Sales Order, Shipment, Invoice, Credit Memo, Payment.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_ID",
+          "type": "text",
+          "description": "Identifier of the entity record (e.g., Invoice_ID).",
+          "required": true,
+          "validation": "Non-empty; should exist in the corresponding entity sheet.",
+          "default_value": ""
+        },
+        {
+          "name": "Old_Status",
+          "type": "text",
+          "description": "Previous status value.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "New_Status",
+          "type": "text",
+          "description": "New status value.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Changed_At",
+          "type": "date",
+          "description": "Date of status change.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Changed_By_User_ID",
+          "type": "text",
+          "description": "User who made the change.",
+          "required": false,
+          "validation": "Must exist in MD_Users.User_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Change_Reason",
+          "type": "text",
+          "description": "Reason/comment for the status change.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        }
+      ],
+      "description": "Immutable status change log for key documents (quotes, orders, shipments, invoices, credits, payments). Enables auditability and cycle-time reporting.",
+      "primary_key": "Status_Event_ID",
+      "relationships": [
+        "TX_Quotes",
+        "TX_Sales_Orders",
+        "TX_Shipments",
+        "TX_Invoices",
+        "TX_Credit_Memos",
+        "TX_Payments",
+        "MD_Users"
+      ]
+    },
+    {
+      "name": "WF_Approvals",
+      "columns": [
+        {
+          "name": "Approval_ID",
+          "type": "text",
+          "description": "Unique approval record identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_Type",
+          "type": "dropdown",
+          "description": "Entity requiring approval.",
+          "required": true,
+          "validation": "Allowed values: Quote, Sales Order, Invoice, Credit Memo.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_ID",
+          "type": "text",
+          "description": "Entity identifier (e.g., Sales_Order_ID).",
+          "required": true,
+          "validation": "Non-empty; should exist in the corresponding entity sheet.",
+          "default_value": ""
+        },
+        {
+          "name": "Approval_Level",
+          "type": "number",
+          "description": "Approval level sequence (1..n).",
+          "required": true,
+          "validation": "Must be an integer >= 1.",
+          "default_value": "1"
+        },
+        {
+          "name": "Approver_User_ID",
+          "type": "text",
+          "description": "Assigned approver user.",
+          "required": true,
+          "validation": "Must exist in MD_Users.User_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Approval_Status",
+          "type": "dropdown",
+          "description": "Approval decision status.",
+          "required": true,
+          "validation": "Allowed values: Pending, Approved, Rejected, Cancelled.",
+          "default_value": "Pending"
+        },
+        {
+          "name": "Requested_At",
+          "type": "date",
+          "description": "Date approval was requested.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Responded_At",
+          "type": "date",
+          "description": "Date approval was approved/rejected.",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Decision_Notes",
+          "type": "text",
+          "description": "Approver notes/reason.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Approval workflow records for orders, invoices, quotes, and credits including approver assignment and decision tracking.",
+      "primary_key": "Approval_ID",
+      "relationships": [
+        "MD_Users",
+        "TX_Quotes",
+        "TX_Sales_Orders",
+        "TX_Invoices",
+        "TX_Credit_Memos"
+      ]
+    },
+    {
+      "name": "TX_Documents",
+      "columns": [
+        {
+          "name": "Document_ID",
+          "type": "text",
+          "description": "Unique document record identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_Type",
+          "type": "dropdown",
+          "description": "Entity type the document is attached to.",
+          "required": true,
+          "validation": "Allowed values: Quote, Sales Order, Shipment, Invoice, Payment, Credit Memo, Customer.",
+          "default_value": ""
+        },
+        {
+          "name": "Entity_ID",
+          "type": "text",
+          "description": "Entity identifier the document is attached to.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Document_Type",
+          "type": "dropdown",
+          "description": "Document classification.",
+          "required": true,
+          "validation": "Allowed values: Customer PO, Quote PDF, Order Confirmation, Delivery Note, Invoice PDF, Remittance Advice, Other.",
+          "default_value": "Other"
+        },
+        {
+          "name": "Document_Name",
+          "type": "text",
+          "description": "Display name for the document.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Document_URL",
+          "type": "url",
+          "description": "Google Drive (or other) URL to the document.",
+          "required": true,
+          "validation": "Must be a valid URL.",
+          "default_value": ""
+        },
+        {
+          "name": "Uploaded_At",
+          "type": "date",
+          "description": "Upload/attachment date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Uploaded_By",
+          "type": "email",
+          "description": "Uploader email.",
+          "required": false,
+          "validation": "Valid email if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Is_Active",
+          "type": "checkbox",
+          "description": "Whether the document link is active.",
+          "required": true,
+          "validation": "",
+          "default_value": "TRUE"
+        }
+      ],
+      "description": "Document register linking Drive URLs to business records (POs, signed delivery notes, invoices PDFs, remittance advice).",
+      "primary_key": "Document_ID",
+      "relationships": [
+        "TX_Quotes",
+        "TX_Sales_Orders",
+        "TX_Shipments",
+        "TX_Invoices",
+        "TX_Payments",
+        "TX_Credit_Memos"
+      ]
+    },
+    {
+      "name": "TX_Activities",
+      "columns": [
+        {
+          "name": "Activity_ID",
+          "type": "text",
+          "description": "Unique activity identifier.",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Activity_Date",
+          "type": "date",
+          "description": "Date of the activity.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Activity_Type",
+          "type": "dropdown",
+          "description": "Type of activity performed.",
+          "required": true,
+          "validation": "Allowed values: Email Sent, Call, Meeting, Reminder, Dispute Update, Note, Other.",
+          "default_value": "Note"
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": false,
+          "validation": "Must exist in MD_Customers.Customer_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Related invoice reference (if applicable).",
+          "required": false,
+          "validation": "Must exist in TX_Invoices.Invoice_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Sales_Order_ID",
+          "type": "text",
+          "description": "Related sales order reference (if applicable).",
+          "required": false,
+          "validation": "Must exist in TX_Sales_Orders.Sales_Order_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Payment_ID",
+          "type": "text",
+          "description": "Related payment reference (if applicable).",
+          "required": false,
+          "validation": "Must exist in TX_Payments.Payment_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Owner_User_ID",
+          "type": "text",
+          "description": "User responsible for the activity.",
+          "required": false,
+          "validation": "Must exist in MD_Users.User_ID if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Summary",
+          "type": "text",
+          "description": "Short summary of the activity.",
+          "required": true,
+          "validation": "Non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Details",
+          "type": "text",
+          "description": "Detailed notes/outcome/next steps.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Next_Action_Date",
+          "type": "date",
+          "description": "Next follow-up date (for reminders).",
+          "required": false,
+          "validation": "Valid date if provided.",
+          "default_value": ""
+        },
+        {
+          "name": "Created_At",
+          "type": "date",
+          "description": "Creation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        }
+      ],
+      "description": "Activity log for operational and AR follow-ups (calls, emails, reminders, dispute actions) tied to customers and documents.",
+      "primary_key": "Activity_ID",
+      "relationships": [
+        "MD_Customers",
+        "TX_Invoices",
+        "TX_Sales_Orders",
+        "TX_Payments",
+        "MD_Users"
+      ]
+    },
+    {
+      "name": "RPT_AR_Aging",
+      "columns": [
+        {
+          "name": "Aging_Row_ID",
+          "type": "text",
+          "description": "Unique row identifier for reporting snapshot (can be generated).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "As_Of_Date",
+          "type": "date",
+          "description": "Aging calculation date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Customer reference.",
+          "required": true,
+          "validation": "Must exist in MD_Customers.Customer_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Invoice reference.",
+          "required": true,
+          "validation": "Must exist in TX_Invoices.Invoice_ID.",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_Date",
+          "type": "date",
+          "description": "Invoice date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Due_Date",
+          "type": "date",
+          "description": "Invoice due date.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Balance_Due",
+          "type": "currency",
+          "description": "Outstanding balance due as of As_Of_Date.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Days_Past_Due",
+          "type": "number",
+          "description": "Calculated days past due (As_Of_Date - Due_Date).",
+          "required": true,
+          "validation": "Must be an integer.",
+          "default_value": ""
+        },
+        {
+          "name": "Bucket",
+          "type": "dropdown",
+          "description": "Aging bucket classification.",
+          "required": true,
+          "validation": "Allowed values: Current, 1-30, 31-60, 61-90, 91-120, 120+.",
+          "default_value": "Current"
+        }
+      ],
+      "description": "Reporting sheet (typically formula/pivot-driven) for Accounts Receivable aging by customer and invoice.",
+      "primary_key": "Aging_Row_ID",
+      "relationships": [
+        "TX_Invoices",
+        "MD_Customers",
+        "TX_Payment_Allocations"
+      ]
+    },
+    {
+      "name": "RPT_O2P_KPIs",
+      "columns": [
+        {
+          "name": "KPI_Row_ID",
+          "type": "text",
+          "description": "Unique KPI row identifier (can be generated).",
+          "required": true,
+          "validation": "Must be unique and non-empty.",
+          "default_value": ""
+        },
+        {
+          "name": "Period_Start",
+          "type": "date",
+          "description": "Start date of KPI reporting period.",
+          "required": true,
+          "validation": "Valid date.",
+          "default_value": ""
+        },
+        {
+          "name": "Period_End",
+          "type": "date",
+          "description": "End date of KPI reporting period.",
+          "required": true,
+          "validation": "Must be >= Period_Start.",
+          "default_value": ""
+        },
+        {
+          "name": "Total_Orders",
+          "type": "number",
+          "description": "Count of orders created in the period.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Total_Invoices_Posted",
+          "type": "number",
+          "description": "Count of invoices posted in the period.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Total_Revenue",
+          "type": "currency",
+          "description": "Sum of posted invoice grand totals in the period (net of void/cancel).",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "Total_Cash_Collected",
+          "type": "currency",
+          "description": "Sum of payments received in the period.",
+          "required": true,
+          "validation": "Must be >= 0.",
+          "default_value": "0"
+        },
+        {
+          "name": "DSO_Days",
+          "type": "number",
+          "description": "Days Sales Outstanding for the period (calculated).",
+          "required": false,
+          "validation": "If provided, must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "On_Time_Payment_Rate",
+          "type": "number",
+          "description": "Share of invoices paid on or before due date (0..1).",
+          "required": false,
+          "validation": "If provided, must be between 0 and 1.",
+          "default_value": ""
+        },
+        {
+          "name": "Avg_Order_To_Invoice_Days",
+          "type": "number",
+          "description": "Average days from order date to invoice date.",
+          "required": false,
+          "validation": "If provided, must be >= 0.",
+          "default_value": ""
+        },
+        {
+          "name": "Avg_Invoice_To_Payment_Days",
+          "type": "number",
+          "description": "Average days from invoice date to payment allocation completion.",
+          "required": false,
+          "validation": "If provided, must be >= 0.",
+          "default_value": ""
+        }
+      ],
+      "description": "Reporting sheet for key O2P metrics (order cycle time, invoice cycle time, DSO, on-time payment rate). Typically populated via formulas/pivots.",
+      "primary_key": "KPI_Row_ID",
+      "relationships": [
+        "TX_Sales_Orders",
+        "TX_Shipments",
+        "TX_Invoices",
+        "TX_Payments",
+        "WF_Status_History"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Lead/Customer Setup",
+    "Quote (Optional)",
+    "Sales Order Creation",
+    "Order Approval",
+    "Fulfillment (Pick/Pack/Ship or Service Delivery)",
+    "Invoice Creation",
+    "Invoice Approval/Posting",
+    "Collections & Dunning",
+    "Payment Receipt",
+    "Payment Allocation & Reconciliation",
+    "Close Order"
+  ],
+  "integrations": [
+    "Email (Gmail) for sending invoices and dunning notices",
+    "Google Drive for document storage (POs, signed delivery notes, remittance advice)",
+    "Accounting system export/import (CSV) for GL posting (e.g., QuickBooks/Xero/NetSuite)",
+    "Payment processor/bank statement import (CSV) for reconciliation"
+  ]
+}

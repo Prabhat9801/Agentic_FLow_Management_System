@@ -1,0 +1,47 @@
+{
+  "prompt": "Order to payment system for grocery items",
+  "timestamp": "2026-01-29T16:25:06.429713",
+  "spreadsheet_id": "1pGa1t0ZZJNcJXB2t5E8Ri4aMxTxpq5f5fj_9ixj4LiQ",
+  "spreadsheet_url": "https://docs.google.com/spreadsheets/d/1pGa1t0ZZJNcJXB2t5E8Ri4aMxTxpq5f5fj_9ixj4LiQ",
+  "system_name": "Grocery Order to Payment System",
+  "total_sheets": 4,
+  "sheets": [
+    {
+      "name": "Orders",
+      "columns": [
+        "Order ID",
+        "Customer Name",
+        "Order Date",
+        "Total",
+        "Status"
+      ]
+    },
+    {
+      "name": "Order Items",
+      "columns": [
+        "Order ID",
+        "Item Name",
+        "Quantity",
+        "Unit Price"
+      ]
+    },
+    {
+      "name": "Payments",
+      "columns": [
+        "Payment ID",
+        "Order ID",
+        "Payment Method",
+        "Amount"
+      ]
+    },
+    {
+      "name": "Invoices",
+      "columns": [
+        "Invoice ID",
+        "Order ID",
+        "Invoice Date",
+        "Total"
+      ]
+    }
+  ]
+}

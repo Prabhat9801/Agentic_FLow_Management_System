@@ -1,0 +1,69 @@
+{
+  "formulas": [
+    {
+      "sheet": "Orders",
+      "target_column": "total_amount",
+      "start_row": 2,
+      "formula": "=IFERROR(SUMIF(Order_Items!A:A, A2, Order_Items!E:E), 0)",
+      "description": "Calculates the total amount for each order by summing the price of all order items associated with the order.",
+      "dependencies": [
+        "order_id",
+        "Order_Items!order_id",
+        "Order_Items!price"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Products",
+      "target_column": "stock_quantity",
+      "start_row": 2,
+      "formula": "=IFERROR(INDEX(Order_Items!C:C, MATCH(A2, Order_Items!C:C, 0)) - SUMIF(Order_Items!C:C, A2, Order_Items!D:D), B2)",
+      "description": "Calculates the remaining stock quantity by subtracting the total ordered quantity from the initial stock quantity.",
+      "dependencies": [
+        "product_id",
+        "Order_Items!product_id",
+        "Order_Items!quantity"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Customers",
+      "target_column": "modified_date",
+      "start_row": 2,
+      "formula": "=IFERROR(MAX(created_date, modified_date), created_date)",
+      "description": "Updates the modified date to the latest of created or modified date for tracking changes.",
+      "dependencies": [
+        "created_date",
+        "modified_date"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Payments",
+      "target_column": "status",
+      "start_row": 2,
+      "formula": "=IFERROR(IF(amount >= VLOOKUP(order_id, Orders!A:E, 5, FALSE), \"Paid\", \"Pending\"), \"Pending\")",
+      "description": "Determines the payment status as 'Paid' if the payment amount is greater than or equal to the order total amount, otherwise 'Pending'.",
+      "dependencies": [
+        "amount",
+        "order_id",
+        "Orders!order_id",
+        "Orders!total_amount"
+      ],
+      "apply_to_all_rows": true
+    },
+    {
+      "sheet": "Orders",
+      "target_column": "status",
+      "start_row": 2,
+      "formula": "=IFERROR(IF(TODAY() - order_date > 30, \"Overdue\", \"On Time\"), \"On Time\")",
+      "description": "Sets the order status to 'Overdue' if the order date is more than 30 days ago, otherwise 'On Time'.",
+      "dependencies": [
+        "order_date"
+      ],
+      "apply_to_all_rows": true
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

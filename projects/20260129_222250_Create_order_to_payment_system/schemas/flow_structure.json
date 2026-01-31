@@ -1,0 +1,466 @@
+{
+  "system_name": "Order to Payment Management System",
+  "description": "A comprehensive system designed to manage the entire order processing workflow from order creation to payment receipt, ensuring efficient tracking, approval, and reporting.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Customers",
+      "columns": [
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Unique identifier for each customer.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_Name",
+          "type": "text",
+          "description": "Full name of the customer.",
+          "required": true,
+          "validation": "Not empty",
+          "default_value": ""
+        },
+        {
+          "name": "Email",
+          "type": "email",
+          "description": "Customer's email address.",
+          "required": true,
+          "validation": "Valid email format",
+          "default_value": ""
+        },
+        {
+          "name": "Phone_Number",
+          "type": "text",
+          "description": "Customer's contact number.",
+          "required": false,
+          "validation": "Valid phone format",
+          "default_value": ""
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the customer record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the customer record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the customer (Active/Inactive).",
+          "required": true,
+          "validation": "Dropdown (Active, Inactive)",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Stores customer information for order processing.",
+      "primary_key": "Customer_ID",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Products",
+      "columns": [
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Unique identifier for each product.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Product_Name",
+          "type": "text",
+          "description": "Name of the product.",
+          "required": true,
+          "validation": "Not empty",
+          "default_value": ""
+        },
+        {
+          "name": "Price",
+          "type": "currency",
+          "description": "Price of the product.",
+          "required": true,
+          "validation": "Positive number",
+          "default_value": "0.00"
+        },
+        {
+          "name": "Stock_Quantity",
+          "type": "number",
+          "description": "Available stock quantity of the product.",
+          "required": true,
+          "validation": "Non-negative integer",
+          "default_value": "0"
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the product record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the product record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the product (Available/Unavailable).",
+          "required": true,
+          "validation": "Dropdown (Available, Unavailable)",
+          "default_value": "Available"
+        }
+      ],
+      "description": "Stores product details available for ordering.",
+      "primary_key": "Product_ID",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Orders",
+      "columns": [
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Unique identifier for each order.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Customer_ID",
+          "type": "text",
+          "description": "Identifier for the customer placing the order.",
+          "required": true,
+          "validation": "Exists in Customers",
+          "default_value": ""
+        },
+        {
+          "name": "Product_ID",
+          "type": "text",
+          "description": "Identifier for the product being ordered.",
+          "required": true,
+          "validation": "Exists in Products",
+          "default_value": ""
+        },
+        {
+          "name": "Order_Date",
+          "type": "date",
+          "description": "Date when the order was placed.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Quantity",
+          "type": "number",
+          "description": "Quantity of the product ordered.",
+          "required": true,
+          "validation": "Positive integer",
+          "default_value": "1"
+        },
+        {
+          "name": "Total_Amount",
+          "type": "currency",
+          "description": "Total amount for the order (calculated).",
+          "required": true,
+          "validation": "",
+          "default_value": "=Price * Quantity"
+        },
+        {
+          "name": "Order_Status",
+          "type": "text",
+          "description": "Current status of the order (Pending, Approved, Completed).",
+          "required": true,
+          "validation": "Dropdown (Pending, Approved, Completed)",
+          "default_value": "Pending"
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the order record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the order record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the order (Active/Cancelled).",
+          "required": true,
+          "validation": "Dropdown (Active, Cancelled)",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Tracks orders placed by customers.",
+      "primary_key": "Order_ID",
+      "relationships": [
+        "Customers",
+        "Products",
+        "Invoices"
+      ]
+    },
+    {
+      "name": "Invoices",
+      "columns": [
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Unique identifier for each invoice.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Identifier for the order associated with the invoice.",
+          "required": true,
+          "validation": "Exists in Orders",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_Date",
+          "type": "date",
+          "description": "Date when the invoice was generated.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Total_Amount",
+          "type": "currency",
+          "description": "Total amount of the invoice.",
+          "required": true,
+          "validation": "",
+          "default_value": "=Total_Amount"
+        },
+        {
+          "name": "Payment_Status",
+          "type": "text",
+          "description": "Current payment status of the invoice (Paid, Unpaid).",
+          "required": true,
+          "validation": "Dropdown (Paid, Unpaid)",
+          "default_value": "Unpaid"
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the invoice record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the invoice record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the invoice (Active/Cancelled).",
+          "required": true,
+          "validation": "Dropdown (Active, Cancelled)",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Manages invoice records for completed orders.",
+      "primary_key": "Invoice_ID",
+      "relationships": [
+        "Orders"
+      ]
+    },
+    {
+      "name": "Process Tracking",
+      "columns": [
+        {
+          "name": "Tracking_ID",
+          "type": "text",
+          "description": "Unique identifier for each tracking record.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Order_ID",
+          "type": "text",
+          "description": "Identifier for the order being tracked.",
+          "required": true,
+          "validation": "Exists in Orders",
+          "default_value": ""
+        },
+        {
+          "name": "Invoice_ID",
+          "type": "text",
+          "description": "Identifier for the invoice being tracked.",
+          "required": false,
+          "validation": "Exists in Invoices",
+          "default_value": ""
+        },
+        {
+          "name": "Current_Status",
+          "type": "text",
+          "description": "Current status of the order/invoice (Pending, Approved, Completed).",
+          "required": true,
+          "validation": "Dropdown (Pending, Approved, Completed)",
+          "default_value": "Pending"
+        },
+        {
+          "name": "Approval_Date",
+          "type": "date",
+          "description": "Date when the order/invoice was approved.",
+          "required": false,
+          "validation": "",
+          "default_value": ""
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the tracking record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the tracking record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the tracking record (Active/Cancelled).",
+          "required": true,
+          "validation": "Dropdown (Active, Cancelled)",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Tracks the status and approvals of orders and invoices.",
+      "primary_key": "Tracking_ID",
+      "relationships": [
+        "Orders",
+        "Invoices"
+      ]
+    },
+    {
+      "name": "Reporting",
+      "columns": [
+        {
+          "name": "Report_ID",
+          "type": "text",
+          "description": "Unique identifier for each report.",
+          "required": true,
+          "validation": "Unique",
+          "default_value": ""
+        },
+        {
+          "name": "Report_Date",
+          "type": "date",
+          "description": "Date when the report was generated.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Total_Orders",
+          "type": "number",
+          "description": "Total number of orders processed.",
+          "required": true,
+          "validation": "Non-negative integer",
+          "default_value": "0"
+        },
+        {
+          "name": "Total_Sales",
+          "type": "currency",
+          "description": "Total sales amount from processed orders.",
+          "required": true,
+          "validation": "Non-negative number",
+          "default_value": "0.00"
+        },
+        {
+          "name": "Total_Customers",
+          "type": "number",
+          "description": "Total number of unique customers.",
+          "required": true,
+          "validation": "Non-negative integer",
+          "default_value": "0"
+        },
+        {
+          "name": "Created_Date",
+          "type": "date",
+          "description": "Date when the report record was created.",
+          "required": true,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Modified_Date",
+          "type": "date",
+          "description": "Date when the report record was last modified.",
+          "required": false,
+          "validation": "",
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Current status of the report (Active/Cancelled).",
+          "required": true,
+          "validation": "Dropdown (Active, Cancelled)",
+          "default_value": "Active"
+        }
+      ],
+      "description": "Aggregates data for reporting and analytics purposes.",
+      "primary_key": "Report_ID",
+      "relationships": [
+        "Orders",
+        "Invoices",
+        "Customers"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Order Creation",
+    "Order Approval",
+    "Payment Processing",
+    "Order Completion"
+  ],
+  "integrations": [
+    "Payment Gateway API",
+    "Inventory Management System"
+  ]
+}

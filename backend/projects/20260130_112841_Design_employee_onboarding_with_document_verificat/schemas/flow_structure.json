@@ -1,0 +1,290 @@
+{
+  "system_name": "Employee Onboarding Management System",
+  "description": "A system to manage the onboarding process of new employees, including document verification and training scheduling.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Employees",
+      "columns": [
+        {
+          "name": "employee_id",
+          "type": "text",
+          "description": "Unique identifier for an employee",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "first_name",
+          "type": "text",
+          "description": "The first name of the employee",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "last_name",
+          "type": "text",
+          "description": "The last name of the employee",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "description": "The email address of the employee",
+          "required": true,
+          "validation": "must be a valid email format",
+          "default_value": null
+        },
+        {
+          "name": "start_date",
+          "type": "date",
+          "description": "The employment start date",
+          "required": true,
+          "validation": "must not be in the past",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "The date the employee record was created",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "The date the employee record was last modified",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "status",
+          "type": "dropdown",
+          "description": "Current status of employee onboarding",
+          "required": true,
+          "validation": "New, Verified, Trained, Completed",
+          "default_value": null
+        }
+      ],
+      "description": "Stores master data of employees being onboarded.",
+      "primary_key": "employee_id",
+      "relationships": [
+        "Document Verification",
+        "Training Schedule"
+      ]
+    },
+    {
+      "name": "Document Verification",
+      "columns": [
+        {
+          "name": "verification_id",
+          "type": "text",
+          "description": "Unique identifier for a document verification record",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "employee_id",
+          "type": "text",
+          "description": "Link to the employee being verified",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "document_type",
+          "type": "text",
+          "description": "Type of document being verified (e.g., ID, contract)",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "verification_status",
+          "type": "dropdown",
+          "description": "Status of the document verification",
+          "required": true,
+          "validation": "Pending, Approved, Rejected",
+          "default_value": null
+        },
+        {
+          "name": "verified_date",
+          "type": "date",
+          "description": "Date when the document was verified",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the verification record was created",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the verification record was last modified",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks the verification status of necessary documents for onboarding.",
+      "primary_key": "verification_id",
+      "relationships": [
+        "Employees"
+      ]
+    },
+    {
+      "name": "Training Schedule",
+      "columns": [
+        {
+          "name": "schedule_id",
+          "type": "text",
+          "description": "Unique identifier for a training schedule record",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "employee_id",
+          "type": "text",
+          "description": "Link to the employee enrolled in the training",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "training_program",
+          "type": "text",
+          "description": "Name of the training program",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "start_date",
+          "type": "date",
+          "description": "Start date of the training",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "end_date",
+          "type": "date",
+          "description": "End date of the training",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "completion_status",
+          "type": "dropdown",
+          "description": "Status of training completion",
+          "required": true,
+          "validation": "Not Started, In Progress, Completed",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the training schedule was created",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the training schedule was last modified",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Manages the training schedule and status for new employees.",
+      "primary_key": "schedule_id",
+      "relationships": [
+        "Employees"
+      ]
+    },
+    {
+      "name": "Onboarding Process Tracking",
+      "columns": [
+        {
+          "name": "process_id",
+          "type": "text",
+          "description": "Unique identifier for an onboarding process record",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "employee_id",
+          "type": "text",
+          "description": "Link to the employee undergoing onboarding",
+          "required": true,
+          "validation": null,
+          "default_value": null
+        },
+        {
+          "name": "current_stage",
+          "type": "dropdown",
+          "description": "Current stage of the onboarding process",
+          "required": true,
+          "validation": "Initiation, Document Verification, Training Schedule, Completion",
+          "default_value": null
+        },
+        {
+          "name": "approval_status",
+          "type": "dropdown",
+          "description": "Approval status of the current stage",
+          "required": true,
+          "validation": "Pending, Approved, Rejected",
+          "default_value": null
+        },
+        {
+          "name": "created_date",
+          "type": "date",
+          "description": "Date the process tracking was initiated",
+          "required": true,
+          "validation": null,
+          "default_value": "=TODAY()"
+        },
+        {
+          "name": "modified_date",
+          "type": "date",
+          "description": "Date the tracking record was last updated",
+          "required": false,
+          "validation": null,
+          "default_value": null
+        }
+      ],
+      "description": "Tracks the overall status and stages of the onboarding process.",
+      "primary_key": "process_id",
+      "relationships": [
+        "Employees"
+      ]
+    }
+  ],
+  "workflow_stages": [
+    "Initiation",
+    "Document Verification",
+    "Training Schedule",
+    "Completion"
+  ],
+  "integrations": [
+    "HRIS",
+    "Payroll System"
+  ]
+}

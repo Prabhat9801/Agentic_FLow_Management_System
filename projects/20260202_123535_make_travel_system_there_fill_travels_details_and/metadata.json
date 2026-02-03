@@ -1,0 +1,1109 @@
+{
+  "project_info": {
+    "prompt": "make travel system there fill travels details and bookiing and payments only and also make dashboard there show all details",
+    "created_at": "2026-02-02T12:37:13.799110",
+    "execution_time_seconds": 175.66
+  },
+  "spreadsheet": {
+    "id": "1D5F_iyhqJevla2WixX2dviD0xc_4fAfpGpXOlXcGbAg",
+    "url": "https://docs.google.com/spreadsheets/d/1D5F_iyhqJevla2WixX2dviD0xc_4fAfpGpXOlXcGbAg",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1D5F_iyhqJevla2WixX2dviD0xc_4fAfpGpXOlXcGbAg/edit"
+  },
+  "system": {
+    "name": "Travel Booking & Payment Workflow Management System (TBP-WMS)",
+    "description": "A production-ready workflow management system to capture travel request details, manage booking execution, and track payments end-to-end. Includes sequential workflow stages with planned vs actual dates and automated delay calculations, plus master data sheets for dropdowns and a dashboard sheet for consolidated reporting.",
+    "version": "1.0",
+    "total_sheets": 11,
+    "workflow_stages": [
+      "Travel Request Created",
+      "Booking Confirmed",
+      "Payment Completed"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Travel Workflow Register",
+        "description": "Primary workflow sheet tracking the full lifecycle: travel details -> booking -> payment. All stages are sequential and captured in one sheet.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp",
+            "stage_number": null
+          },
+          {
+            "name": "Serial No",
+            "type": "number",
+            "required": true,
+            "description": "Auto-increment serial number",
+            "stage_number": null
+          },
+          {
+            "name": "Travel ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique travel workflow identifier (primary key)",
+            "stage_number": null
+          },
+          {
+            "name": "Record Owner",
+            "type": "text",
+            "required": false,
+            "description": "User responsible for maintaining the record",
+            "stage_number": null
+          },
+          {
+            "name": "Overall Status",
+            "type": "text",
+            "required": true,
+            "description": "Overall workflow status (e.g., Open, In Progress, Completed, Cancelled)",
+            "stage_number": null
+          },
+          {
+            "name": "Priority",
+            "type": "text",
+            "required": false,
+            "description": "Priority of travel request (Low/Medium/High)",
+            "stage_number": null
+          },
+          {
+            "name": "Created By",
+            "type": "text",
+            "required": false,
+            "description": "User ID/name who created the record",
+            "stage_number": null
+          },
+          {
+            "name": "Last Updated On",
+            "type": "date",
+            "required": false,
+            "description": "Last update timestamp",
+            "stage_number": null
+          },
+          {
+            "name": "Last Updated By",
+            "type": "text",
+            "required": false,
+            "description": "User ID/name who last updated the record",
+            "stage_number": null
+          },
+          {
+            "name": "Planned1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 planned completion date",
+            "stage_number": 1
+          },
+          {
+            "name": "Actual1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 actual completion date",
+            "stage_number": 1
+          },
+          {
+            "name": "Delay1",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 1 delay in days = IF(AND(Planned1<>\"\",Actual1<>\"\"),Actual1-Planned1,\"\")",
+            "stage_number": 1
+          },
+          {
+            "name": "Request Status",
+            "type": "text",
+            "required": true,
+            "description": "Request status (Draft/Submitted/Approved/Rejected/Cancelled)",
+            "stage_number": 1
+          },
+          {
+            "name": "Requester Employee ID",
+            "type": "text",
+            "required": true,
+            "description": "Employee ID of requester",
+            "stage_number": 1
+          },
+          {
+            "name": "Requester Name",
+            "type": "text",
+            "required": false,
+            "description": "Name of requester",
+            "stage_number": 1
+          },
+          {
+            "name": "Traveler Employee ID",
+            "type": "text",
+            "required": true,
+            "description": "Employee ID of traveler (can be same as requester)",
+            "stage_number": 1
+          },
+          {
+            "name": "Traveler Name",
+            "type": "text",
+            "required": false,
+            "description": "Name of traveler",
+            "stage_number": 1
+          },
+          {
+            "name": "Department",
+            "type": "text",
+            "required": false,
+            "description": "Traveler/requester department",
+            "stage_number": 1
+          },
+          {
+            "name": "Travel Type",
+            "type": "text",
+            "required": true,
+            "description": "Business/Personal/Training/etc. (as per master)",
+            "stage_number": 1
+          },
+          {
+            "name": "Trip Type",
+            "type": "text",
+            "required": true,
+            "description": "One-way/Round-trip/Multi-city",
+            "stage_number": 1
+          },
+          {
+            "name": "Purpose of Travel",
+            "type": "text",
+            "required": true,
+            "description": "Reason for travel",
+            "stage_number": 1
+          },
+          {
+            "name": "From Location",
+            "type": "text",
+            "required": true,
+            "description": "Origin city/location (as per master)",
+            "stage_number": 1
+          },
+          {
+            "name": "To Location",
+            "type": "text",
+            "required": true,
+            "description": "Destination city/location (as per master)",
+            "stage_number": 1
+          },
+          {
+            "name": "Departure Date",
+            "type": "date",
+            "required": true,
+            "description": "Travel start date",
+            "stage_number": 1
+          },
+          {
+            "name": "Return Date",
+            "type": "date",
+            "required": false,
+            "description": "Travel end date (blank for one-way if not applicable)",
+            "stage_number": 1
+          },
+          {
+            "name": "No of Travelers",
+            "type": "number",
+            "required": true,
+            "description": "Number of travelers included in this request",
+            "stage_number": 1
+          },
+          {
+            "name": "Preferred AirlineTrain",
+            "type": "text",
+            "required": false,
+            "description": "Preferred carrier (optional)",
+            "stage_number": 1
+          },
+          {
+            "name": "Preferred Hotel",
+            "type": "text",
+            "required": false,
+            "description": "Preferred hotel (optional)",
+            "stage_number": 1
+          },
+          {
+            "name": "Special Requirements",
+            "type": "text",
+            "required": false,
+            "description": "Meal, accessibility, seating, etc.",
+            "stage_number": 1
+          },
+          {
+            "name": "Estimated Budget",
+            "type": "number",
+            "required": false,
+            "description": "Estimated budget for the trip",
+            "stage_number": 1
+          },
+          {
+            "name": "Currency",
+            "type": "text",
+            "required": false,
+            "description": "Currency for estimated budget (as per master)",
+            "stage_number": 1
+          },
+          {
+            "name": "Cost Center",
+            "type": "text",
+            "required": false,
+            "description": "Cost center / project code",
+            "stage_number": 1
+          },
+          {
+            "name": "Approver Name",
+            "type": "text",
+            "required": false,
+            "description": "Approver name/user",
+            "stage_number": 1
+          },
+          {
+            "name": "Approver Decision",
+            "type": "text",
+            "required": false,
+            "description": "Approved/Rejected/Pending",
+            "stage_number": 1
+          },
+          {
+            "name": "Approver Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Approval remarks",
+            "stage_number": 1
+          },
+          {
+            "name": "Planned2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 planned completion date",
+            "stage_number": 2
+          },
+          {
+            "name": "Actual2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 actual completion date",
+            "stage_number": 2
+          },
+          {
+            "name": "Delay2",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 2 delay in days = IF(AND(Planned2<>\"\",Actual2<>\"\"),Actual2-Planned2,\"\")",
+            "stage_number": 2
+          },
+          {
+            "name": "Booking Status",
+            "type": "text",
+            "required": false,
+            "description": "Booking status (Pending/Confirmed/Cancelled/Failed)",
+            "stage_number": 2
+          },
+          {
+            "name": "Booking Channel",
+            "type": "text",
+            "required": false,
+            "description": "Online/Agent/Direct/Corporate portal",
+            "stage_number": 2
+          },
+          {
+            "name": "Vendor Name",
+            "type": "text",
+            "required": false,
+            "description": "Travel vendor/agency (as per master)",
+            "stage_number": 2
+          },
+          {
+            "name": "Booking Reference  PNR",
+            "type": "text",
+            "required": false,
+            "description": "Booking reference number / PNR",
+            "stage_number": 2
+          },
+          {
+            "name": "TicketReservation Issue Date",
+            "type": "date",
+            "required": false,
+            "description": "Date ticket/reservation was issued",
+            "stage_number": 2
+          },
+          {
+            "name": "Transport Mode",
+            "type": "text",
+            "required": false,
+            "description": "Flight/Train/Bus/Car",
+            "stage_number": 2
+          },
+          {
+            "name": "Carrier Name",
+            "type": "text",
+            "required": false,
+            "description": "Airline/rail operator name",
+            "stage_number": 2
+          },
+          {
+            "name": "FlightTrain No",
+            "type": "text",
+            "required": false,
+            "description": "Flight or train number",
+            "stage_number": 2
+          },
+          {
+            "name": "Departure Time",
+            "type": "text",
+            "required": false,
+            "description": "Scheduled departure time (HH:MM)",
+            "stage_number": 2
+          },
+          {
+            "name": "Arrival Time",
+            "type": "text",
+            "required": false,
+            "description": "Scheduled arrival time (HH:MM)",
+            "stage_number": 2
+          },
+          {
+            "name": "Hotel Name",
+            "type": "text",
+            "required": false,
+            "description": "Hotel booked (if applicable)",
+            "stage_number": 2
+          },
+          {
+            "name": "Hotel Check-in Date",
+            "type": "date",
+            "required": false,
+            "description": "Hotel check-in date",
+            "stage_number": 2
+          },
+          {
+            "name": "Hotel Check-out Date",
+            "type": "date",
+            "required": false,
+            "description": "Hotel check-out date",
+            "stage_number": 2
+          },
+          {
+            "name": "No of Nights",
+            "type": "number",
+            "required": false,
+            "description": "Number of hotel nights",
+            "stage_number": 2
+          },
+          {
+            "name": "Booking Amount",
+            "type": "number",
+            "required": false,
+            "description": "Base booking amount",
+            "stage_number": 2
+          },
+          {
+            "name": "Taxes  Fees",
+            "type": "number",
+            "required": false,
+            "description": "Taxes and fees",
+            "stage_number": 2
+          },
+          {
+            "name": "Total Booking Amount",
+            "type": "formula",
+            "required": false,
+            "description": "Total = Booking Amount + Taxes & Fees",
+            "stage_number": 2
+          },
+          {
+            "name": "Cancellation Policy",
+            "type": "text",
+            "required": false,
+            "description": "Cancellation/refund policy summary",
+            "stage_number": 2
+          },
+          {
+            "name": "Booking Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Notes related to booking",
+            "stage_number": 2
+          },
+          {
+            "name": "Planned3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 planned completion date",
+            "stage_number": 3
+          },
+          {
+            "name": "Actual3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 actual completion date",
+            "stage_number": 3
+          },
+          {
+            "name": "Delay3",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 3 delay in days = IF(AND(Planned3<>\"\",Actual3<>\"\"),Actual3-Planned3,\"\")",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Status",
+            "type": "text",
+            "required": false,
+            "description": "Payment status (Pending/Paid/Failed/Refunded/Partially Paid)",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Method",
+            "type": "text",
+            "required": false,
+            "description": "Payment method (as per master)",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Date",
+            "type": "date",
+            "required": false,
+            "description": "Date payment was made",
+            "stage_number": 3
+          },
+          {
+            "name": "Paid Amount",
+            "type": "number",
+            "required": false,
+            "description": "Amount paid to vendor",
+            "stage_number": 3
+          },
+          {
+            "name": "Currency Payment",
+            "type": "text",
+            "required": false,
+            "description": "Currency used for payment (as per master)",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Reference No",
+            "type": "text",
+            "required": false,
+            "description": "Transaction reference/UTR/authorization code",
+            "stage_number": 3
+          },
+          {
+            "name": "Invoice No",
+            "type": "text",
+            "required": false,
+            "description": "Vendor invoice number",
+            "stage_number": 3
+          },
+          {
+            "name": "Invoice Date",
+            "type": "date",
+            "required": false,
+            "description": "Vendor invoice date",
+            "stage_number": 3
+          },
+          {
+            "name": "Vendor Payee Name",
+            "type": "text",
+            "required": false,
+            "description": "Payee name as per vendor/bank details",
+            "stage_number": 3
+          },
+          {
+            "name": "BankUPIWallet Details",
+            "type": "text",
+            "required": false,
+            "description": "Masked bank/UPI/wallet details for reference",
+            "stage_number": 3
+          },
+          {
+            "name": "TDSWithholding Amount",
+            "type": "number",
+            "required": false,
+            "description": "Withholding amount if applicable",
+            "stage_number": 3
+          },
+          {
+            "name": "Net Paid Amount",
+            "type": "formula",
+            "required": false,
+            "description": "Net = Paid Amount - TDS/Withholding Amount",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Notes related to payment",
+            "stage_number": 3
+          },
+          {
+            "name": "Reconciled YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether payment is reconciled (Y/N)",
+            "stage_number": 3
+          },
+          {
+            "name": "Reconciliation Date",
+            "type": "date",
+            "required": false,
+            "description": "Date of reconciliation",
+            "stage_number": 3
+          }
+        ],
+        "primary_key": "Travel ID",
+        "relationships": [
+          "Employee Master",
+          "Vendor Master",
+          "Location Master",
+          "Travel Type Master",
+          "Booking Status Master",
+          "Payment Method Master",
+          "Payment Status Master",
+          "Currency Master"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Travel Request Created",
+            "columns": [
+              "Planned1",
+              "Actual1",
+              "Delay1",
+              "Request Status",
+              "Requester Employee ID",
+              "Requester Name",
+              "Traveler Employee ID",
+              "Traveler Name",
+              "Department",
+              "Travel Type",
+              "Trip Type",
+              "Purpose of Travel",
+              "From Location",
+              "To Location",
+              "Departure Date",
+              "Return Date",
+              "No. of Travelers",
+              "Preferred Airline/Train",
+              "Preferred Hotel",
+              "Special Requirements",
+              "Estimated Budget",
+              "Currency",
+              "Cost Center",
+              "Approver Name",
+              "Approver Decision",
+              "Approver Remarks"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Booking Confirmed",
+            "columns": [
+              "Planned2",
+              "Actual2",
+              "Delay2",
+              "Booking Status",
+              "Booking Channel",
+              "Vendor Name",
+              "Booking Reference / PNR",
+              "Ticket/Reservation Issue Date",
+              "Transport Mode",
+              "Carrier Name",
+              "Flight/Train No.",
+              "Departure Time",
+              "Arrival Time",
+              "Hotel Name",
+              "Hotel Check-in Date",
+              "Hotel Check-out Date",
+              "No. of Nights",
+              "Booking Amount",
+              "Taxes & Fees",
+              "Total Booking Amount",
+              "Cancellation Policy",
+              "Booking Remarks"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Payment Completed",
+            "columns": [
+              "Planned3",
+              "Actual3",
+              "Delay3",
+              "Payment Status",
+              "Payment Method",
+              "Payment Date",
+              "Paid Amount",
+              "Currency (Payment)",
+              "Payment Reference No.",
+              "Invoice No.",
+              "Invoice Date",
+              "Vendor Payee Name",
+              "Bank/UPI/Wallet Details",
+              "TDS/Withholding Amount",
+              "Net Paid Amount",
+              "Payment Remarks",
+              "Reconciled (Y/N)",
+              "Reconciliation Date"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dashboard",
+        "description": "Reporting and KPI dashboard fed from the Travel Workflow Register (pivot tables/charts). Shows counts, stage aging, booking and payment totals, and status breakdowns.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Metric Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Metric Value",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Filter From Date",
+            "type": "date",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Filter To Date",
+            "type": "date",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Notes",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Employee Master",
+        "description": "Reference list of employees for requester/traveler selection and reporting.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Employee ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Employee Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Department",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Email",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Phone",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Vendor Master",
+        "description": "Reference list of travel vendors/agencies/hotels for booking and payment.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Type",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Contact Person",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Email",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Phone",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "GSTVAT No",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Payment Terms",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Location Master",
+        "description": "Reference list of cities/locations for From/To dropdowns.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Location Code",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Location Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Country",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Travel Type Master",
+        "description": "Dropdown values for Travel Type.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Travel Type",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Booking Status Master",
+        "description": "Dropdown values for Booking Status.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Booking Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Payment Method Master",
+        "description": "Dropdown values for Payment Method.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Payment Method",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Payment Status Master",
+        "description": "Dropdown values for Payment Status.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Payment Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Currency Master",
+        "description": "Reference list of currencies for budgeting and payments.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency Code",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Login Master",
+        "description": "User authentication and access control",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 126,
+    "total_stages": 3,
+    "sheets_with_relationships": 1
+  }
+}

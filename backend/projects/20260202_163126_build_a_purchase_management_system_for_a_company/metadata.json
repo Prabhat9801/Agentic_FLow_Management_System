@@ -1,0 +1,1025 @@
+{
+  "project_info": {
+    "prompt": "build a purchase management system for a company",
+    "created_at": "2026-02-02T16:35:54.062529",
+    "execution_time_seconds": 267.65
+  },
+  "spreadsheet": {
+    "id": "1KqbeWDRzMwvFDcMovXOhclE6aE1rdWzXEprhEjTJg2k",
+    "url": "https://docs.google.com/spreadsheets/d/1KqbeWDRzMwvFDcMovXOhclE6aE1rdWzXEprhEjTJg2k",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1KqbeWDRzMwvFDcMovXOhclE6aE1rdWzXEprhEjTJg2k/edit"
+  },
+  "system": {
+    "name": "ProcureFlow: Purchase Management Workflow System",
+    "description": "A comprehensive workflow management system to manage the full purchase lifecycle from requisition through approval, purchase order, goods receipt, invoice matching and payment, with master-data-driven lookups and audit tracking.",
+    "version": "1.0",
+    "total_sheets": 8,
+    "workflow_stages": [
+      "Purchase Requisition",
+      "Requisition Approval",
+      "Purchase Order Creation",
+      "Supplier Acknowledgement",
+      "Goods Receipt (GRN)",
+      "Inspection & QC",
+      "Invoice Receipt & Matching",
+      "Payment Processing",
+      "Close & Archive"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Purchase Workflow",
+        "description": "Primary workflow sheet that tracks each purchase request through all sequential stages of the purchase lifecycle.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp (first column as required).",
+            "stage_number": null
+          },
+          {
+            "name": "Serial No",
+            "type": "number",
+            "required": true,
+            "description": "Sequential serial number for the sheet row.",
+            "stage_number": null
+          },
+          {
+            "name": "Purchase ID",
+            "type": "text",
+            "required": true,
+            "description": "Primary key: unique purchase request identifier (PR- or PO-linked).",
+            "stage_number": null
+          },
+          {
+            "name": "Requestor Email",
+            "type": "text",
+            "required": true,
+            "description": "Email of the person who created the requisition.",
+            "stage_number": null
+          },
+          {
+            "name": "Current Stage",
+            "type": "text",
+            "required": true,
+            "description": "Current workflow stage (automatically updated from stage progress).",
+            "stage_number": null
+          },
+          {
+            "name": "Overall Status",
+            "type": "text",
+            "required": true,
+            "description": "High-level status: Draft, In Progress, On Hold, Completed, Cancelled.",
+            "stage_number": null
+          },
+          {
+            "name": "Record Owner",
+            "type": "text",
+            "required": false,
+            "description": "User ID responsible for current action on the record.",
+            "stage_number": null
+          },
+          {
+            "name": "Total Estimated Cost",
+            "type": "currency",
+            "required": false,
+            "description": "Total estimated cost for the requisition.",
+            "stage_number": null
+          },
+          {
+            "name": "Currency",
+            "type": "dropdown",
+            "required": false,
+            "description": "Currency code (lookup from Currency Master).",
+            "stage_number": null
+          },
+          {
+            "name": "Expected Savings",
+            "type": "currency",
+            "required": false,
+            "description": "Expected savings relative to budget (optional).",
+            "stage_number": null
+          },
+          {
+            "name": "Audit Notes",
+            "type": "text",
+            "required": false,
+            "description": "Internal audit or change log notes.",
+            "stage_number": null
+          },
+          {
+            "name": "Planned1",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Purchase Requisition stage.",
+            "stage_number": 1
+          },
+          {
+            "name": "Actual1",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Purchase Requisition stage.",
+            "stage_number": 1
+          },
+          {
+            "name": "Delay1",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Purchase Requisition stage (e.g., =IF(Actual1, Actual1 - Planned1, TODAY() - Planned1)).",
+            "stage_number": 1
+          },
+          {
+            "name": "Requested By",
+            "type": "text",
+            "required": true,
+            "description": "Name/ID of the requesting user.",
+            "stage_number": 1
+          },
+          {
+            "name": "Department",
+            "type": "dropdown",
+            "required": false,
+            "description": "Requesting department (lookup).",
+            "stage_number": 1
+          },
+          {
+            "name": "Items Summary",
+            "type": "text",
+            "required": true,
+            "description": "Brief summary or link to item lines (detailed items stored in Item Master or import).",
+            "stage_number": 1
+          },
+          {
+            "name": "Estimated Cost",
+            "type": "currency",
+            "required": false,
+            "description": "Estimated cost for the stage/requisition.",
+            "stage_number": 1
+          },
+          {
+            "name": "Budget Code",
+            "type": "text",
+            "required": false,
+            "description": "Budget or cost center code.",
+            "stage_number": 1
+          },
+          {
+            "name": "Priority",
+            "type": "text",
+            "required": false,
+            "description": "Priority: Low, Medium, High, Critical.",
+            "stage_number": 1
+          },
+          {
+            "name": "Planned2",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Requisition Approval stage.",
+            "stage_number": 2
+          },
+          {
+            "name": "Actual2",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Requisition Approval stage.",
+            "stage_number": 2
+          },
+          {
+            "name": "Delay2",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Requisition Approval (e.g., =IF(Actual2, Actual2 - Planned2, TODAY() - Planned2)).",
+            "stage_number": 2
+          },
+          {
+            "name": "Approver",
+            "type": "text",
+            "required": false,
+            "description": "Approver name or user ID.",
+            "stage_number": 2
+          },
+          {
+            "name": "Approval Decision",
+            "type": "text",
+            "required": false,
+            "description": "Decision: Approved, Rejected, Escalated.",
+            "stage_number": 2
+          },
+          {
+            "name": "Approval Comments",
+            "type": "text",
+            "required": false,
+            "description": "Comments provided by approver.",
+            "stage_number": 2
+          },
+          {
+            "name": "Approval Reference ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference ID from approval system (if applicable).",
+            "stage_number": 2
+          },
+          {
+            "name": "Planned3",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Purchase Order Creation stage.",
+            "stage_number": 3
+          },
+          {
+            "name": "Actual3",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Purchase Order Creation stage.",
+            "stage_number": 3
+          },
+          {
+            "name": "Delay3",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for PO Creation (e.g., =IF(Actual3, Actual3 - Planned3, TODAY() - Planned3)).",
+            "stage_number": 3
+          },
+          {
+            "name": "PO Number",
+            "type": "text",
+            "required": false,
+            "description": "Issued purchase order number.",
+            "stage_number": 3
+          },
+          {
+            "name": "PO Date",
+            "type": "date",
+            "required": false,
+            "description": "Date PO was issued.",
+            "stage_number": 3
+          },
+          {
+            "name": "PO Value",
+            "type": "currency",
+            "required": false,
+            "description": "Total value on the PO.",
+            "stage_number": 3
+          },
+          {
+            "name": "Payment Terms",
+            "type": "text",
+            "required": false,
+            "description": "Payment terms agreed on PO.",
+            "stage_number": 3
+          },
+          {
+            "name": "Buyer",
+            "type": "text",
+            "required": false,
+            "description": "Procurement buyer responsible for PO creation.",
+            "stage_number": 3
+          },
+          {
+            "name": "Planned4",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Supplier Acknowledgement stage.",
+            "stage_number": 4
+          },
+          {
+            "name": "Actual4",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Supplier Acknowledgement stage.",
+            "stage_number": 4
+          },
+          {
+            "name": "Delay4",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Supplier Acknowledgement (e.g., =IF(Actual4, Actual4 - Planned4, TODAY() - Planned4)).",
+            "stage_number": 4
+          },
+          {
+            "name": "Supplier ID",
+            "type": "text",
+            "required": false,
+            "description": "Supplier identifier (lookup to Vendor Master).",
+            "stage_number": 4
+          },
+          {
+            "name": "Supplier Ack Number",
+            "type": "text",
+            "required": false,
+            "description": "Acknowledgement number from supplier.",
+            "stage_number": 4
+          },
+          {
+            "name": "Supplier Confirmed Delivery Date",
+            "type": "date",
+            "required": false,
+            "description": "Delivery date confirmed by supplier.",
+            "stage_number": 4
+          },
+          {
+            "name": "Supplier Comments",
+            "type": "text",
+            "required": false,
+            "description": "Any notes provided by the supplier.",
+            "stage_number": 4
+          },
+          {
+            "name": "Planned5",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Goods Receipt stage.",
+            "stage_number": 5
+          },
+          {
+            "name": "Actual5",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Goods Receipt stage.",
+            "stage_number": 5
+          },
+          {
+            "name": "Delay5",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Goods Receipt (e.g., =IF(Actual5, Actual5 - Planned5, TODAY() - Planned5)).",
+            "stage_number": 5
+          },
+          {
+            "name": "GRN Number",
+            "type": "text",
+            "required": false,
+            "description": "Goods Receipt Number generated at receiving.",
+            "stage_number": 5
+          },
+          {
+            "name": "Received Date",
+            "type": "date",
+            "required": false,
+            "description": "Date goods were received.",
+            "stage_number": 5
+          },
+          {
+            "name": "Received Quantity Summary",
+            "type": "text",
+            "required": false,
+            "description": "Summary of received quantities vs PO quantities.",
+            "stage_number": 5
+          },
+          {
+            "name": "Receiving Location",
+            "type": "text",
+            "required": false,
+            "description": "Warehouse or site where goods were received.",
+            "stage_number": 5
+          },
+          {
+            "name": "Planned6",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Inspection & QC stage.",
+            "stage_number": 6
+          },
+          {
+            "name": "Actual6",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Inspection & QC stage.",
+            "stage_number": 6
+          },
+          {
+            "name": "Delay6",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Inspection & QC (e.g., =IF(Actual6, Actual6 - Planned6, TODAY() - Planned6)).",
+            "stage_number": 6
+          },
+          {
+            "name": "Inspector",
+            "type": "text",
+            "required": false,
+            "description": "Inspector user ID or name.",
+            "stage_number": 6
+          },
+          {
+            "name": "Inspection Result",
+            "type": "text",
+            "required": false,
+            "description": "Result: Pass, Fail, Conditional Accept.",
+            "stage_number": 6
+          },
+          {
+            "name": "NCR Number",
+            "type": "text",
+            "required": false,
+            "description": "Non-conformance report number (if any).",
+            "stage_number": 6
+          },
+          {
+            "name": "Inspection Comments",
+            "type": "text",
+            "required": false,
+            "description": "Inspector remarks.",
+            "stage_number": 6
+          },
+          {
+            "name": "Planned7",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Invoice Receipt & Matching stage.",
+            "stage_number": 7
+          },
+          {
+            "name": "Actual7",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Invoice Receipt & Matching stage.",
+            "stage_number": 7
+          },
+          {
+            "name": "Delay7",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Invoice Matching (e.g., =IF(Actual7, Actual7 - Planned7, TODAY() - Planned7)).",
+            "stage_number": 7
+          },
+          {
+            "name": "Invoice Number",
+            "type": "text",
+            "required": false,
+            "description": "Supplier invoice number.",
+            "stage_number": 7
+          },
+          {
+            "name": "Invoice Date",
+            "type": "date",
+            "required": false,
+            "description": "Invoice issue date.",
+            "stage_number": 7
+          },
+          {
+            "name": "Invoice Amount",
+            "type": "currency",
+            "required": false,
+            "description": "Amount claimed on the invoice.",
+            "stage_number": 7
+          },
+          {
+            "name": "Match Status",
+            "type": "text",
+            "required": false,
+            "description": "3-way match status: Matched, Short/Over, Price Mismatch, Pending.",
+            "stage_number": 7
+          },
+          {
+            "name": "Discrepancy Notes",
+            "type": "text",
+            "required": false,
+            "description": "Notes on any discrepancies discovered during matching.",
+            "stage_number": 7
+          },
+          {
+            "name": "Planned8",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Payment Processing stage.",
+            "stage_number": 8
+          },
+          {
+            "name": "Actual8",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Payment Processing stage.",
+            "stage_number": 8
+          },
+          {
+            "name": "Delay8",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Payment Processing (e.g., =IF(Actual8, Actual8 - Planned8, TODAY() - Planned8)).",
+            "stage_number": 8
+          },
+          {
+            "name": "Payment Request ID",
+            "type": "text",
+            "required": false,
+            "description": "Internal payment request reference.",
+            "stage_number": 8
+          },
+          {
+            "name": "Payment Date",
+            "type": "date",
+            "required": false,
+            "description": "Date payment was executed.",
+            "stage_number": 8
+          },
+          {
+            "name": "Payment Amount",
+            "type": "currency",
+            "required": false,
+            "description": "Amount paid to supplier.",
+            "stage_number": 8
+          },
+          {
+            "name": "Payment Method",
+            "type": "text",
+            "required": false,
+            "description": "Method: Bank Transfer, Cheque, Card, Other.",
+            "stage_number": 8
+          },
+          {
+            "name": "Bank Reference",
+            "type": "text",
+            "required": false,
+            "description": "Bank transaction reference number.",
+            "stage_number": 8
+          },
+          {
+            "name": "Planned9",
+            "type": "date",
+            "required": false,
+            "description": "Planned completion date for Close & Archive stage.",
+            "stage_number": 9
+          },
+          {
+            "name": "Actual9",
+            "type": "date",
+            "required": false,
+            "description": "Actual completion date for Close & Archive stage.",
+            "stage_number": 9
+          },
+          {
+            "name": "Delay9",
+            "type": "formula",
+            "required": false,
+            "description": "Delay for Close stage (e.g., =IF(Actual9, Actual9 - Planned9, TODAY() - Planned9)).",
+            "stage_number": 9
+          },
+          {
+            "name": "Closure Date",
+            "type": "date",
+            "required": false,
+            "description": "Official closure date of the purchase request.",
+            "stage_number": 9
+          },
+          {
+            "name": "Close Remarks",
+            "type": "text",
+            "required": false,
+            "description": "Final remarks, lessons learned or follow-up actions.",
+            "stage_number": 9
+          },
+          {
+            "name": "Document Archive Link",
+            "type": "text",
+            "required": false,
+            "description": "Link or reference to archived documents for the purchase.",
+            "stage_number": 9
+          }
+        ],
+        "primary_key": "Purchase ID",
+        "relationships": [
+          "Item Master",
+          "Vendor Master",
+          "Approval Matrix",
+          "Currency Master",
+          "Tax Codes",
+          "Import Dump"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Purchase Requisition",
+            "columns": [
+              "Planned1",
+              "Actual1",
+              "Delay1",
+              "Requested By",
+              "Department",
+              "Items Summary",
+              "Estimated Cost",
+              "Budget Code",
+              "Priority"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Requisition Approval",
+            "columns": [
+              "Planned2",
+              "Actual2",
+              "Delay2",
+              "Approver",
+              "Approval Decision",
+              "Approval Comments",
+              "Approval Reference ID"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Purchase Order Creation",
+            "columns": [
+              "Planned3",
+              "Actual3",
+              "Delay3",
+              "PO Number",
+              "PO Date",
+              "PO Value",
+              "Payment Terms",
+              "Buyer"
+            ]
+          },
+          {
+            "stage_number": 4,
+            "stage_name": "Supplier Acknowledgement",
+            "columns": [
+              "Planned4",
+              "Actual4",
+              "Delay4",
+              "Supplier ID",
+              "Supplier Ack Number",
+              "Supplier Confirmed Delivery Date",
+              "Supplier Comments"
+            ]
+          },
+          {
+            "stage_number": 5,
+            "stage_name": "Goods Receipt GRN",
+            "columns": [
+              "Planned5",
+              "Actual5",
+              "Delay5",
+              "GRN Number",
+              "Received Date",
+              "Received Quantity Summary",
+              "Receiving Location"
+            ]
+          },
+          {
+            "stage_number": 6,
+            "stage_name": "Inspection  QC",
+            "columns": [
+              "Planned6",
+              "Actual6",
+              "Delay6",
+              "Inspector",
+              "Inspection Result",
+              "NCR Number",
+              "Inspection Comments"
+            ]
+          },
+          {
+            "stage_number": 7,
+            "stage_name": "Invoice Receipt  Matching",
+            "columns": [
+              "Planned7",
+              "Actual7",
+              "Delay7",
+              "Invoice Number",
+              "Invoice Date",
+              "Invoice Amount",
+              "Match Status",
+              "Discrepancy Notes"
+            ]
+          },
+          {
+            "stage_number": 8,
+            "stage_name": "Payment Processing",
+            "columns": [
+              "Planned8",
+              "Actual8",
+              "Delay8",
+              "Payment Request ID",
+              "Payment Date",
+              "Payment Amount",
+              "Payment Method",
+              "Bank Reference"
+            ]
+          },
+          {
+            "stage_number": 9,
+            "stage_name": "Close  Archive",
+            "columns": [
+              "Planned9",
+              "Actual9",
+              "Delay9",
+              "Closure Date",
+              "Close Remarks",
+              "Document Archive Link"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Login Master",
+        "description": "User authentication and access control",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Item Master",
+        "description": "Master list of purchasable items (used for lookups and import of line items).",
+        "columns": [
+          {
+            "name": "Item ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Item Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Unit of Measure",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Standard Price",
+            "type": "currency",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Category",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Preferred Vendor",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Vendor Master",
+        "description": "Supplier / vendor master data used for lookups and supplier validation.",
+        "columns": [
+          {
+            "name": "Vendor ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Primary Contact",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Payment Terms",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Bank Details",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Status",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Approval Matrix",
+        "description": "Defines approvers and thresholds (used for approval routing lookups).",
+        "columns": [
+          {
+            "name": "Matrix ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Department",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Amount Threshold",
+            "type": "currency",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Approver User ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Escalation User ID",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Currency Master",
+        "description": "Supported currencies and exchange rate references.",
+        "columns": [
+          {
+            "name": "Currency Code",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Exchange Rate to Base",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Tax Codes",
+        "description": "Tax codes and rates used for invoice/tax calculations.",
+        "columns": [
+          {
+            "name": "Tax Code",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Tax Rate",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Tax Description",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Import Dump",
+        "description": "Staging sheet for bulk imports (requisition lines, invoices) and data uploads.",
+        "columns": [
+          {
+            "name": "Import ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Source File Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Import Status",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Error Notes",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 112,
+    "total_stages": 9,
+    "sheets_with_relationships": 1
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "formulas": [
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Planned1",
+      "start_row": 4,
+      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\"Planned1\",IF(A4:A=\"\",\"\",TEXT(A4:A, \"yyyy-mm-dd hh:mm:ss\"))))",
+      "description": "Stage 1 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay1",
+      "start_row": 4,
+      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\"Delay1\",if(AND(Actual1!4:Actual1!<>\"\",Planned1!4:Planned1!<>\"\"),Actual1!4:Actual1!-DATEVALUE(Planned1!4:Planned1!),\"\")))",
+      "description": "Stage 1 delay calculation",
+      "dependencies": [
+        "Planned1",
+        "Actual1"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Planned2",
+      "start_row": 4,
+      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\"Planned2\",IF(A4:A=\"\",\"\",TEXT(A4:A, \"yyyy-mm-dd hh:mm:ss\"))))",
+      "description": "Stage 2 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Purchase Workflow",
+      "target_column": "Delay2",
+      "start_row": 4,
+      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\"Delay2\",if(AND(Actual2!4:Actual2!<>\"\",Planned2!4:Planned2!<>\"\"),Actual2!4:Actual2!-DATEVALUE(Planned2!4:Planned2!),\"\")))",
+      "description": "Stage 2 delay calculation",
+      "dependencies": [
+        "Planned2",
+        "Actual2"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 2
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

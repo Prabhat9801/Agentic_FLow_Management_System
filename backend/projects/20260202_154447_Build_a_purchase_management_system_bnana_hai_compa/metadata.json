@@ -1,0 +1,236 @@
+{
+  "project_info": {
+    "prompt": "Build a purchase management system bnana hai company ke liye",
+    "created_at": "2026-02-02T15:45:31.479116",
+    "execution_time_seconds": 43.97
+  },
+  "spreadsheet": {
+    "id": "1-eIaFuirPlXWFwc7iTaXn12DGTSlL9ZxOZ9guPpC7MQ",
+    "url": "https://docs.google.com/spreadsheets/d/1-eIaFuirPlXWFwc7iTaXn12DGTSlL9ZxOZ9guPpC7MQ",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1-eIaFuirPlXWFwc7iTaXn12DGTSlL9ZxOZ9guPpC7MQ/edit"
+  },
+  "system": {
+    "name": "Purchase Management System",
+    "description": "A comprehensive workflow management system for tracking and managing the purchasing process within the company.",
+    "version": "1.0",
+    "total_sheets": 4,
+    "workflow_stages": [
+      "Stage 1: Request Approval",
+      "Stage 2: Vendor Selection",
+      "Stage 3: Purchase Order Creation",
+      "Stage 4: Delivery & Inspection",
+      "Stage 5: Payment Processing"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Purchase Workflow Tracking",
+        "description": "Main workflow tracking for purchase management",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp",
+            "stage_number": null
+          },
+          {
+            "name": "Purchase ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for each purchase",
+            "stage_number": null
+          }
+        ],
+        "primary_key": "Purchase ID",
+        "relationships": [
+          "Vendor Master",
+          "Item Master"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Request Approval",
+            "columns": [
+              "Planned1",
+              "Actual1",
+              "Delay1",
+              "Request Details",
+              "Approval Status"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Vendor Selection",
+            "columns": [
+              "Planned2",
+              "Actual2",
+              "Delay2",
+              "Vendor Name",
+              "Vendor Rating"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Purchase Order Creation",
+            "columns": [
+              "Planned3",
+              "Actual3",
+              "Delay3",
+              "PO Number",
+              "PO Value"
+            ]
+          },
+          {
+            "stage_number": 4,
+            "stage_name": "Delivery  Inspection",
+            "columns": [
+              "Planned4",
+              "Actual4",
+              "Delay4",
+              "Inspection Status",
+              "Delivery Date"
+            ]
+          },
+          {
+            "stage_number": 5,
+            "stage_name": "Payment Processing",
+            "columns": [
+              "Planned5",
+              "Actual5",
+              "Delay5",
+              "Payment Method",
+              "Payment Date"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Login Master",
+        "description": "User authentication and access control",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the user",
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for the user",
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": "User password",
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "text",
+            "required": true,
+            "description": "Role of user within the system",
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": true,
+            "description": "Pages the user has access to",
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Account status (Active/Inactive)",
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the page",
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Vendor Master",
+        "description": "Reference data for approved vendors",
+        "columns": [
+          {
+            "name": "Vendor ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for vendor",
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the vendor",
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Rating",
+            "type": "number",
+            "required": false,
+            "description": "Performance rating of vendor",
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Item Master",
+        "description": "Reference data for purchasable items",
+        "columns": [
+          {
+            "name": "Item ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for item",
+            "stage_number": null
+          },
+          {
+            "name": "Item Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the item",
+            "stage_number": null
+          },
+          {
+            "name": "Item Category",
+            "type": "text",
+            "required": true,
+            "description": "Category of the item",
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 15,
+    "total_stages": 5,
+    "sheets_with_relationships": 1
+  }
+}

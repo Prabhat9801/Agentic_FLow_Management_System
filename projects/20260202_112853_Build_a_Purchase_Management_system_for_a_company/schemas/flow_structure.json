@@ -1,0 +1,469 @@
+{
+  "system_name": "Purchase Management System",
+  "description": "A comprehensive system to manage and track the purchase process from requisition to payment.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Purchase Workflow",
+      "columns": [
+        {
+          "name": "Timestamp",
+          "type": "date",
+          "description": "Record creation timestamp",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Serial No",
+          "type": "number",
+          "description": "Serial number",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Reg ID",
+          "type": "number",
+          "description": "Registration ID",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Requisition Details",
+          "type": "text",
+          "description": "Details of the purchase requisition",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 1,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Requested By",
+          "type": "text",
+          "description": "Person requesting the purchase",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 1,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Planned1",
+          "type": "date",
+          "description": "Purchase Requisition planned completion date",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 1,
+          "is_planned": true,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Actual1",
+          "type": "date",
+          "description": "Purchase Requisition actual completion date",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 1,
+          "is_planned": false,
+          "is_actual": true,
+          "is_delay": false
+        },
+        {
+          "name": "Delay1",
+          "type": "formula",
+          "description": "Purchase Requisition delay calculation",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 1,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": true
+        },
+        {
+          "name": "Vendor Name",
+          "type": "text",
+          "description": "Name of the selected vendor",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 2,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Vendor Rating",
+          "type": "number",
+          "description": "Rating of the vendor",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 2,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Planned2",
+          "type": "date",
+          "description": "Vendor Selection planned completion date",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 2,
+          "is_planned": true,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Actual2",
+          "type": "date",
+          "description": "Vendor Selection actual completion date",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 2,
+          "is_planned": false,
+          "is_actual": true,
+          "is_delay": false
+        },
+        {
+          "name": "Delay2",
+          "type": "formula",
+          "description": "Vendor Selection delay calculation",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": 2,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": true
+        }
+      ],
+      "stages": [
+        {
+          "stage_number": 1,
+          "stage_name": "Purchase Requisition",
+          "stage_description": "Initiating a request for purchase",
+          "columns": [
+            "Requisition Details",
+            "Requested By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 2,
+          "stage_name": "Vendor Selection",
+          "stage_description": "Selecting a vendor for the purchase",
+          "columns": [
+            "Vendor Name",
+            "Vendor Rating"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 3,
+          "stage_name": "Purchase Order",
+          "stage_description": "Issuing the purchase order to the vendor",
+          "columns": [
+            "PO Number",
+            "PO Details"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 4,
+          "stage_name": "Goods Receipt",
+          "stage_description": "Receiving goods from the vendor",
+          "columns": [
+            "Goods Receipt Note",
+            "Received By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 5,
+          "stage_name": "Invoice Verification",
+          "stage_description": "Verifying the invoice against goods received",
+          "columns": [
+            "Invoice Number",
+            "Invoice Amount"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 6,
+          "stage_name": "Payment",
+          "stage_description": "Processing payment to the vendor",
+          "columns": [
+            "Payment Method",
+            "Payment Reference"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        }
+      ],
+      "description": "Main workflow tracking for the purchase process",
+      "primary_key": "Reg ID",
+      "relationships": [
+        "Vendor Master",
+        "Item Master"
+      ],
+      "has_timestamp": true
+    },
+    {
+      "name": "Login Master",
+      "columns": [
+        {
+          "name": "User Name",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "User ID",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Pass",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Role",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Page Access",
+          "type": "text",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Page Name",
+          "type": "text",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [],
+      "description": "User authentication and access control",
+      "primary_key": null,
+      "relationships": [],
+      "has_timestamp": false
+    },
+    {
+      "name": "Vendor Master",
+      "columns": [
+        {
+          "name": "Vendor ID",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Vendor Name",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Contact",
+          "type": "text",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Address",
+          "type": "text",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [],
+      "description": "Master data for vendors",
+      "primary_key": null,
+      "relationships": [],
+      "has_timestamp": false
+    },
+    {
+      "name": "Item Master",
+      "columns": [
+        {
+          "name": "Item ID",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Item Name",
+          "type": "text",
+          "description": null,
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Category",
+          "type": "text",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Unit Price",
+          "type": "number",
+          "description": null,
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [],
+      "description": "Master data for items",
+      "primary_key": null,
+      "relationships": [],
+      "has_timestamp": false
+    }
+  ],
+  "workflow_stages": [
+    "Purchase Requisition",
+    "Vendor Selection",
+    "Purchase Order",
+    "Goods Receipt",
+    "Invoice Verification",
+    "Payment"
+  ],
+  "integrations": [],
+  "has_login_master": true
+}

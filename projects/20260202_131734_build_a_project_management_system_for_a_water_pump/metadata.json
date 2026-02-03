@@ -1,0 +1,1168 @@
+{
+  "project_info": {
+    "prompt": "build a project management system for a water pump comapny",
+    "created_at": "2026-02-02T13:20:43.693003",
+    "execution_time_seconds": 209.23
+  },
+  "spreadsheet": {
+    "id": "1HPKinxuYc-JYzpH14mgeG3UBM1Kk46mt40mosN2t5Rk",
+    "url": "https://docs.google.com/spreadsheets/d/1HPKinxuYc-JYzpH14mgeG3UBM1Kk46mt40mosN2t5Rk",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1HPKinxuYc-JYzpH14mgeG3UBM1Kk46mt40mosN2t5Rk/edit"
+  },
+  "system": {
+    "name": "AquaPump Project Workflow Manager",
+    "description": "End-to-end project management and workflow tracking system for a water pump company. Tracks projects from lead/quotation through procurement, installation, commissioning, handover, invoicing and service with date-based milestone tracking, delays calculation, master data references and user access control.",
+    "version": "1.0",
+    "total_sheets": 10,
+    "workflow_stages": [
+      "Lead & Quotation",
+      "Order Confirmation",
+      "Procurement",
+      "Delivery to Site",
+      "Foundation & Installation",
+      "Electrical Hookup & Commissioning",
+      "Testing & Acceptance",
+      "Handover",
+      "Invoicing & Payment",
+      "Service & Maintenance"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Projects - Main Workflow",
+        "description": "Primary workflow sheet tracking the full lifecycle of each pump project. All stages are represented as grouped columns in sequential order. Timestamp is the first column as required.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp (must be first column)",
+            "stage_number": null
+          },
+          {
+            "name": "Serial No",
+            "type": "number",
+            "required": true,
+            "description": "Internal serial number",
+            "stage_number": null
+          },
+          {
+            "name": "Project ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique project identifier (primary key)",
+            "stage_number": null
+          },
+          {
+            "name": "Project Name",
+            "type": "text",
+            "required": true,
+            "description": "Descriptive project name",
+            "stage_number": null
+          },
+          {
+            "name": "Customer ID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to Customer Master",
+            "stage_number": null
+          },
+          {
+            "name": "Pump Model ID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to Pump Model Master",
+            "stage_number": null
+          },
+          {
+            "name": "Site Location ID",
+            "type": "text",
+            "required": true,
+            "description": "Reference to Location Master",
+            "stage_number": null
+          },
+          {
+            "name": "Priority",
+            "type": "text",
+            "required": false,
+            "description": "Project priority (High/Medium/Low) - from Dropdown Values",
+            "stage_number": null
+          },
+          {
+            "name": "Project Manager",
+            "type": "text",
+            "required": false,
+            "description": "Assigned project manager (User ID reference)",
+            "stage_number": null
+          },
+          {
+            "name": "Overall Status",
+            "type": "text",
+            "required": false,
+            "description": "High-level status (e.g., Not Started, In Progress, Completed, On Hold)",
+            "stage_number": null
+          },
+          {
+            "name": "Estimated Total Cost",
+            "type": "number",
+            "required": false,
+            "description": "Estimated total project cost",
+            "stage_number": null
+          },
+          {
+            "name": "Owner",
+            "type": "text",
+            "required": false,
+            "description": "Current responsible person/team",
+            "stage_number": null
+          },
+          {
+            "name": "Notes",
+            "type": "text",
+            "required": false,
+            "description": "Free-form notes and comments",
+            "stage_number": null
+          },
+          {
+            "name": "Created By",
+            "type": "text",
+            "required": false,
+            "description": "User who created the record",
+            "stage_number": null
+          },
+          {
+            "name": "Created On",
+            "type": "date",
+            "required": false,
+            "description": "Record creation date (duplicate of Timestamp for convenience)",
+            "stage_number": null
+          },
+          {
+            "name": "Current Stage",
+            "type": "text",
+            "required": false,
+            "description": "Calculated or set current stage name (derived from last completed stage)",
+            "stage_number": null
+          },
+          {
+            "name": "Planned1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 planned completion date (Lead & Quotation)",
+            "stage_number": 1
+          },
+          {
+            "name": "Actual1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 actual completion date",
+            "stage_number": 1
+          },
+          {
+            "name": "Delay1",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 1 = Actual1 - Planned1 (formula)",
+            "stage_number": 1
+          },
+          {
+            "name": "Lead Source",
+            "type": "text",
+            "required": false,
+            "description": "Source of lead (e.g., Web, Referral)",
+            "stage_number": 1
+          },
+          {
+            "name": "Quotation ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference quotation identifier",
+            "stage_number": 1
+          },
+          {
+            "name": "Quoted Amount",
+            "type": "number",
+            "required": false,
+            "description": "Amount quoted to customer",
+            "stage_number": 1
+          },
+          {
+            "name": "Quote Valid Till",
+            "type": "date",
+            "required": false,
+            "description": "Quotation expiry date",
+            "stage_number": 1
+          },
+          {
+            "name": "Planned2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 planned completion date (Order Confirmation)",
+            "stage_number": 2
+          },
+          {
+            "name": "Actual2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 actual completion date",
+            "stage_number": 2
+          },
+          {
+            "name": "Delay2",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 2 = Actual2 - Planned2 (formula)",
+            "stage_number": 2
+          },
+          {
+            "name": "Order ID",
+            "type": "text",
+            "required": false,
+            "description": "Internal order identifier",
+            "stage_number": 2
+          },
+          {
+            "name": "Customer PO Number",
+            "type": "text",
+            "required": false,
+            "description": "Customer purchase order reference",
+            "stage_number": 2
+          },
+          {
+            "name": "Order Value",
+            "type": "number",
+            "required": false,
+            "description": "Monetary value of the order",
+            "stage_number": 2
+          },
+          {
+            "name": "Order Confirmed By",
+            "type": "text",
+            "required": false,
+            "description": "User who confirmed the order",
+            "stage_number": 2
+          },
+          {
+            "name": "Planned3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 planned completion date (Procurement)",
+            "stage_number": 3
+          },
+          {
+            "name": "Actual3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 actual completion date",
+            "stage_number": 3
+          },
+          {
+            "name": "Delay3",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 3 = Actual3 - Planned3 (formula)",
+            "stage_number": 3
+          },
+          {
+            "name": "Procurement PO",
+            "type": "text",
+            "required": false,
+            "description": "Procurement purchase order identifier",
+            "stage_number": 3
+          },
+          {
+            "name": "Vendor ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference to Vendor Master",
+            "stage_number": 3
+          },
+          {
+            "name": "Vendor Lead Time days",
+            "type": "number",
+            "required": false,
+            "description": "Vendor lead time estimate",
+            "stage_number": 3
+          },
+          {
+            "name": "Items Ordered SKU list",
+            "type": "text",
+            "required": false,
+            "description": "List of SKUs ordered",
+            "stage_number": 3
+          },
+          {
+            "name": "Planned4",
+            "type": "date",
+            "required": false,
+            "description": "Stage 4 planned completion date (Delivery to Site)",
+            "stage_number": 4
+          },
+          {
+            "name": "Actual4",
+            "type": "date",
+            "required": false,
+            "description": "Stage 4 actual completion date",
+            "stage_number": 4
+          },
+          {
+            "name": "Delay4",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 4 = Actual4 - Planned4 (formula)",
+            "stage_number": 4
+          },
+          {
+            "name": "Delivery Note No",
+            "type": "text",
+            "required": false,
+            "description": "Delivery note / goods receipt reference",
+            "stage_number": 4
+          },
+          {
+            "name": "Carrier",
+            "type": "text",
+            "required": false,
+            "description": "Delivery carrier/transport",
+            "stage_number": 4
+          },
+          {
+            "name": "Delivered Qty",
+            "type": "number",
+            "required": false,
+            "description": "Quantity delivered to site",
+            "stage_number": 4
+          },
+          {
+            "name": "Received By site contact",
+            "type": "text",
+            "required": false,
+            "description": "Site contact who received delivery",
+            "stage_number": 4
+          },
+          {
+            "name": "Planned5",
+            "type": "date",
+            "required": false,
+            "description": "Stage 5 planned completion date (Foundation & Installation)",
+            "stage_number": 5
+          },
+          {
+            "name": "Actual5",
+            "type": "date",
+            "required": false,
+            "description": "Stage 5 actual completion date",
+            "stage_number": 5
+          },
+          {
+            "name": "Delay5",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 5 = Actual5 - Planned5 (formula)",
+            "stage_number": 5
+          },
+          {
+            "name": "Site Prep Completed By",
+            "type": "text",
+            "required": false,
+            "description": "User/team who completed site prep",
+            "stage_number": 5
+          },
+          {
+            "name": "Installation Crew",
+            "type": "text",
+            "required": false,
+            "description": "Assigned installation crew/team",
+            "stage_number": 5
+          },
+          {
+            "name": "Installation Checklist ID",
+            "type": "text",
+            "required": false,
+            "description": "Checklist reference for installation",
+            "stage_number": 5
+          },
+          {
+            "name": "Civil Issues Noted",
+            "type": "text",
+            "required": false,
+            "description": "Any civil/site issues recorded",
+            "stage_number": 5
+          },
+          {
+            "name": "Planned6",
+            "type": "date",
+            "required": false,
+            "description": "Stage 6 planned completion date (Electrical Hookup & Commissioning)",
+            "stage_number": 6
+          },
+          {
+            "name": "Actual6",
+            "type": "date",
+            "required": false,
+            "description": "Stage 6 actual completion date",
+            "stage_number": 6
+          },
+          {
+            "name": "Delay6",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 6 = Actual6 - Planned6 (formula)",
+            "stage_number": 6
+          },
+          {
+            "name": "Electrical Engineer",
+            "type": "text",
+            "required": false,
+            "description": "Assigned electrical engineer",
+            "stage_number": 6
+          },
+          {
+            "name": "Power Connection Date",
+            "type": "date",
+            "required": false,
+            "description": "Date power connection was made",
+            "stage_number": 6
+          },
+          {
+            "name": "Commissioning Checklist Completed",
+            "type": "text",
+            "required": false,
+            "description": "Yes/No field indicating checklist completion",
+            "stage_number": 6
+          },
+          {
+            "name": "Commissioning Notes",
+            "type": "text",
+            "required": false,
+            "description": "Notes from commissioning",
+            "stage_number": 6
+          },
+          {
+            "name": "Planned7",
+            "type": "date",
+            "required": false,
+            "description": "Stage 7 planned completion date (Testing & Acceptance)",
+            "stage_number": 7
+          },
+          {
+            "name": "Actual7",
+            "type": "date",
+            "required": false,
+            "description": "Stage 7 actual completion date",
+            "stage_number": 7
+          },
+          {
+            "name": "Delay7",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 7 = Actual7 - Planned7 (formula)",
+            "stage_number": 7
+          },
+          {
+            "name": "Test Report ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference to test report",
+            "stage_number": 7
+          },
+          {
+            "name": "Performance Results",
+            "type": "text",
+            "required": false,
+            "description": "Summary of test/performance metrics",
+            "stage_number": 7
+          },
+          {
+            "name": "Acceptance Sign-off Customer",
+            "type": "text",
+            "required": false,
+            "description": "Customer sign-off reference or name",
+            "stage_number": 7
+          },
+          {
+            "name": "Acceptance Date",
+            "type": "date",
+            "required": false,
+            "description": "Date customer accepted the work",
+            "stage_number": 7
+          },
+          {
+            "name": "Planned8",
+            "type": "date",
+            "required": false,
+            "description": "Stage 8 planned completion date (Handover)",
+            "stage_number": 8
+          },
+          {
+            "name": "Actual8",
+            "type": "date",
+            "required": false,
+            "description": "Stage 8 actual completion date",
+            "stage_number": 8
+          },
+          {
+            "name": "Delay8",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 8 = Actual8 - Planned8 (formula)",
+            "stage_number": 8
+          },
+          {
+            "name": "Handover Docs ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference to handover documentation",
+            "stage_number": 8
+          },
+          {
+            "name": "Training Completed YesNo",
+            "type": "text",
+            "required": false,
+            "description": "Indicates whether training was completed",
+            "stage_number": 8
+          },
+          {
+            "name": "Warranty Start Date",
+            "type": "date",
+            "required": false,
+            "description": "Start date of warranty",
+            "stage_number": 8
+          },
+          {
+            "name": "Warranty Period months",
+            "type": "number",
+            "required": false,
+            "description": "Warranty duration in months",
+            "stage_number": 8
+          },
+          {
+            "name": "Planned9",
+            "type": "date",
+            "required": false,
+            "description": "Stage 9 planned completion date (Invoicing & Payment)",
+            "stage_number": 9
+          },
+          {
+            "name": "Actual9",
+            "type": "date",
+            "required": false,
+            "description": "Stage 9 actual completion date",
+            "stage_number": 9
+          },
+          {
+            "name": "Delay9",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 9 = Actual9 - Planned9 (formula)",
+            "stage_number": 9
+          },
+          {
+            "name": "Invoice No",
+            "type": "text",
+            "required": false,
+            "description": "Invoice reference number",
+            "stage_number": 9
+          },
+          {
+            "name": "Invoice Date",
+            "type": "date",
+            "required": false,
+            "description": "Date invoice was issued",
+            "stage_number": 9
+          },
+          {
+            "name": "Invoice Amount",
+            "type": "number",
+            "required": false,
+            "description": "Amount invoiced",
+            "stage_number": 9
+          },
+          {
+            "name": "Payment Status",
+            "type": "text",
+            "required": false,
+            "description": "Payment status (Unpaid/Partial/Paid)",
+            "stage_number": 9
+          },
+          {
+            "name": "Payment Received Date",
+            "type": "date",
+            "required": false,
+            "description": "Date payment was received",
+            "stage_number": 9
+          },
+          {
+            "name": "Planned10",
+            "type": "date",
+            "required": false,
+            "description": "Stage 10 planned completion date (Service & Maintenance)",
+            "stage_number": 10
+          },
+          {
+            "name": "Actual10",
+            "type": "date",
+            "required": false,
+            "description": "Stage 10 actual completion date",
+            "stage_number": 10
+          },
+          {
+            "name": "Delay10",
+            "type": "formula",
+            "required": false,
+            "description": "Days delay for Stage 10 = Actual10 - Planned10 (formula)",
+            "stage_number": 10
+          },
+          {
+            "name": "Service Contract ID",
+            "type": "text",
+            "required": false,
+            "description": "Reference to ongoing service contract",
+            "stage_number": 10
+          },
+          {
+            "name": "Next Scheduled Service Date",
+            "type": "date",
+            "required": false,
+            "description": "Next planned service date",
+            "stage_number": 10
+          },
+          {
+            "name": "Service Team Assigned",
+            "type": "text",
+            "required": false,
+            "description": "Service team responsible",
+            "stage_number": 10
+          },
+          {
+            "name": "Service Notes",
+            "type": "text",
+            "required": false,
+            "description": "Notes for service activities",
+            "stage_number": 10
+          }
+        ],
+        "primary_key": "Project ID",
+        "relationships": [
+          "Customer Master",
+          "Pump Model Master",
+          "Vendor Master",
+          "Inventory Master",
+          "Service Team Master",
+          "Location Master",
+          "Dropdown Values",
+          "Import Dump"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Lead  Quotation",
+            "columns": [
+              "Planned1",
+              "Actual1",
+              "Delay1",
+              "Lead Source",
+              "Quotation ID",
+              "Quoted Amount",
+              "Quote Valid Till"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Order Confirmation",
+            "columns": [
+              "Planned2",
+              "Actual2",
+              "Delay2",
+              "Order ID",
+              "Customer PO Number",
+              "Order Value",
+              "Order Confirmed By"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Procurement",
+            "columns": [
+              "Planned3",
+              "Actual3",
+              "Delay3",
+              "Procurement PO",
+              "Vendor ID",
+              "Vendor Lead Time (days)",
+              "Items Ordered (SKU list)"
+            ]
+          },
+          {
+            "stage_number": 4,
+            "stage_name": "Delivery to Site",
+            "columns": [
+              "Planned4",
+              "Actual4",
+              "Delay4",
+              "Delivery Note No",
+              "Carrier",
+              "Delivered Qty",
+              "Received By (site contact)"
+            ]
+          },
+          {
+            "stage_number": 5,
+            "stage_name": "Foundation  Installation",
+            "columns": [
+              "Planned5",
+              "Actual5",
+              "Delay5",
+              "Site Prep Completed By",
+              "Installation Crew",
+              "Installation Checklist ID",
+              "Civil Issues Noted"
+            ]
+          },
+          {
+            "stage_number": 6,
+            "stage_name": "Electrical Hookup  Commissioning",
+            "columns": [
+              "Planned6",
+              "Actual6",
+              "Delay6",
+              "Electrical Engineer",
+              "Power Connection Date",
+              "Commissioning Checklist Completed",
+              "Commissioning Notes"
+            ]
+          },
+          {
+            "stage_number": 7,
+            "stage_name": "Testing  Acceptance",
+            "columns": [
+              "Planned7",
+              "Actual7",
+              "Delay7",
+              "Test Report ID",
+              "Performance Results",
+              "Acceptance Sign-off (Customer)",
+              "Acceptance Date"
+            ]
+          },
+          {
+            "stage_number": 8,
+            "stage_name": "Handover",
+            "columns": [
+              "Planned8",
+              "Actual8",
+              "Delay8",
+              "Handover Docs ID",
+              "Training Completed (Yes/No)",
+              "Warranty Start Date",
+              "Warranty Period (months)"
+            ]
+          },
+          {
+            "stage_number": 9,
+            "stage_name": "Invoicing  Payment",
+            "columns": [
+              "Planned9",
+              "Actual9",
+              "Delay9",
+              "Invoice No",
+              "Invoice Date",
+              "Invoice Amount",
+              "Payment Status",
+              "Payment Received Date"
+            ]
+          },
+          {
+            "stage_number": 10,
+            "stage_name": "Service  Maintenance",
+            "columns": [
+              "Planned10",
+              "Actual10",
+              "Delay10",
+              "Service Contract ID",
+              "Next Scheduled Service Date",
+              "Service Team Assigned",
+              "Service Notes"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Login Master",
+        "description": "User authentication and access control",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Customer Master",
+        "description": "Customer master data used for lookups in projects",
+        "columns": [
+          {
+            "name": "Customer ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Customer Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Contact Person",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Contact Phone",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Billing Address",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Site Address",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Pump Model Master",
+        "description": "Reference data for pump models, specifications and SKUs",
+        "columns": [
+          {
+            "name": "Pump Model ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Model Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Capacity",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Power Rating",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "SKU",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Vendor Master",
+        "description": "Vendor and supplier master data",
+        "columns": [
+          {
+            "name": "Vendor ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Vendor Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Contact",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Lead Time days",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Preferred YesNo",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Inventory Master",
+        "description": "Inventory SKUs, stock on hand and warehouse locations",
+        "columns": [
+          {
+            "name": "SKU",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Description",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Stock On Hand",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Warehouse Location",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Service Team Master",
+        "description": "Teams and technicians for installation and maintenance",
+        "columns": [
+          {
+            "name": "Team ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Team Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Lead Technician",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Contact",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Location Master",
+        "description": "Site locations and geo references",
+        "columns": [
+          {
+            "name": "Location ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Location Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Region",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "GPS Coordinates",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Dropdown Values",
+        "description": "Reusable dropdowns (Priority, Status, Payment Status, Yes/No, etc.)",
+        "columns": [
+          {
+            "name": "Dropdown Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Value",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Import Dump",
+        "description": "Temporary sheet for bulk import and staging of project records",
+        "columns": [
+          {
+            "name": "Import ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Raw Data",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Imported On",
+            "type": "date",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 128,
+    "total_stages": 10,
+    "sheets_with_relationships": 1
+  }
+}

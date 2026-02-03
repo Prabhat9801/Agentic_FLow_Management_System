@@ -1,0 +1,144 @@
+{
+  "system_name": "Purchase Management Workflow System",
+  "description": "A comprehensive tracking system for managing purchase orders from initiation to completion.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Purchase Workflow Tracker",
+      "columns": [
+        {
+          "name": "Timestamp",
+          "type": "date",
+          "description": "Record creation timestamp",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Serial No",
+          "type": "number",
+          "description": "Unique identifier for each purchase process",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [
+        {
+          "stage_number": 1,
+          "stage_name": "Purchase Requisition",
+          "stage_description": "Initial stage to gather and approve purchase requisitions.",
+          "columns": [
+            "Planned1",
+            "Actual1",
+            "Delay1",
+            "Requisition Details",
+            "Requested By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 2,
+          "stage_name": "Approval",
+          "stage_description": "Stage for managerial approval of requisitions.",
+          "columns": [
+            "Planned2",
+            "Actual2",
+            "Delay2",
+            "Approved By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 3,
+          "stage_name": "Purchase Order Issuance",
+          "stage_description": "Issuance of official purchase order to selected vendors.",
+          "columns": [
+            "Planned3",
+            "Actual3",
+            "Delay3",
+            "PO Number",
+            "PO Amount"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 4,
+          "stage_name": "Vendor Selection",
+          "stage_description": "Stage to select and confirm vendor for the purchase.",
+          "columns": [
+            "Planned4",
+            "Actual4",
+            "Delay4",
+            "Vendor ID",
+            "Vendor Confirmation"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 5,
+          "stage_name": "Delivery",
+          "stage_description": "Tracking delivery of goods/services from vendor.",
+          "columns": [
+            "Planned5",
+            "Actual5",
+            "Delay5",
+            "Delivery Status",
+            "Received By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 6,
+          "stage_name": "Payment",
+          "stage_description": "Final payment made to vendor upon completion of delivery.",
+          "columns": [
+            "Planned6",
+            "Actual6",
+            "Delay6",
+            "Payment Status",
+            "Payment Reference"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        }
+      ],
+      "description": "Main workflow tracking for purchase management",
+      "primary_key": "Serial No",
+      "relationships": [
+        "Item Master",
+        "Vendor Master"
+      ],
+      "has_timestamp": true
+    }
+  ],
+  "workflow_stages": [
+    "Purchase Requisition",
+    "Approval",
+    "Purchase Order Issuance",
+    "Vendor Selection",
+    "Delivery",
+    "Payment"
+  ],
+  "integrations": [],
+  "has_login_master": true
+}

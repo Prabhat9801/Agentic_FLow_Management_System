@@ -1,0 +1,93 @@
+{
+  "formulas": [
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Planned1",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Planned1\", {A3:A}))",
+      "description": "Stage 1 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Delay1",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Delay1\", IF(([[Actual1]]<>\"\")*([[Planned1]]<>\"\"), [[Actual1]]-[[Planned1]], \"\")))",
+      "description": "Stage 1 delay calculation (days) = Actual1 - Planned1 when both present",
+      "dependencies": [
+        "Planned1",
+        "Actual1"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Planned2",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Planned2\", {A3:A}))",
+      "description": "Stage 2 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Delay2",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Delay2\", IF(([[Actual2]]<>\"\")*([[Planned2]]<>\"\"), [[Actual2]]-[[Planned2]], \"\")))",
+      "description": "Stage 2 delay calculation (days) = Actual2 - Planned2 when both present",
+      "dependencies": [
+        "Planned2",
+        "Actual2"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Planned3",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Planned3\", {A3:A}))",
+      "description": "Stage 3 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 3
+    },
+    {
+      "sheet": "Travel Workflow Register",
+      "target_column": "Delay3",
+      "start_row": 3,
+      "formula": "=ARRAYFORMULA(IF(ROW(A3:A)=3, \"Delay3\", IF(([[Actual3]]<>\"\")*([[Planned3]]<>\"\"), [[Actual3]]-[[Planned3]], \"\")))",
+      "description": "Stage 3 delay calculation (days) = Actual3 - Planned3 when both present",
+      "dependencies": [
+        "Planned3",
+        "Actual3"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 3
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

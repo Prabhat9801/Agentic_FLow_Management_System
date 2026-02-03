@@ -1,0 +1,1695 @@
+{
+  "project_info": {
+    "prompt": "Build a Payment Collection system or company",
+    "created_at": "2026-02-02T12:32:44.643075",
+    "execution_time_seconds": 201.08
+  },
+  "spreadsheet": {
+    "id": "10g-2D3Td7F62RzZDfPuIXjGrkkMP8CdXV8oQ4H5Y1Pg",
+    "url": "https://docs.google.com/spreadsheets/d/10g-2D3Td7F62RzZDfPuIXjGrkkMP8CdXV8oQ4H5Y1Pg",
+    "edit_url": "https://docs.google.com/spreadsheets/d/10g-2D3Td7F62RzZDfPuIXjGrkkMP8CdXV8oQ4H5Y1Pg/edit"
+  },
+  "system": {
+    "name": "CollectPro Payment Collection Workflow Management System",
+    "description": "End-to-end workflow management system for managing payment collections from invoice creation through customer notification, collection assignment, follow-ups, dispute handling, receipt confirmation, reconciliation, and closure. Designed for production use with role-based access, master data lookups, and sequential stage tracking with Planned/Actual/Delay for each milestone.",
+    "version": "1.0",
+    "total_sheets": 14,
+    "workflow_stages": [
+      "Invoice & Receivable Setup",
+      "Customer Notification",
+      "Collector Assignment",
+      "Follow-up & Commitment Tracking",
+      "Dispute / Query Resolution",
+      "Payment Receipt Confirmation",
+      "Bank Reconciliation",
+      "Closure & Reporting"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Payment Collection Workflow",
+        "description": "Primary workflow sheet tracking the full payment collection lifecycle per receivable/invoice with sequential stages and SLA monitoring.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp",
+            "stage_number": null
+          },
+          {
+            "name": "Serial No",
+            "type": "number",
+            "required": true,
+            "description": "Row serial number",
+            "stage_number": null
+          },
+          {
+            "name": "Collection Case ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for the collection case (primary key)",
+            "stage_number": null
+          },
+          {
+            "name": "Business Unit",
+            "type": "text",
+            "required": false,
+            "description": "Business unit/branch owning the receivable",
+            "stage_number": null
+          },
+          {
+            "name": "Created By",
+            "type": "text",
+            "required": false,
+            "description": "User who created the case",
+            "stage_number": null
+          },
+          {
+            "name": "Overall Status",
+            "type": "text",
+            "required": true,
+            "description": "Overall workflow status (Open/In Progress/On Hold/Closed)",
+            "stage_number": null
+          },
+          {
+            "name": "Overall Remarks",
+            "type": "text",
+            "required": false,
+            "description": "General remarks across the case lifecycle",
+            "stage_number": null
+          },
+          {
+            "name": "Planned1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 planned completion date",
+            "stage_number": 1
+          },
+          {
+            "name": "Actual1",
+            "type": "date",
+            "required": false,
+            "description": "Stage 1 actual completion date",
+            "stage_number": 1
+          },
+          {
+            "name": "Delay1",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 1 delay in days (e.g., IF(AND(Planned1<>\"\",Actual1<>\"\"),Actual1-Planned1,\"\") )",
+            "stage_number": 1
+          },
+          {
+            "name": "Invoice No",
+            "type": "text",
+            "required": true,
+            "description": "Invoice identifier",
+            "stage_number": 1
+          },
+          {
+            "name": "Invoice Date",
+            "type": "date",
+            "required": true,
+            "description": "Invoice issue date",
+            "stage_number": 1
+          },
+          {
+            "name": "Due Date",
+            "type": "date",
+            "required": true,
+            "description": "Invoice due date",
+            "stage_number": 1
+          },
+          {
+            "name": "Customer ID",
+            "type": "text",
+            "required": true,
+            "description": "Customer unique ID (lookup)",
+            "stage_number": 1
+          },
+          {
+            "name": "Customer Name",
+            "type": "text",
+            "required": true,
+            "description": "Customer name (auto from master or captured)",
+            "stage_number": 1
+          },
+          {
+            "name": "Currency",
+            "type": "text",
+            "required": false,
+            "description": "Currency code (lookup)",
+            "stage_number": 1
+          },
+          {
+            "name": "Invoice Amount",
+            "type": "number",
+            "required": true,
+            "description": "Base invoice amount",
+            "stage_number": 1
+          },
+          {
+            "name": "Tax Amount",
+            "type": "number",
+            "required": false,
+            "description": "Tax component (if applicable)",
+            "stage_number": 1
+          },
+          {
+            "name": "Total Amount",
+            "type": "number",
+            "required": true,
+            "description": "Total invoice amount including tax",
+            "stage_number": 1
+          },
+          {
+            "name": "Outstanding Amount",
+            "type": "number",
+            "required": true,
+            "description": "Current outstanding amount at case creation",
+            "stage_number": 1
+          },
+          {
+            "name": "Payment Terms",
+            "type": "text",
+            "required": false,
+            "description": "Payment terms (e.g., Net 30)",
+            "stage_number": 1
+          },
+          {
+            "name": "Aging Bucket",
+            "type": "text",
+            "required": false,
+            "description": "Aging bucket classification (lookup)",
+            "stage_number": 1
+          },
+          {
+            "name": "Priority",
+            "type": "text",
+            "required": false,
+            "description": "Collection priority (High/Medium/Low)",
+            "stage_number": 1
+          },
+          {
+            "name": "Risk Flag",
+            "type": "text",
+            "required": false,
+            "description": "Risk indicator (e.g., High Risk/Normal)",
+            "stage_number": 1
+          },
+          {
+            "name": "Case Status",
+            "type": "text",
+            "required": false,
+            "description": "Stage 1 case status (e.g., Case Opened/Validated)",
+            "stage_number": 1
+          },
+          {
+            "name": "Planned2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 planned completion date",
+            "stage_number": 2
+          },
+          {
+            "name": "Actual2",
+            "type": "date",
+            "required": false,
+            "description": "Stage 2 actual completion date",
+            "stage_number": 2
+          },
+          {
+            "name": "Delay2",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 2 delay in days (e.g., IF(AND(Planned2<>\"\",Actual2<>\"\"),Actual2-Planned2,\"\") )",
+            "stage_number": 2
+          },
+          {
+            "name": "Notification Channel",
+            "type": "text",
+            "required": false,
+            "description": "Channel used (Email/SMS/WhatsApp/Call/Letter)",
+            "stage_number": 2
+          },
+          {
+            "name": "Notification Template",
+            "type": "text",
+            "required": false,
+            "description": "Template name/version used",
+            "stage_number": 2
+          },
+          {
+            "name": "Notification Sent To",
+            "type": "text",
+            "required": false,
+            "description": "Recipient contact (email/phone)",
+            "stage_number": 2
+          },
+          {
+            "name": "Notification Sent By",
+            "type": "text",
+            "required": false,
+            "description": "User who sent notification",
+            "stage_number": 2
+          },
+          {
+            "name": "Notification Reference ID",
+            "type": "text",
+            "required": false,
+            "description": "Message ID / ticket ID from channel provider",
+            "stage_number": 2
+          },
+          {
+            "name": "Delivery Status",
+            "type": "text",
+            "required": false,
+            "description": "Delivered/Failed/Pending",
+            "stage_number": 2
+          },
+          {
+            "name": "Customer Acknowledged YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether customer acknowledged receipt",
+            "stage_number": 2
+          },
+          {
+            "name": "Acknowledgement Date",
+            "type": "date",
+            "required": false,
+            "description": "Date customer acknowledged",
+            "stage_number": 2
+          },
+          {
+            "name": "Notes - Notification",
+            "type": "text",
+            "required": false,
+            "description": "Notes related to notification",
+            "stage_number": 2
+          },
+          {
+            "name": "Planned3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 planned completion date",
+            "stage_number": 3
+          },
+          {
+            "name": "Actual3",
+            "type": "date",
+            "required": false,
+            "description": "Stage 3 actual completion date",
+            "stage_number": 3
+          },
+          {
+            "name": "Delay3",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 3 delay in days (e.g., IF(AND(Planned3<>\"\",Actual3<>\"\"),Actual3-Planned3,\"\") )",
+            "stage_number": 3
+          },
+          {
+            "name": "Assigned Team",
+            "type": "text",
+            "required": false,
+            "description": "Team responsible (lookup)",
+            "stage_number": 3
+          },
+          {
+            "name": "Assigned Collector ID",
+            "type": "text",
+            "required": false,
+            "description": "Collector ID (lookup)",
+            "stage_number": 3
+          },
+          {
+            "name": "Assigned Collector Name",
+            "type": "text",
+            "required": false,
+            "description": "Collector name",
+            "stage_number": 3
+          },
+          {
+            "name": "Assignment Method",
+            "type": "text",
+            "required": false,
+            "description": "Manual/Auto/Rule-based",
+            "stage_number": 3
+          },
+          {
+            "name": "Assignment Date",
+            "type": "date",
+            "required": false,
+            "description": "Date assignment was made",
+            "stage_number": 3
+          },
+          {
+            "name": "Escalation Level",
+            "type": "text",
+            "required": false,
+            "description": "Escalation level (L0/L1/L2/Legal)",
+            "stage_number": 3
+          },
+          {
+            "name": "Next Action Date",
+            "type": "date",
+            "required": false,
+            "description": "Next scheduled action date",
+            "stage_number": 3
+          },
+          {
+            "name": "Notes - Assignment",
+            "type": "text",
+            "required": false,
+            "description": "Assignment notes",
+            "stage_number": 3
+          },
+          {
+            "name": "Planned4",
+            "type": "date",
+            "required": false,
+            "description": "Stage 4 planned completion date",
+            "stage_number": 4
+          },
+          {
+            "name": "Actual4",
+            "type": "date",
+            "required": false,
+            "description": "Stage 4 actual completion date",
+            "stage_number": 4
+          },
+          {
+            "name": "Delay4",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 4 delay in days (e.g., IF(AND(Planned4<>\"\",Actual4<>\"\"),Actual4-Planned4,\"\") )",
+            "stage_number": 4
+          },
+          {
+            "name": "Last Contact Date",
+            "type": "date",
+            "required": false,
+            "description": "Most recent contact date",
+            "stage_number": 4
+          },
+          {
+            "name": "Contact Attempt Count",
+            "type": "number",
+            "required": false,
+            "description": "Number of contact attempts made",
+            "stage_number": 4
+          },
+          {
+            "name": "Contact Outcome",
+            "type": "text",
+            "required": false,
+            "description": "Outcome (Reached/No Answer/Callback/Refused)",
+            "stage_number": 4
+          },
+          {
+            "name": "Promise To Pay YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether customer committed to pay",
+            "stage_number": 4
+          },
+          {
+            "name": "PTP Date",
+            "type": "date",
+            "required": false,
+            "description": "Promised payment date",
+            "stage_number": 4
+          },
+          {
+            "name": "PTP Amount",
+            "type": "number",
+            "required": false,
+            "description": "Promised payment amount",
+            "stage_number": 4
+          },
+          {
+            "name": "Preferred Payment Mode",
+            "type": "text",
+            "required": false,
+            "description": "Preferred mode (UPI/NEFT/RTGS/Cash/Cheque/Card)",
+            "stage_number": 4
+          },
+          {
+            "name": "Next Follow-up Date",
+            "type": "date",
+            "required": false,
+            "description": "Next follow-up date",
+            "stage_number": 4
+          },
+          {
+            "name": "Notes - Follow-up",
+            "type": "text",
+            "required": false,
+            "description": "Follow-up notes",
+            "stage_number": 4
+          },
+          {
+            "name": "Planned5",
+            "type": "date",
+            "required": false,
+            "description": "Stage 5 planned completion date",
+            "stage_number": 5
+          },
+          {
+            "name": "Actual5",
+            "type": "date",
+            "required": false,
+            "description": "Stage 5 actual completion date",
+            "stage_number": 5
+          },
+          {
+            "name": "Delay5",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 5 delay in days (e.g., IF(AND(Planned5<>\"\",Actual5<>\"\"),Actual5-Planned5,\"\") )",
+            "stage_number": 5
+          },
+          {
+            "name": "Dispute Raised YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether a dispute/query was raised",
+            "stage_number": 5
+          },
+          {
+            "name": "Dispute Reason",
+            "type": "text",
+            "required": false,
+            "description": "Reason code (lookup)",
+            "stage_number": 5
+          },
+          {
+            "name": "Dispute Description",
+            "type": "text",
+            "required": false,
+            "description": "Customer dispute details",
+            "stage_number": 5
+          },
+          {
+            "name": "Dispute Logged Date",
+            "type": "date",
+            "required": false,
+            "description": "Date dispute was logged",
+            "stage_number": 5
+          },
+          {
+            "name": "Resolver Department",
+            "type": "text",
+            "required": false,
+            "description": "Department handling dispute",
+            "stage_number": 5
+          },
+          {
+            "name": "Resolver Owner",
+            "type": "text",
+            "required": false,
+            "description": "Person responsible for resolution",
+            "stage_number": 5
+          },
+          {
+            "name": "Resolution Summary",
+            "type": "text",
+            "required": false,
+            "description": "Resolution notes/summary",
+            "stage_number": 5
+          },
+          {
+            "name": "Resolution Approved By",
+            "type": "text",
+            "required": false,
+            "description": "Approver name/ID",
+            "stage_number": 5
+          },
+          {
+            "name": "Resolution Approved Date",
+            "type": "date",
+            "required": false,
+            "description": "Approval date",
+            "stage_number": 5
+          },
+          {
+            "name": "Notes - Dispute",
+            "type": "text",
+            "required": false,
+            "description": "Additional dispute notes",
+            "stage_number": 5
+          },
+          {
+            "name": "Planned6",
+            "type": "date",
+            "required": false,
+            "description": "Stage 6 planned completion date",
+            "stage_number": 6
+          },
+          {
+            "name": "Actual6",
+            "type": "date",
+            "required": false,
+            "description": "Stage 6 actual completion date",
+            "stage_number": 6
+          },
+          {
+            "name": "Delay6",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 6 delay in days (e.g., IF(AND(Planned6<>\"\",Actual6<>\"\"),Actual6-Planned6,\"\") )",
+            "stage_number": 6
+          },
+          {
+            "name": "Payment Received YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether payment has been received",
+            "stage_number": 6
+          },
+          {
+            "name": "Payment Date",
+            "type": "date",
+            "required": false,
+            "description": "Payment date as per customer/bank",
+            "stage_number": 6
+          },
+          {
+            "name": "Payment Amount",
+            "type": "number",
+            "required": false,
+            "description": "Amount received",
+            "stage_number": 6
+          },
+          {
+            "name": "Payment Mode",
+            "type": "text",
+            "required": false,
+            "description": "Mode of payment (lookup)",
+            "stage_number": 6
+          },
+          {
+            "name": "Transaction  UTR  Cheque No",
+            "type": "text",
+            "required": false,
+            "description": "Transaction reference",
+            "stage_number": 6
+          },
+          {
+            "name": "Payer Name",
+            "type": "text",
+            "required": false,
+            "description": "Name of payer (if different)",
+            "stage_number": 6
+          },
+          {
+            "name": "Receiving Bank Account",
+            "type": "text",
+            "required": false,
+            "description": "Company bank account receiving funds (lookup)",
+            "stage_number": 6
+          },
+          {
+            "name": "Receipt Reference No",
+            "type": "text",
+            "required": false,
+            "description": "Internal receipt reference number",
+            "stage_number": 6
+          },
+          {
+            "name": "ShortExcess Amount",
+            "type": "number",
+            "required": false,
+            "description": "Difference between expected and received amount",
+            "stage_number": 6
+          },
+          {
+            "name": "Notes - Receipt",
+            "type": "text",
+            "required": false,
+            "description": "Receipt confirmation notes",
+            "stage_number": 6
+          },
+          {
+            "name": "Planned7",
+            "type": "date",
+            "required": false,
+            "description": "Stage 7 planned completion date",
+            "stage_number": 7
+          },
+          {
+            "name": "Actual7",
+            "type": "date",
+            "required": false,
+            "description": "Stage 7 actual completion date",
+            "stage_number": 7
+          },
+          {
+            "name": "Delay7",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 7 delay in days (e.g., IF(AND(Planned7<>\"\",Actual7<>\"\"),Actual7-Planned7,\"\") )",
+            "stage_number": 7
+          },
+          {
+            "name": "Reconciliation Status",
+            "type": "text",
+            "required": false,
+            "description": "Matched/Partially Matched/Unmatched",
+            "stage_number": 7
+          },
+          {
+            "name": "Reconciled Amount",
+            "type": "number",
+            "required": false,
+            "description": "Amount reconciled to bank/ledger",
+            "stage_number": 7
+          },
+          {
+            "name": "Reconciled Date",
+            "type": "date",
+            "required": false,
+            "description": "Date reconciliation completed",
+            "stage_number": 7
+          },
+          {
+            "name": "Bank Statement Reference",
+            "type": "text",
+            "required": false,
+            "description": "Bank statement line/reference ID",
+            "stage_number": 7
+          },
+          {
+            "name": "Mismatch Reason",
+            "type": "text",
+            "required": false,
+            "description": "Reason for mismatch (if any)",
+            "stage_number": 7
+          },
+          {
+            "name": "Adjustment Required YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether adjustment is required",
+            "stage_number": 7
+          },
+          {
+            "name": "Adjusted By",
+            "type": "text",
+            "required": false,
+            "description": "User who performed adjustment",
+            "stage_number": 7
+          },
+          {
+            "name": "Adjusted Date",
+            "type": "date",
+            "required": false,
+            "description": "Date adjustment was made",
+            "stage_number": 7
+          },
+          {
+            "name": "Notes - Reconciliation",
+            "type": "text",
+            "required": false,
+            "description": "Reconciliation notes",
+            "stage_number": 7
+          },
+          {
+            "name": "Planned8",
+            "type": "date",
+            "required": false,
+            "description": "Stage 8 planned completion date",
+            "stage_number": 8
+          },
+          {
+            "name": "Actual8",
+            "type": "date",
+            "required": false,
+            "description": "Stage 8 actual completion date",
+            "stage_number": 8
+          },
+          {
+            "name": "Delay8",
+            "type": "formula",
+            "required": false,
+            "description": "Stage 8 delay in days (e.g., IF(AND(Planned8<>\"\",Actual8<>\"\"),Actual8-Planned8,\"\") )",
+            "stage_number": 8
+          },
+          {
+            "name": "Closure Status",
+            "type": "text",
+            "required": false,
+            "description": "Closed-Paid/Closed-Write-off/Closed-Cancelled",
+            "stage_number": 8
+          },
+          {
+            "name": "Closure Reason",
+            "type": "text",
+            "required": false,
+            "description": "Reason for closure (lookup)",
+            "stage_number": 8
+          },
+          {
+            "name": "Write-off Approved YN",
+            "type": "text",
+            "required": false,
+            "description": "Whether write-off was approved",
+            "stage_number": 8
+          },
+          {
+            "name": "Write-off Amount",
+            "type": "number",
+            "required": false,
+            "description": "Write-off amount (if applicable)",
+            "stage_number": 8
+          },
+          {
+            "name": "Write-off Approved By",
+            "type": "text",
+            "required": false,
+            "description": "Approver for write-off",
+            "stage_number": 8
+          },
+          {
+            "name": "Write-off Approved Date",
+            "type": "date",
+            "required": false,
+            "description": "Write-off approval date",
+            "stage_number": 8
+          },
+          {
+            "name": "Final Outstanding Amount",
+            "type": "number",
+            "required": false,
+            "description": "Outstanding amount at closure (should be 0 for paid closure)",
+            "stage_number": 8
+          },
+          {
+            "name": "Case Closed By",
+            "type": "text",
+            "required": false,
+            "description": "User who closed the case",
+            "stage_number": 8
+          },
+          {
+            "name": "Case Closed Date",
+            "type": "date",
+            "required": false,
+            "description": "Date case was closed",
+            "stage_number": 8
+          },
+          {
+            "name": "Notes - Closure",
+            "type": "text",
+            "required": false,
+            "description": "Closure notes",
+            "stage_number": 8
+          }
+        ],
+        "primary_key": "Collection Case ID",
+        "relationships": [
+          "Customer Master",
+          "Invoice Master",
+          "Collector Master",
+          "Payment Mode Master",
+          "Bank Account Master",
+          "Dispute Reason Master",
+          "Status Master",
+          "Aging Bucket Master",
+          "Channel Master",
+          "Currency Master",
+          "Dropdowns"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Invoice  Receivable Setup",
+            "columns": [
+              "Planned1",
+              "Actual1",
+              "Delay1",
+              "Invoice No",
+              "Invoice Date",
+              "Due Date",
+              "Customer ID",
+              "Customer Name",
+              "Currency",
+              "Invoice Amount",
+              "Tax Amount",
+              "Total Amount",
+              "Outstanding Amount",
+              "Payment Terms",
+              "Aging Bucket",
+              "Priority",
+              "Risk Flag",
+              "Case Status"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Customer Notification",
+            "columns": [
+              "Planned2",
+              "Actual2",
+              "Delay2",
+              "Notification Channel",
+              "Notification Template",
+              "Notification Sent To",
+              "Notification Sent By",
+              "Notification Reference ID",
+              "Delivery Status",
+              "Customer Acknowledged (Y/N)",
+              "Acknowledgement Date",
+              "Notes - Notification"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Collector Assignment",
+            "columns": [
+              "Planned3",
+              "Actual3",
+              "Delay3",
+              "Assigned Team",
+              "Assigned Collector ID",
+              "Assigned Collector Name",
+              "Assignment Method",
+              "Assignment Date",
+              "Escalation Level",
+              "Next Action Date",
+              "Notes - Assignment"
+            ]
+          },
+          {
+            "stage_number": 4,
+            "stage_name": "Follow-up  Commitment Tracking",
+            "columns": [
+              "Planned4",
+              "Actual4",
+              "Delay4",
+              "Last Contact Date",
+              "Contact Attempt Count",
+              "Contact Outcome",
+              "Promise To Pay (Y/N)",
+              "PTP Date",
+              "PTP Amount",
+              "Preferred Payment Mode",
+              "Next Follow-up Date",
+              "Notes - Follow-up"
+            ]
+          },
+          {
+            "stage_number": 5,
+            "stage_name": "Dispute  Query Resolution",
+            "columns": [
+              "Planned5",
+              "Actual5",
+              "Delay5",
+              "Dispute Raised (Y/N)",
+              "Dispute Reason",
+              "Dispute Description",
+              "Dispute Logged Date",
+              "Resolver Department",
+              "Resolver Owner",
+              "Resolution Summary",
+              "Resolution Approved By",
+              "Resolution Approved Date",
+              "Notes - Dispute"
+            ]
+          },
+          {
+            "stage_number": 6,
+            "stage_name": "Payment Receipt Confirmation",
+            "columns": [
+              "Planned6",
+              "Actual6",
+              "Delay6",
+              "Payment Received (Y/N)",
+              "Payment Date",
+              "Payment Amount",
+              "Payment Mode",
+              "Transaction / UTR / Cheque No",
+              "Payer Name",
+              "Receiving Bank Account",
+              "Receipt Reference No",
+              "Short/Excess Amount",
+              "Notes - Receipt"
+            ]
+          },
+          {
+            "stage_number": 7,
+            "stage_name": "Bank Reconciliation",
+            "columns": [
+              "Planned7",
+              "Actual7",
+              "Delay7",
+              "Reconciliation Status",
+              "Reconciled Amount",
+              "Reconciled Date",
+              "Bank Statement Reference",
+              "Mismatch Reason",
+              "Adjustment Required (Y/N)",
+              "Adjusted By",
+              "Adjusted Date",
+              "Notes - Reconciliation"
+            ]
+          },
+          {
+            "stage_number": 8,
+            "stage_name": "Closure  Reporting",
+            "columns": [
+              "Planned8",
+              "Actual8",
+              "Delay8",
+              "Closure Status",
+              "Closure Reason",
+              "Write-off Approved (Y/N)",
+              "Write-off Amount",
+              "Write-off Approved By",
+              "Write-off Approved Date",
+              "Final Outstanding Amount",
+              "Case Closed By",
+              "Case Closed Date",
+              "Notes - Closure"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Login Master",
+        "description": "User authentication and access control",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Customer Master",
+        "description": "Customer reference data for collections, contacts, and credit attributes.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Customer ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Customer Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Customer Type",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Primary Contact Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Primary Contact Phone",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Primary Contact Email",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Billing Address",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "GSTVAT No",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Credit Limit",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Default Payment Terms",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Invoice Master",
+        "description": "Invoice reference data used to create/validate collection cases and prevent duplicates.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Invoice No",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Customer ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Invoice Date",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Due Date",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Total Amount",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Outstanding Amount",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Invoice Status",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Collector Master",
+        "description": "Collectors/agents and their assignment attributes.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Collector ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Collector Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Team",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Phone",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Email",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Region",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Payment Mode Master",
+        "description": "Allowed payment modes for receipts.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Payment Mode",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Requires Reference YN",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Bank Account Master",
+        "description": "Company bank accounts used for receiving and reconciliation.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Bank Account ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Bank Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Account No Masked",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "IFSCSWIFT",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Dispute Reason Master",
+        "description": "Standard dispute/query reasons for consistent reporting.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Dispute Reason",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Category",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Status Master",
+        "description": "Standard statuses for Overall Status, Case Status, Reconciliation Status, Closure Status.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status Type",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status Value",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Sequence",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Active YN",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Aging Bucket Master",
+        "description": "Aging bucket definitions used for receivable classification.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Aging Bucket",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "From Days",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "To Days",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Channel Master",
+        "description": "Communication channels for notifications and follow-ups.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Channel",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Provider",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Currency Master",
+        "description": "Supported currencies.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Currency Name",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Dropdowns",
+        "description": "Centralized dropdown values for consistent data entry across the system.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Dropdown Name",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Dropdown Value",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Sequence",
+            "type": "number",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Active YN",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      },
+      {
+        "name": "Import Dump - Bank Statement",
+        "description": "Optional import sheet for bank statement lines used during reconciliation.",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Statement Line ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Bank Account ID",
+            "type": "text",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Txn Date",
+            "type": "date",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Txn Amount",
+            "type": "number",
+            "required": true,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Txn Type",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Narration",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Reference Extracted",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Matched Case ID",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          },
+          {
+            "name": "Match Status",
+            "type": "text",
+            "required": false,
+            "description": null,
+            "stage_number": null
+          }
+        ],
+        "primary_key": null,
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 195,
+    "total_stages": 8,
+    "sheets_with_relationships": 1
+  }
+}

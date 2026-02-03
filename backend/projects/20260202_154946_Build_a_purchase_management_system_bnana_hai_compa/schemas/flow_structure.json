@@ -1,0 +1,234 @@
+{
+  "system_name": "Comprehensive Purchase Management System",
+  "description": "A system designed to manage and streamline the purchase process from initiation to completion, ensuring transparency and efficiency in all procurement stages.",
+  "version": "1.0",
+  "sheets": [
+    {
+      "name": "Purchase Process Workflow",
+      "columns": [
+        {
+          "name": "Timestamp",
+          "type": "date",
+          "description": "Record creation timestamp",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Serial No",
+          "type": "number",
+          "description": "Serial number",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Purchase ID",
+          "type": "text",
+          "description": "Unique identifier for the purchase process",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [
+        {
+          "stage_number": 1,
+          "stage_name": "Purchase Requisition",
+          "stage_description": "This stage involves raising the initial purchase request.",
+          "columns": [
+            "Requester",
+            "Purpose",
+            "Amount"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 2,
+          "stage_name": "Vendor Selection",
+          "stage_description": "This stage focuses on selecting a vendor based on the requisition.",
+          "columns": [
+            "Vendor ID",
+            "Selection Criteria"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 3,
+          "stage_name": "Order Placement",
+          "stage_description": "Order is placed with the selected vendor.",
+          "columns": [
+            "Order Number",
+            "Order Details"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 4,
+          "stage_name": "Delivery Confirmation",
+          "stage_description": "Confirm receipt of goods or services.",
+          "columns": [
+            "Delivery Note",
+            "Received By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 5,
+          "stage_name": "Payment Processing",
+          "stage_description": "Process payment for the received goods/services.",
+          "columns": [
+            "Payment ID",
+            "Payment Method"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        },
+        {
+          "stage_number": 6,
+          "stage_name": "Completion",
+          "stage_description": "Finalize the process and close the purchase request.",
+          "columns": [
+            "Closing Notes",
+            "Completed By"
+          ],
+          "has_planned": true,
+          "has_actual": true,
+          "has_delay": true
+        }
+      ],
+      "description": "Main workflow tracking for the entire purchase process",
+      "primary_key": "Purchase ID",
+      "relationships": [
+        "Vendor Master",
+        "Item Master"
+      ],
+      "has_timestamp": true
+    },
+    {
+      "name": "Login Master",
+      "columns": [
+        {
+          "name": "User Name",
+          "type": "text",
+          "description": "Name of the user",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "User ID",
+          "type": "text",
+          "description": "Unique user identifier",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Pass",
+          "type": "text",
+          "description": "User password",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Role",
+          "type": "dropdown",
+          "description": "User role in the system",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Page Access",
+          "type": "text",
+          "description": "Pages accessible to the user",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Status",
+          "type": "text",
+          "description": "Active/Inactive status of the user",
+          "required": true,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        },
+        {
+          "name": "Page Name",
+          "type": "text",
+          "description": "Name of the page accessed",
+          "required": false,
+          "validation": null,
+          "default_value": null,
+          "stage_number": null,
+          "is_planned": false,
+          "is_actual": false,
+          "is_delay": false
+        }
+      ],
+      "stages": [],
+      "description": "Manage user login credentials and access rights",
+      "primary_key": "User ID",
+      "relationships": [],
+      "has_timestamp": false
+    }
+  ],
+  "workflow_stages": [
+    "Purchase Requisition",
+    "Vendor Selection",
+    "Order Placement",
+    "Delivery Confirmation",
+    "Payment Processing",
+    "Completion"
+  ],
+  "integrations": [],
+  "has_login_master": true
+}

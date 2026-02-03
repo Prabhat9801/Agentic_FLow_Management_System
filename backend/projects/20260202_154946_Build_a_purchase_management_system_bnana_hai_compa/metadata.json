@@ -1,0 +1,178 @@
+{
+  "project_info": {
+    "prompt": "Build a purchase management system bnana hai company ke liye",
+    "created_at": "2026-02-02T15:50:12.912357",
+    "execution_time_seconds": 26.49
+  },
+  "spreadsheet": {
+    "id": "1LK01eTll9gMf2bvBBvhQtwFOSuDEdV2W1wKXyu8q8qk",
+    "url": "https://docs.google.com/spreadsheets/d/1LK01eTll9gMf2bvBBvhQtwFOSuDEdV2W1wKXyu8q8qk",
+    "edit_url": "https://docs.google.com/spreadsheets/d/1LK01eTll9gMf2bvBBvhQtwFOSuDEdV2W1wKXyu8q8qk/edit"
+  },
+  "system": {
+    "name": "Comprehensive Purchase Management System",
+    "description": "A system designed to manage and streamline the purchase process from initiation to completion, ensuring transparency and efficiency in all procurement stages.",
+    "version": "1.0",
+    "total_sheets": 2,
+    "workflow_stages": [
+      "Purchase Requisition",
+      "Vendor Selection",
+      "Order Placement",
+      "Delivery Confirmation",
+      "Payment Processing",
+      "Completion"
+    ],
+    "integrations": [],
+    "has_login_master": true
+  },
+  "structure": {
+    "sheets": [
+      {
+        "name": "Purchase Process Workflow",
+        "description": "Main workflow tracking for the entire purchase process",
+        "columns": [
+          {
+            "name": "Timestamp",
+            "type": "date",
+            "required": true,
+            "description": "Record creation timestamp",
+            "stage_number": null
+          },
+          {
+            "name": "Serial No",
+            "type": "number",
+            "required": true,
+            "description": "Serial number",
+            "stage_number": null
+          },
+          {
+            "name": "Purchase ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique identifier for the purchase process",
+            "stage_number": null
+          }
+        ],
+        "primary_key": "Purchase ID",
+        "relationships": [
+          "Vendor Master",
+          "Item Master"
+        ],
+        "stages": [
+          {
+            "stage_number": 1,
+            "stage_name": "Purchase Requisition",
+            "columns": [
+              "Requester",
+              "Purpose",
+              "Amount"
+            ]
+          },
+          {
+            "stage_number": 2,
+            "stage_name": "Vendor Selection",
+            "columns": [
+              "Vendor ID",
+              "Selection Criteria"
+            ]
+          },
+          {
+            "stage_number": 3,
+            "stage_name": "Order Placement",
+            "columns": [
+              "Order Number",
+              "Order Details"
+            ]
+          },
+          {
+            "stage_number": 4,
+            "stage_name": "Delivery Confirmation",
+            "columns": [
+              "Delivery Note",
+              "Received By"
+            ]
+          },
+          {
+            "stage_number": 5,
+            "stage_name": "Payment Processing",
+            "columns": [
+              "Payment ID",
+              "Payment Method"
+            ]
+          },
+          {
+            "stage_number": 6,
+            "stage_name": "Completion",
+            "columns": [
+              "Closing Notes",
+              "Completed By"
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Login Master",
+        "description": "Manage user login credentials and access rights",
+        "columns": [
+          {
+            "name": "User Name",
+            "type": "text",
+            "required": true,
+            "description": "Name of the user",
+            "stage_number": null
+          },
+          {
+            "name": "User ID",
+            "type": "text",
+            "required": true,
+            "description": "Unique user identifier",
+            "stage_number": null
+          },
+          {
+            "name": "Pass",
+            "type": "text",
+            "required": true,
+            "description": "User password",
+            "stage_number": null
+          },
+          {
+            "name": "Role",
+            "type": "dropdown",
+            "required": true,
+            "description": "User role in the system",
+            "stage_number": null
+          },
+          {
+            "name": "Page Access",
+            "type": "text",
+            "required": false,
+            "description": "Pages accessible to the user",
+            "stage_number": null
+          },
+          {
+            "name": "Status",
+            "type": "text",
+            "required": true,
+            "description": "Active/Inactive status of the user",
+            "stage_number": null
+          },
+          {
+            "name": "Page Name",
+            "type": "text",
+            "required": false,
+            "description": "Name of the page accessed",
+            "stage_number": null
+          }
+        ],
+        "primary_key": "User ID",
+        "relationships": [],
+        "stages": []
+      }
+    ]
+  },
+  "statistics": {
+    "total_columns": 10,
+    "total_stages": 6,
+    "sheets_with_relationships": 1
+  }
+}

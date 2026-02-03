@@ -1,0 +1,93 @@
+{
+  "formulas": [
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Planned1",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Planned1\", IF(A6:A=\"\", \"\", TEXT(A6:A, \"yyyy-mm-dd hh:mm:ss\"))))",
+      "description": "Stage 1 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Delay1",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Delay1\", IF(([[Actual1]]<>\"\")*([[Planned1]]<>\"\"), [[Actual1]]-DATEVALUE([[Planned1]]), \"\")))",
+      "description": "Stage 1 delay calculation",
+      "dependencies": [
+        "Planned1",
+        "Actual1"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 1
+    },
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Planned2",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Planned2\", IF(A6:A=\"\", \"\", TEXT(A6:A, \"yyyy-mm-dd hh:mm:ss\"))))",
+      "description": "Stage 2 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Delay2",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Delay2\", IF(([[Actual2]]<>\"\")*([[Planned2]]<>\"\"), [[Actual2]]-DATEVALUE([[Planned2]]), \"\")))",
+      "description": "Stage 2 delay calculation",
+      "dependencies": [
+        "Planned2",
+        "Actual2"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 2
+    },
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Planned3",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Planned3\", IF(A6:A=\"\", \"\", TEXT(A6:A, \"yyyy-mm-dd hh:mm:ss\"))))",
+      "description": "Stage 3 planned calculated from timestamp",
+      "dependencies": [
+        "Timestamp"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": true,
+      "is_delay_formula": false,
+      "stage_number": 3
+    },
+    {
+      "sheet": "Purchase Workflow Tracking",
+      "target_column": "Delay3",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \"Delay3\", IF(([[Actual3]]<>\"\")*([[Planned3]]<>\"\"), [[Actual3]]-DATEVALUE([[Planned3]]), \"\")))",
+      "description": "Stage 3 delay calculation",
+      "dependencies": [
+        "Planned3",
+        "Actual3"
+      ],
+      "apply_to_all_rows": true,
+      "is_planned_formula": false,
+      "is_delay_formula": true,
+      "stage_number": 3
+    }
+  ],
+  "validation_rules": [],
+  "conditional_formatting": []
+}

@@ -19,7 +19,7 @@ from typing import List, Optional, Dict, Any, Tuple
 from enum import Enum
 
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, validator
 from openai import OpenAI
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -34,6 +34,9 @@ from googleapiclient.errors import HttpError
 # CONFIGURATION & LOGGING
 # =====================================================
 load_dotenv()
+
+# Create logs directory if it doesn't exist
+Path("logs").mkdir(exist_ok=True)
 
 # Setup logging
 logging.basicConfig(
@@ -59,7 +62,6 @@ class Config:
     """Application configuration"""
     OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    TEMPERATURE = float(os.getenv("TEMPERATURE", "0.2"))
     MAX_RETRIES = int(os.getenv("MAX_RETRIES", "3"))
     PROJECT_BASE_DIR = Path(os.getenv("PROJECT_BASE_DIR", "projects"))
     
@@ -77,6 +79,7 @@ class ColumnType(str, Enum):
     FORMULA = "formula"
     DROPDOWN = "dropdown"
     CHECKBOX = "checkbox"
+    BOOLEAN = "boolean"
     EMAIL = "email"
     URL = "url"
 
@@ -105,7 +108,8 @@ class WorkflowStage(BaseModel):
     has_actual: bool = Field(default=True, description="Include Actual column")
     has_delay: bool = Field(default=True, description="Include Delay column")
     
-    @validator('stage_name')
+    @field_validator('stage_name')
+    @classmethod
     def validate_stage_name(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("Stage name cannot be empty")
@@ -124,13 +128,22 @@ class ColumnInfo(BaseModel):
     is_actual: bool = Field(default=False, description="Is this an Actual column?")
     is_delay: bool = Field(default=False, description="Is this a Delay column?")
     
-    @validator('default_value', pre=True)
+    @field_validator('default_value', mode='before')
+    @classmethod
     def convert_default_value(cls, v):
         if v is None:
             return v
         return str(v)
     
-    @validator('name')
+    @field_validator('type', mode='before')
+    @classmethod
+    def normalize_type(cls, v):
+        if v == "boolean":
+            return ColumnType.CHECKBOX
+        return v
+
+    @field_validator('name')
+    @classmethod
     def validate_name(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("Column name cannot be empty")
@@ -146,7 +159,8 @@ class SheetSchema(BaseModel):
     relationships: Optional[List[str]] = Field(default_factory=list, description="Related sheets")
     has_timestamp: bool = Field(default=False, description="Has Timestamp as first column")
     
-    @validator('name')
+    @field_validator('name')
+    @classmethod
     def validate_name(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("Sheet name cannot be empty")
@@ -171,7 +185,8 @@ class FlowSchema(BaseModel):
     integrations: Optional[List[str]] = Field(default_factory=list, description="Required integrations")
     has_login_master: bool = Field(default=True, description="Include Login Master sheet")
     
-    @validator('system_name')
+    @field_validator('system_name')
+    @classmethod
     def validate_system_name(cls, v):
         if not v or len(v.strip()) == 0:
             raise ValueError("System name cannot be empty")
@@ -208,7 +223,6 @@ class LLMClient:
         
         self.client = OpenAI(api_key=Config.OPENAI_API_KEY)
         self.model = Config.OPENAI_MODEL
-        self.temperature = Config.TEMPERATURE
         logger.info(f"Initialized OpenAI client with model: {self.model}")
     
     def invoke(self, prompt: str, system_prompt: Optional[str] = None, 
@@ -228,7 +242,6 @@ class LLMClient:
                 kwargs = {
                     "model": self.model,
                     "messages": messages,
-                    "temperature": self.temperature,
                 }
                 
                 if response_format:
@@ -269,14 +282,19 @@ class GoogleServicesManager:
         token_path = Path("token.json")
         credentials_path = None
         
-        for file in Path(".").glob("client_secret*.json"):
-            credentials_path = file
-            break
+        # Look for credentials file in root or backend folder
+        search_paths = [Path("."), Path("backend")]
+        for path in search_paths:
+            for file in path.glob("client_secret*.json"):
+                credentials_path = file
+                break
+            if credentials_path:
+                break
         
         if not credentials_path:
             raise FileNotFoundError(
-                "Google OAuth credentials file not found. "
-                "Please download it from Google Cloud Console."
+                f"Google OAuth credentials file not found in {search_paths}. "
+                "Please download it from Google Cloud Console and place it in the project root or backend folder."
             )
         
         if token_path.exists():
@@ -349,13 +367,16 @@ class JSONCleaner:
         
         cleaned = content[start_idx:end_idx]
         
+        # Remove trailing commas
+        cleaned = re.sub(r',(\s*[}\]])', r'\1', cleaned)
+        
         try:
+            # Validate but don't return the parsed object
             json.loads(cleaned)
+            return cleaned
         except json.JSONDecodeError as e:
             logger.error(f"JSON validation failed: {e}")
             raise ValueError(f"Invalid JSON structure: {e}")
-        
-        return cleaned
 
 class ProjectManager:
     """Manages project folder structure and files"""
@@ -503,6 +524,10 @@ Sheet Organization:
 - Main worksheet contains all workflow stages
 - Login Master sheet for user authentication
 - Related stages grouped together visually
+
+COLUMN TYPES (CRITICAL):
+- Use ONLY: text, number, date, currency, formula, dropdown, checkbox, email, url
+- For binary/logical fields (Yes/No, True/False), use "checkbox"
 """
     
     user_prompt = f"""Design a comprehensive Workflow Management System for:
@@ -730,24 +755,24 @@ Columns:
 CRITICAL FORMULA REQUIREMENTS:
 
 1. Planned Formulas (for each stage):
-   - Formula: =ARRAYFORMULA(if(row(A4:A)=4,"Planned{N}",IF(A4:A="","",TEXT(A4:A, "yyyy-mm-dd hh:mm:ss"))))
+   - Formula: =ARRAYFORMULA(if(row(A6:A)=6,"Planned{N}",IF(A6:A="","",TEXT(A6:A, "yyyy-mm-dd hh:mm:ss"))))
    - Logic: Copies Timestamp (Col A) if preset, formatted as a string "yyyy-mm-dd hh:mm:ss".
-   - Start from row 4.
+   - Start from row 6.
 
 2. Delay Formulas (for each stage):
-   - Formula: =ARRAYFORMULA(if(row(A4:A)=4,"Delay{N}",if(AND(Actual{N}4:Actual{N}<>"",Planned{N}4:Planned{N}<>""),Actual{N}4:Actual{N}-DATEVALUE(Planned{N}4:Planned{N}),"")))
+   - Formula: =ARRAYFORMULA(if(row(A6:A)=6,"Delay{N}",if(AND(Actual{N}6:Actual{N}<>"",Planned{N}6:Planned{N}<>""),INT(Actual{N}6:Actual{N}-DATEVALUE(Planned{N}6:Planned{N})),"")))
    - Calculates difference between Actual (Date) and Planned (Text Timestamp).
    - Use DATEVALUE() for Planned column since it is text.
-   - Start from row 4.
+   - Start from row 6.
 
 3. Lookup Formulas (if needed):
    - Use VLOOKUP or XLOOKUP.
 
 Google Sheets Syntax:
 - ARRAYFORMULA for auto-fill
-- Range notation: A4:A
+- Range notation: A6:A
 - Conditional: IF(condition, true_value, false_value)
-- Row function: ROW(A4:A)
+- Row function: ROW(A6:A)
 """
     
     user_prompt = f"""Create formulas for this workflow system:
@@ -758,15 +783,14 @@ SYSTEM STRUCTURE:
 REQUIRED FORMULAS:
 
 1. For each Planned column (Planned1, Planned2, etc.):
-   - Use: =ARRAYFORMULA(if(row(A4:A)=4,"PlannedN",IF(A4:A="","",TEXT(A4:A, "yyyy-mm-dd hh:mm:ss"))))
-   - Formats timestamp as string.
+   - Use: =ARRAYFORMULA(IF(ROW(A6:A)=6, "ColumnName", {{A6:A}}))
+   - Replace "ColumnName" with the actual target column name.
+   - Reference Column A (Timestamp).
 
 2. For each Delay column (Delay1, Delay2, etc.):
-   - Calculate: Actual - DATEVALUE(Planned)
-   - Handle empty values
-   - Auto-fill for all rows starting at Row 4
-
-3. Any lookup formulas needed.
+   - Use: =ARRAYFORMULA(IF(ROW(A6:A)=6, "ColumnName", IF(([[ActualN]]<>"")*([[PlannedN]]<>""), INT([[ActualN]]-[[PlannedN]]), "")))
+   - Replace "ColumnName" with the actual target column name.
+   - IMPORTANT: Do NOT use AND() function. It breaks ARRAYFORMULA. Use * to combine conditions.
 
 Return ONLY valid JSON:
 {{
@@ -774,8 +798,8 @@ Return ONLY valid JSON:
     {{
       "sheet": "Sheet Name",
       "target_column": "Planned1",
-      "start_row": 4,
-      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\\"Planned1\\",IF(A4:A=\\"\\",\\"\\",TEXT(A4:A, \\"yyyy-mm-dd hh:mm:ss\\"))))",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \\"Planned1\\", {{A6:A}}))",
       "description": "Stage 1 planned calculated from timestamp",
       "dependencies": ["Timestamp"],
       "apply_to_all_rows": true,
@@ -785,8 +809,8 @@ Return ONLY valid JSON:
     {{
       "sheet": "Sheet Name",
       "target_column": "Delay1",
-      "start_row": 4,
-      "formula": "=ARRAYFORMULA(if(row(A4:A)=4,\\"Delay1\\",if(AND(N4:N<>\\"\\",M4:M<>\\"\\"),N4:N-DATEVALUE(M4:M),\\"\\")))",
+      "start_row": 6,
+      "formula": "=ARRAYFORMULA(IF(ROW(A6:A)=6, \\"Delay1\\", IF(([[Actual1]]<>\\"\\")*([[Planned1]]<>\\"\\"), INT([[Actual1]]-[[Planned1]]), \\"\\")))",
       "description": "Stage 1 delay calculation",
       "dependencies": ["Planned1", "Actual1"],
       "apply_to_all_rows": true,
@@ -798,7 +822,8 @@ Return ONLY valid JSON:
   "conditional_formatting": []
 }}
 
-Generate formulas for ALL stages!
+Generate formulas for ALL stages! Reference all columns using [[ColumnName]] syntax.
+Use Row 6 for all formulas to include the header name (e.g., =ARRAYFORMULA(IF(ROW(A6:A)=6, "Name", {{A6:A}}))).
 """
     
     try:
@@ -946,13 +971,27 @@ class GoogleSheetsManager:
         has_stages = bool(sheet.stages)
         
         if has_stages:
-            # --- STAGE FORMAT (Rows 2 & 3) ---
-            # Add column headers (Row 3)
+            # --- STAGE FORMAT (Rows 1-6) ---
+            # Row 1: Stage Names (Handled in _add_headers_with_stage_format)
+            # Row 2: System Name / Portal
+            # Row 3-5: Who/How/When labels
+            # Row 6: Column Headers
+            
+            # Write labels to Column A
+            label_values = [
+                [""], # Row 1 (Stage Names)
+                [""], # Row 2 (Empty)
+                ["Who"], # Row 3
+                ["How"], # Row 4
+                ["When"], # Row 5
+                column_names # Row 6 (Headers)
+            ]
+            
             self.sheets.spreadsheets().values().update(
                 spreadsheetId=spreadsheet_id,
-                range=f"{sheet.name}!A3",
+                range=f"{sheet.name}!A1",
                 valueInputOption="RAW",
-                body={"values": [column_names]}
+                body={"values": label_values}
             ).execute()
         else:
             # --- STANDARD FORMAT (Row 1) ---
@@ -987,8 +1026,8 @@ class GoogleSheetsManager:
                 "repeatCell": {
                     "range": {
                         "sheetId": sheet_id,
-                        "startRowIndex": 2,
-                        "endRowIndex": 3
+                        "startRowIndex": 5,
+                        "endRowIndex": 6
                     },
                     "cell": {
                         "userEnteredFormat": {
@@ -1012,26 +1051,54 @@ class GoogleSheetsManager:
             col_indices = {name: i for i, name in enumerate(column_names)}
             
             for stage in sheet.stages:
-                start_idx = None
-                end_idx = None
+                indices = []
                 
                 # Check explicit columns list
                 for col_name in stage.columns:
                      if col_name in col_indices:
-                         idx = col_indices[col_name]
-                         if start_idx is None or idx < start_idx: start_idx = idx
-                         if end_idx is None or idx > end_idx: end_idx = idx
+                         indices.append(col_indices[col_name])
                 
-                # Check derived from stage_number columns
-                if start_idx is None:
-                    for col in sheet.columns:
-                        if col.stage_number == stage.stage_number:
-                            idx = col_indices.get(col.name)
-                            if idx is not None:
-                                if start_idx is None or idx < start_idx: start_idx = idx
-                                if end_idx is None or idx > end_idx: end_idx = idx
-
-                if start_idx is not None and end_idx is not None:
+                # Also check columns that have this stage_number
+                for col in sheet.columns:
+                    if col.stage_number == stage.stage_number:
+                        idx = col_indices.get(col.name)
+                        if idx is not None and idx not in indices:
+                            indices.append(idx)
+                            
+                # CRITICAL: Explicitly find Planned/Actual/Delay columns for this stage
+                # This fixes issues where LLM forgets to assign stage_number to these columns
+                suffixes = [f"Planned{stage.stage_number}", f"Actual{stage.stage_number}", f"Delay{stage.stage_number}"]
+                for suffix in suffixes:
+                    # Try exact match
+                    if suffix in col_indices:
+                        idx = col_indices[suffix]
+                        if idx not in indices:
+                            indices.append(idx)
+                    else:
+                        # Try case-insensitive match
+                        for col_name, idx in col_indices.items():
+                            if col_name.lower() == suffix.lower() and idx not in indices:
+                                indices.append(idx)
+                
+                if indices:
+                    start_idx = min(indices)
+                    end_idx = max(indices)
+                    
+                    # FORCE start at Planned/Actual/Delay if present
+                    # User requirement: Stage header must start at Planned/Actual/Delay
+                    for suffix in [f"Planned{stage.stage_number}", f"Actual{stage.stage_number}", f"Delay{stage.stage_number}"]:
+                        # Exact
+                        if suffix in col_indices:
+                            start_idx = col_indices[suffix]
+                            break
+                        # Case insensitive
+                        found_ci = False
+                        for col_name, idx in col_indices.items():
+                            if col_name.lower() == suffix.lower():
+                                start_idx = idx
+                                found_ci = True
+                                break
+                        if found_ci: break
                     stage_names_row[start_idx] = stage.stage_name
                     stage_ranges[stage.stage_number] = {
                         "start": start_idx, 
@@ -1043,7 +1110,7 @@ class GoogleSheetsManager:
             if any(stage_names_row):
                 self.sheets.spreadsheets().values().update(
                     spreadsheetId=spreadsheet_id,
-                    range=f"{sheet.name}!A2",
+                    range=f"{sheet.name}!A1",
                     valueInputOption="RAW",
                     body={"values": [stage_names_row]}
                 ).execute()
@@ -1061,8 +1128,8 @@ class GoogleSheetsManager:
                             "mergeCells": {
                                 "range": {
                                     "sheetId": sheet_id,
-                                    "startRowIndex": 1,
-                                    "endRowIndex": 2,
+                                    "startRowIndex": 0,
+                                    "endRowIndex": 1,
                                     "startColumnIndex": start,
                                     "endColumnIndex": end + 1
                                 },
@@ -1070,13 +1137,13 @@ class GoogleSheetsManager:
                             }
                         })
                     
-                    # Color Rows 2 & 3
+                    # Color Row 1
                     requests.append({
                         "repeatCell": {
                             "range": {
                                 "sheetId": sheet_id,
-                                "startRowIndex": 1,
-                                "endRowIndex": 3,
+                                "startRowIndex": 0,
+                                "endRowIndex": 1,
                                 "startColumnIndex": start,
                                 "endColumnIndex": end + 1
                             },
@@ -1098,12 +1165,107 @@ class GoogleSheetsManager:
                         }
                     })
 
+                    # Color Rows 3-6
+                    requests.append({
+                        "repeatCell": {
+                            "range": {
+                                "sheetId": sheet_id,
+                                "startRowIndex": 2,
+                                "endRowIndex": 6,
+                                "startColumnIndex": start,
+                                "endColumnIndex": end + 1
+                            },
+                            "cell": {
+                                "userEnteredFormat": {
+                                    "backgroundColor": color,
+                                    "textFormat": {"bold": True, "fontSize": 10},
+                                    "horizontalAlignment": "CENTER",
+                                    "verticalAlignment": "MIDDLE",
+                                    "borders": {
+                                        "bottom": {"style": "SOLID", "width": 1, "color": {"red": 0, "green": 0, "blue": 0}},
+                                        "left": {"style": "SOLID", "width": 1, "color": {"red": 0, "green": 0, "blue": 0}},
+                                        "right": {"style": "SOLID", "width": 1, "color": {"red": 0, "green": 0, "blue": 0}},
+                                        "top": {"style": "SOLID", "width": 1, "color": {"red": 0, "green": 0, "blue": 0}}
+                                    }
+                                }
+                            },
+                            "fields": "userEnteredFormat"
+                        }
+                    })
+
+            
+            # Format Column A labels (Rows 3-5)
+            requests.append({
+                "repeatCell": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "startRowIndex": 2,
+                        "endRowIndex": 5,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": 1
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {"bold": True},
+                            "horizontalAlignment": "LEFT"
+                        }
+                    },
+                    "fields": "userEnteredFormat.textFormat,userEnteredFormat.horizontalAlignment"
+                }
+            })
+
+            # 3. Format Columns (Date/Time and Numbers)
+            for i, col in enumerate(sheet.columns):
+                col_lower = col.name.lower()
+                if (col.type == ColumnType.DATE or "planned" in col_lower or "actual" in col_lower or "timestamp" in col_lower) and "delay" not in col_lower:
+                    # Date/Time Format
+                    requests.append({
+                        "repeatCell": {
+                            "range": {
+                                "sheetId": sheet_id,
+                                "startRowIndex": 6,
+                                "startColumnIndex": i,
+                                "endColumnIndex": i + 1
+                            },
+                            "cell": {
+                                "userEnteredFormat": {
+                                    "numberFormat": {
+                                        "type": "DATE_TIME",
+                                        "pattern": "dd/mm/yyyy HH:mm:ss"
+                                    }
+                                }
+                            },
+                            "fields": "userEnteredFormat.numberFormat"
+                        }
+                    })
+                elif "delay" in col_lower:
+                    # Number Format for Delays
+                    requests.append({
+                        "repeatCell": {
+                            "range": {
+                                "sheetId": sheet_id,
+                                "startRowIndex": 6,
+                                "startColumnIndex": i,
+                                "endColumnIndex": i + 1
+                            },
+                            "cell": {
+                                "userEnteredFormat": {
+                                    "numberFormat": {
+                                        "type": "NUMBER",
+                                        "pattern": "0"
+                                    }
+                                }
+                            },
+                            "fields": "userEnteredFormat.numberFormat"
+                        }
+                    })
+
             # Freeze 3 rows
             requests.append({
                 "updateSheetProperties": {
                     "properties": {
                         "sheetId": sheet_id,
-                        "gridProperties": {"frozenRowCount": 3}
+                        "gridProperties": {"frozenRowCount": 6}
                     },
                     "fields": "gridProperties.frozenRowCount"
                 }
@@ -1165,8 +1327,20 @@ class GoogleSheetsManager:
         print(f"\n   ⚙️  Applying {len(plan.formulas)} formulas...")
         
         applied_count = 0
+        import re
+        
         for formula in plan.formulas:
             try:
+                # Post-process formula: Replace [[ColumnName]] with LetterRow:Letter
+                processed_formula = formula.formula
+                matches = re.findall(r'\[\[(.*?)\]\]', processed_formula)
+                
+                for col_name in matches:
+                    letter = self._get_column_letter(col_name, flow, formula.sheet)
+                    # For ARRAYFORMULA starting at Row 6, we use Letter6:Letter
+                    range_ref = f"{letter}6:{letter}"
+                    processed_formula = processed_formula.replace(f"[[{col_name}]]", range_ref)
+                
                 # Apply formula directly
                 range_notation = f"{formula.sheet}!{self._get_column_letter(formula.target_column, flow, formula.sheet)}{formula.start_row}"
                 
@@ -1174,7 +1348,7 @@ class GoogleSheetsManager:
                     spreadsheetId=spreadsheet_id,
                     range=range_notation,
                     valueInputOption="USER_ENTERED",
-                    body={"values": [[formula.formula]]}
+                    body={"values": [[processed_formula]]}
                 ).execute()
                 
                 applied_count += 1

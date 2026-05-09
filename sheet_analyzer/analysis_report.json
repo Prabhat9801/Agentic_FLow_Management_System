@@ -1,0 +1,1585 @@
+{
+  "metadata": {
+    "analyzed_at": "2026-05-09T14:16:56.658000",
+    "system_name": "Copy of Order To Payment",
+    "spreadsheet_id": "1qrEWeHrwudiUKbaxqj9pWbyaIuunJ75Mm0kacqrzUDU",
+    "spreadsheet_url": "https://docs.google.com/spreadsheets/d/1qrEWeHrwudiUKbaxqj9pWbyaIuunJ75Mm0kacqrzUDU/edit?gid=359812229#gid=359812229"
+  },
+  "raw_structure": [
+    {
+      "sheet_name": "Management Approval",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Advance Denial Reason",
+        "Exception Approval Required",
+        "Approved By",
+        "Approval Status",
+        "Approval Date",
+        "Approved Without Advance",
+        "Risk Level",
+        "Management Remarks"
+      ],
+      "formulas": [],
+      "total_rows": 3,
+      "total_cols": 11
+    },
+    {
+      "sheet_name": "Take advance",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Advance Required (%)",
+        "Advance Amount",
+        "Payment Mode",
+        "Advance Payment Status",
+        "Advance Received Date",
+        "Transaction / Reference ID",
+        "Invoice / Receipt Shared",
+        "Invoice No.  ( if Yes)",
+        "Ops Remarks",
+        "Column_12",
+        "TAKE ADVANCE FORM"
+      ],
+      "formulas": [],
+      "total_rows": 2,
+      "total_cols": 14
+    },
+    {
+      "sheet_name": "Story Briefing",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Briefing Mode",
+        "Story Theme / Vision",
+        "Shoot Style",
+        "Key Moments / Priority Events",
+        "Reference Link",
+        "Preferrable 3 locations for shoot\n(Ex -  market area, beach, cafe , proposal setup)",
+        "Preferrable 3 outfits for Bride",
+        "Preferrable 3 outfits for Groom",
+        "Video editing style",
+        "Additional requirements such as bike, yatch, vintage car, proposal setup (Cost Applicable)",
+        "Special Client Instructions",
+        "Voice Upload",
+        "Shot List Received",
+        "Brief Shared with Creative Team",
+        "Final Brief Status",
+        "Story Briefing From Client Form Submitted by"
+      ],
+      "formulas": [
+        {
+          "column": "Timestamp",
+          "row": 2,
+          "formula": "=today()",
+          "description": "5/9/2026 0:00:00"
+        }
+      ],
+      "total_rows": 21,
+      "total_cols": 19
+    },
+    {
+      "sheet_name": "Moodboard Delivery",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Moodboard Delivery Mode",
+        "Delivered By ",
+        "Delivered By (Name)",
+        "Client Acknowledgement Received ",
+        "Client Feedback Received ",
+        "Special Client Instructions",
+        "Revision Required",
+        "Final Approval Received ",
+        "Final Approval Date",
+        "Moodboard Delivery Status"
+      ],
+      "formulas": [],
+      "total_rows": 17,
+      "total_cols": 13
+    },
+    {
+      "sheet_name": "Token Payment",
+      "headers": [
+        "Timestamp",
+        "JobID",
+        "ProjectID",
+        "Amount",
+        "Payment Mode (UPI / Cash / Bank Transfer)",
+        "Payment Paid Date",
+        "Receipt Number",
+        "Payment Remarks",
+        "Payment Screenshot",
+        "Payment Again"
+      ],
+      "formulas": [],
+      "total_rows": 43,
+      "total_cols": 10
+    },
+    {
+      "sheet_name": "Orders",
+      "headers": [
+        "Timestamp",
+        "jobId",
+        "projectId",
+        "Client",
+        "Job Genre",
+        "Custom Id Name",
+        "Custom Id",
+        "Select Sales Executive",
+        "Job Date",
+        "Delivery Date (On/Before)",
+        "Job Time",
+        "POC Name",
+        "POC Contact",
+        "POC WhatsApp",
+        "POC E-mail",
+        "POC 2nd E-mail",
+        "Job City",
+        "Job Shoot Address",
+        "Job Specification / Instructions",
+        "Deliverables\n",
+        "Package Amount\n",
+        "Operations Cost (Non-Taxable Amount)\n",
+        "Taxable Amount\n",
+        "GST\n",
+        "Package Amount With Tax\n",
+        "Is Token Received\n",
+        "Column_26",
+        "Planned 1",
+        "Actual 1",
+        "Time Delay 1",
+        "Advance Amount",
+        "Advance Required (%)",
+        "Payment Mode",
+        "Advance Payment Status",
+        "Advance Received Date",
+        "Transaction / Reference ID",
+        "Invoice / Receipt Shared (Yes / No)",
+        "Invoice Number",
+        "Ops Remarks 1",
+        "Planned 2",
+        "Actual 2",
+        "Time Delay 2",
+        "Advance Denial Reason",
+        "Exception Approval Required",
+        "Approved By",
+        "Approval Status",
+        "Approval Date",
+        "Approved Without Advance",
+        "Risk Level",
+        "Management Remarks"
+      ],
+      "formulas": [
+        {
+          "column": "Time Delay 1",
+          "row": 8,
+          "formula": "=ARRAYFORMULA( if(AB8:AB,if(AC8:AC<>\"\",if(AC8:AC>AB8:AB,AC8:AC-AB8:AB,\"\"),$A$1-AB8:AB),\"\"))",
+          "description": "-1105152:00:00"
+        },
+        {
+          "column": "Advance Required (%)",
+          "row": 8,
+          "formula": "=ARRAYFORMULA(IFERROR(IF(U8:U=\"\",,AE8:AE/U8:U),\"\"))",
+          "description": "0.00%"
+        },
+        {
+          "column": "Advance Payment Status",
+          "row": 8,
+          "formula": "=ARRAYFORMULA(IFNA(IF(AB8:AB=\"\",\"\", IF(AE8:AE=\"\",\"No\", \"Yes\"))))",
+          "description": "No"
+        },
+        {
+          "column": "Planned 2",
+          "row": 8,
+          "formula": "=ARRAYFORMULA(IF(AC8:AC=\"\", if(A8:A,WORKDAY.INTL(A8:A,AN$5,\"0000001\")+hour(A8:A)/24+MINUTE(A8:A)/1440,\"\"),\"\"))",
+          "description": "29/01/2026 17:33:00"
+        },
+        {
+          "column": "Actual 2",
+          "row": 8,
+          "formula": "=ARRAYFORMULA(IF(AT8:AT=\"Approved\", IFNA(VLOOKUP(B8:B, {'Management Approval'!C:C,'Management Approval'!A:A},2,0)),\"\"))",
+          "description": "3/11/2026 15:16:48"
+        },
+        {
+          "column": "Time Delay 2",
+          "row": 8,
+          "formula": "=ARRAYFORMULA( if(AN8:AN,if(AO8:AO<>\"\",if(AO8:AO>AN8:AN,AO8:AO-AN8:AN,\"\"),$A$1-AN8:AN),\"\"))",
+          "description": "981:43:48"
+        },
+        {
+          "column": "Advance Denial Reason",
+          "row": 8,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(C8:C,\nSORT({'Management Approval'!B:K,'Management Approval'!A:A},10,FALSE),\n{3,4,5,6,7,8,9,10},0)))",
+          "description": "demo 2"
+        },
+        {
+          "column": "Timestamp",
+          "row": 9,
+          "formula": "=QUERY({'Order-Sheet'!Z920:Z,'Order-Sheet'!A920:Y},\"SELECT * WHERE Col9 > datetime '2026-03-26 00:00:00' AND Col4 = 'VsnapU'\",\n0\n)",
+          "description": "2026-02-20 18:54:38"
+        },
+        {
+          "column": "Planned 1",
+          "row": 9,
+          "formula": "=ARRAYFORMULA(IF(B9:B=\"\",\"\", WORKDAY.INTL(I9:I, -2, 1)))",
+          "description": "3/26/2026 0:00:00"
+        },
+        {
+          "column": "Actual 1",
+          "row": 9,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(C9:C, {'Payment-Benchmarks'!G:G, 'Payment-Benchmarks'!E:E},2,0)))",
+          "description": "2/21/2026 0:00:00"
+        },
+        {
+          "column": "Advance Amount",
+          "row": 9,
+          "formula": "=ARRAYFORMULA(IF('Payment-Benchmarks'!D2:D= \"Token\",IFNA(VLOOKUP(C9:C, {'Payment-Benchmarks'!G:G, 'Payment-Benchmarks'!C:C},2,0)),\n\"\"))",
+          "description": "19500"
+        }
+      ],
+      "total_rows": 7031,
+      "total_cols": 50
+    },
+    {
+      "sheet_name": "FMS",
+      "headers": [
+        "Timestamp",
+        "jobId",
+        "projectId",
+        "Client",
+        "Job Genre",
+        "Custom Id Name",
+        "Custom Id",
+        "Select Sales Executive",
+        "Job Date",
+        "Delivery Date (On/Before)",
+        "Job Time",
+        "POC Name",
+        "POC Contact",
+        "POC WhatsApp",
+        "POC E-mail",
+        "POC 2nd E-mail",
+        "Job City",
+        "Job Shoot Address",
+        "Job Specification / Instructions",
+        "Deliverables\n",
+        "Package Amount\n",
+        "Operations Cost (Non-Taxable Amount)\n",
+        "Taxable Amount\n",
+        "GST\n",
+        "Package Amount With Tax\n",
+        "Is Token Received\n",
+        "Assigned Member Email",
+        "Planned 1",
+        "Actual 1",
+        "Time Delay 1",
+        "Assigned Member Name",
+        "Planned 2",
+        "Actual 2",
+        "Time Delay 2",
+        "Venue",
+        "Confirmed Date",
+        "Confirmation Status",
+        "Moodboard Required\r",
+        "Remarks 1",
+        "Planned 3",
+        "Actual 3",
+        "Delay 3",
+        "Existing Photographer Available",
+        "Existing Photographer Name",
+        "Existing Photographer Contact  No.",
+        "Remarks 2",
+        "Planned 4",
+        "Actual 4",
+        "Time Delay 4",
+        "Photographer Name 1",
+        "Photographer 1 Contact No.",
+        "Photographer1 Remarks",
+        "Rate 1",
+        "Social Link Of Photgrapher 1",
+        "Photographer Name 2",
+        "Photographer 2 Contact No.",
+        "Rate 2",
+        "Social Link Of Photgrapher 2",
+        "Photographer2 Remarks",
+        "Photographer Name 3",
+        "Photographer 3 Contact No.",
+        "Rate 3",
+        "Social Link Of Photgrapher 3",
+        "Photographer3 Remarks",
+        "Planned 5",
+        "Actual 5",
+        "Time Delay 5",
+        "Approved Photographer Name",
+        "Contact Number",
+        "Approval Remarks",
+        "Payment Terms",
+        "Total Photography Cost",
+        "Planned 6",
+        "Actual 6",
+        "Time Delay 6",
+        "Assistant Photographer",
+        "Videographer Assigned",
+        "Equipment Required",
+        "Photography Cost",
+        "Allotment Confirmation Status",
+        "Allotment Remarks",
+        "Planned 7",
+        "Actual 7",
+        "Time Delay 7",
+        "Token Amount",
+        "Payment Mode",
+        "Payment Paid Date",
+        "Receipt Number",
+        "Payment Remarks",
+        "Payment Screenshot",
+        "Payment Again",
+        "Planned 8",
+        "Actual 8",
+        "Time Delay 8",
+        "Briefing Mode 1",
+        "Story Theme / Vision",
+        "Shoot Style",
+        "Key Moments / Priority Events",
+        "Reference Link 1",
+        "Preferrable 3 locations",
+        "Preferrable 3 outfits for Bride",
+        "Preferrable 3 outfits for Groom",
+        "Video editing style",
+        "Additional requirement",
+        "Special Client Instructions 1",
+        "Voice Upload",
+        "Shot List Received",
+        "Brief Shared with Creative Team",
+        "Final Brief Status",
+        "Planned 9",
+        "Actual 9",
+        "Time Delay 9",
+        "Moodboard Required",
+        "Moodboard Created By (Creative Team)",
+        "Moodboard Created By (Name)",
+        "Reference Inputs Received",
+        "Reference Link 2",
+        "Moodboard Shared with Client\n",
+        "Client Feedback Status\n",
+        "Revision Count",
+        "Final Moodboard Approval Date",
+        "Final Moodboard Status",
+        "Planned 10",
+        "Actual 10",
+        "Time Delay 10",
+        "Moodboard Delivery Mode",
+        "Delivered By ",
+        "Delivered By (Name)",
+        "Client Acknowledgement Received ",
+        "Client Feedback Received ",
+        "Special Client Instructions 2",
+        "Revision Required",
+        "Final Approval Received ",
+        "Final Approval Date",
+        "Moodboard Delivery Status",
+        "Planned 11",
+        "Actual 11",
+        "Time Delay 11",
+        "Briefing Mode 2",
+        "Client Availability Confirmed",
+        "Shoot Timeline Explained",
+        "Deliverables Explained",
+        "Client Confirmation Status",
+        "Briefing Remarks1",
+        "Planned 12",
+        "Actual 12",
+        "Time Delay 12",
+        "Briefing Mode",
+        "Location Shared",
+        "Client Expectation Shared",
+        "Shot List Shared (Yes / No)",
+        "Reporting Time Confirmed",
+        "Contact Person Shared",
+        "Photographer Confirmation (Yes / No)",
+        "Briefing Remarks2",
+        "Payment received from client",
+        "Payment %",
+        "Benchmark"
+      ],
+      "formulas": [
+        {
+          "column": "Timestamp",
+          "row": 1,
+          "formula": "=now()",
+          "description": "5/9/2026 13:39:47"
+        },
+        {
+          "column": "jobId",
+          "row": 1,
+          "formula": "=D1/24-C1/24",
+          "description": "0.375"
+        },
+        {
+          "column": "Planned 1",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IF(I7:I=\"\", \"\", INT(I7:I) + TIME(18, 0, 0)))",
+          "description": "2/28/2026 18:00:00"
+        },
+        {
+          "column": "Time Delay 1",
+          "row": 7,
+          "formula": "=ArrayFormula(if(AB7:AB,if(AC7:AC<>\"\",if(AC7:AC>AB7:AB,AC7:AC-AB7:AB,\"\"),$A$1-AB7:AB),\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Planned 2",
+          "row": 7,
+          "formula": "=ARRAYFORMULA( IF(AC7:AC=\"\",\"\",\nIF(I7:I=\"\",\"\",\nIF(I7:I-TODAY()>60,\nI7:I-30,\nIF(I7:I-TODAY()>20,\nTODAY()+7,\nTODAY()\n)))\n)\n)",
+          "description": "5/9/2026 0:00:00"
+        },
+        {
+          "column": "Actual 2",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IF(AK7:AK=\"No\",\"\",IFNA(TO_DATE(IFERROR(VLOOKUP(B7:B&C7:C,SORT({'Confirmation From Client'!B:B&'Confirmation From Client'!C:C,'Confirmation From Client'!A:A,'Confirmation From Client'!A:A},2,FALSE),3,false),IFERROR(VLOOKUP(C7:C,SORT({'Confirmation From Client'!C:C,'Confirmation From Client'!A:A,'Confirmation From Client'!A:A},2,FALSE),3,FALSE)))\n))))",
+          "description": ""
+        },
+        {
+          "column": "Time Delay 2",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(if(AF7:AF,if(AG7:AG<>\"\",if(AG7:AG>AF7:AF,AG7:AG-AF7:AF,\"\"),$A$1-AF7:AF),\"\"))",
+          "description": "13:39:47"
+        },
+        {
+          "column": "Venue",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IF(B7:B=\"\",\"\",IFERROR(VLOOKUP(B7:B&C7:C,{'Confirmation From Client'!B:B&'Confirmation From Client'!C:C,'Confirmation From Client'!A:A,'Confirmation From Client'!D:H },{3,4,5,6,7},FALSE),IFERROR(VLOOKUP(B7:B,{'Confirmation From Client'!B:B,'Confirmation From Client'!A:A,'Confirmation From Client'!D:H},{3,4,5,6,7},FALSE),IFERROR(VLOOKUP(C7:C,{'Confirmation From Client'!C:C,'Confirmation From Client'!A:A,'Confirmation From Client'!D:H},{3,4,5,6,7},FALSE),\"\")))))",
+          "description": ""
+        },
+        {
+          "column": "Planned 3",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(if(AG7:AG,WORKDAY.INTL(AG7:AG,AN$5,\"0000001\")+hour(AG7:AG)/24+MINUTE(AG7:AG)/1440,\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Actual 3",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IF(AN7:AN=\"\",\"\", IF(AV7:AV<>\"\",AV7:AV, IFNA(VLOOKUP(B7:B,{'Photographer-Allotments'!A:A, 'Photographer-Allotments'!D:D },2,0)))))",
+          "description": ""
+        },
+        {
+          "column": "Delay 3",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(if(AN7:AN,if(AO7:AO<>\"\",if(AO7:AO>AN7:AN,AO7:AO-AN7:AN,\"\"),$A$1-AN7:AN),\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Existing Photographer Available",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IF(B7:B=\"\",\"\", IF(AR7:AR=\"\",\"No\",\"Yes\")))",
+          "description": "Yes"
+        },
+        {
+          "column": "Planned 4",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(if(AQ7:AQ=\"No\",if(AG7:AG,WORKDAY.INTL(AG7:AG,AU$5,\"0000001\")+hour(AG7:AG)/24+MINUTE(AG7:AG)/1440,\"\"),\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Actual 4",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(B7:B,{'Photographer Search'!C:C,'Photographer Search'!A:A},2,0)))",
+          "description": ""
+        },
+        {
+          "column": "Time Delay 4",
+          "row": 7,
+          "formula": "=ARRAYFORMULA(if(AU7:AU,if(AV7:AV<>\"\",if(AV7:AV>AU7:AU,AV7:AV-AU7:AU,\"\"),$A$1-AU7:AU),\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Photographer Name 1",
+          "row": 7,
+          "formula": "=IFNA(ARRAYFORMULA(VLOOKUP(B7:B,{'Photographer Search'!C:C,'Photographer Search'!D:R},{2,3,4,5,6,7,8,9,10,11,12,13,14,15,16},0)))",
+          "description": ""
+        },
+        {
+          "column": "Planned 5",
+          "row": 7,
+          "formula": "=if(AV7:AV,WORKDAY.INTL(AV7:AV,BM$5,\"0000001\")+hour(AV7:AV)/24+MINUTE(AV7:AV)/1440,\"\")",
+          "description": ""
+        },
+        {
+          "column": "Actual 5",
+          "row": 7,
+          "formula": "=IFNA(ARRAYFORMULA(TO_DATE(VLOOKUP(B7:B,{Approval!C:C,Approval!A:A},2,0))))",
+          "description": ""
+        },
+        {
+          "column": "Time Delay 5",
+          "row": 7,
+          "formula": "=ArrayFormula(if(BM7:BM,if(BN7:BN<>\"\",if(BN7:BN>BM7:BM,BN7:BN-BM7:BM,\"\"),$A$1-BM7:BM),\"\"))",
+          "description": ""
+        },
+        {
+          "column": "Approved Photographer Name",
+          "row": 7,
+          "formula": "=IFNA(ARRAYFORMULA(VLOOKUP(B7:B,{Approval!C:C,Approval!D:H},{2,3,4,5,6},0)))",
+          "description": ""
+        }
+      ],
+      "total_rows": 200,
+      "total_cols": 158
+    },
+    {
+      "sheet_name": "Moodboard Creation",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Moodboard Required ",
+        "Moodboard Created By ",
+        "Moodboard Created By (Name)",
+        "Reference Inputs Received",
+        "Reference Link",
+        "Moodboard Shared with Client ",
+        "Client Feedback Status",
+        "Revision Count",
+        "Final Moodboard Approval Date",
+        "Final Moodboard Status",
+        "Moodboard Creation Form\nSubmitted By"
+      ],
+      "formulas": [],
+      "total_rows": 8,
+      "total_cols": 14
+    },
+    {
+      "sheet_name": "Client Briefing",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Briefing Mode",
+        "Client Availability Confirmed",
+        "Shoot Timeline Explained ",
+        "Deliverables Explained",
+        "Client Confirmation Status",
+        "Briefing Remarks",
+        "Client Briefing Before Shoot Form Submitted By"
+      ],
+      "formulas": [],
+      "total_rows": 37,
+      "total_cols": 10
+    },
+    {
+      "sheet_name": "Photgrapher Briefing bfr shoot",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Briefing Mode",
+        "Location Shared ",
+        "Client Expectation Shared",
+        "Photographer Checklist Shared",
+        "Reporting Time ",
+        "Client Details Shared ?",
+        "Photographer Confirmation ",
+        "Briefing Remarks",
+        "Name and Number of Locations",
+        "Client Reference Link",
+        "Photoraphers Equipment Check",
+        "Photographer Equipment List",
+        "Column_15"
+      ],
+      "formulas": [],
+      "total_rows": 21,
+      "total_cols": 16
+    },
+    {
+      "sheet_name": "Photographer Briefing-W",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Photographer Name",
+        "Contact Number",
+        "Assistant Photographer",
+        "Videographer Assigned",
+        "  Photographer equipment List  ",
+        "Photography Cost",
+        "Allotment Confirmation Status",
+        "Briefing Remarks",
+        "Photographer Briefing Form\nSubmitted By"
+      ],
+      "formulas": [],
+      "total_rows": 71,
+      "total_cols": 12
+    },
+    {
+      "sheet_name": "Approval",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Approved Photographer Name",
+        "Contact Number",
+        "Approval Status",
+        "Payment Terms",
+        "Total Photography Cost"
+      ],
+      "formulas": [],
+      "total_rows": 25,
+      "total_cols": 8
+    },
+    {
+      "sheet_name": "Photographer Allotment",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Existing Photographer Available",
+        "Existing Photographer Name",
+        "Existing Photographer Contact  No.",
+        "Remarks"
+      ],
+      "formulas": [],
+      "total_rows": 2,
+      "total_cols": 7
+    },
+    {
+      "sheet_name": "Photographer Search",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Photographer Name 1",
+        "Photographer 1   Contact No.",
+        "Remarks 1",
+        "Rate 1",
+        "Social Link Of Photgrapher 1",
+        "Photographer Name 2",
+        "Photographer 2   Contact No.",
+        "Rate 2",
+        "Social Link Of Photgrapher 2",
+        "Remarks 2",
+        "Photographer Name 3",
+        "Photographer 3   Contact No.",
+        "Rate 3",
+        "Social Link Of Photgrapher 3",
+        "Remarks 3"
+      ],
+      "formulas": [],
+      "total_rows": 3,
+      "total_cols": 18
+    },
+    {
+      "sheet_name": "Assigned Member",
+      "headers": [
+        "Timestamp",
+        "ProjectID",
+        "JobID",
+        "Assigend Member Name"
+      ],
+      "formulas": [],
+      "total_rows": 3,
+      "total_cols": 4
+    },
+    {
+      "sheet_name": "Order-Sheet",
+      "headers": [
+        "jobId",
+        "projectId",
+        "clientName",
+        "jobGenre",
+        "customIdName",
+        "customId",
+        "salesExecutive",
+        "jobDate",
+        "deliveryDate",
+        "jobTime",
+        "pocName",
+        "pocContact",
+        "pocWhatsApp",
+        "pocEmail",
+        "poc2ndEmail",
+        "jobCity",
+        "jobShootAddress",
+        "jobSpecifications",
+        "deliverables",
+        "packageAmount",
+        "operationsCostNonTaxableAmount",
+        "taxableAmount",
+        "gst",
+        "packageAmountWithTax",
+        "isTokenReceived",
+        "last update date",
+        "Id"
+      ],
+      "formulas": [],
+      "total_rows": 3323,
+      "total_cols": 27
+    },
+    {
+      "sheet_name": "Copy of Order-Sheet",
+      "headers": [
+        "clientName",
+        "jobGenre",
+        "customIdName",
+        "customId",
+        "salesExecutive",
+        "jobDate",
+        "deliveryDate",
+        "jobTime",
+        "pocName",
+        "pocContact",
+        "pocWhatsApp",
+        "pocEmail",
+        "poc2ndEmail",
+        "jobCity",
+        "jobShootAddress",
+        "jobSpecifications",
+        "deliverables",
+        "packageAmount",
+        "operationsCostNonTaxableAmount",
+        "taxableAmount",
+        "gst",
+        "packageAmountWithTax",
+        "isTokenReceived",
+        "JobId",
+        "Id"
+      ],
+      "formulas": [],
+      "total_rows": 1074,
+      "total_cols": 25
+    },
+    {
+      "sheet_name": "Update",
+      "headers": [
+        "ORD-Order Number ",
+        "Timestamp",
+        "Client",
+        "Job Genre",
+        "Custom Id Name",
+        "Custom Id",
+        "Select Sales Executive",
+        "Job Date",
+        "Delivery Date (On/Before)",
+        "Job Time\r\n",
+        "POC Name",
+        "POC Contact",
+        "POC WhatsApp",
+        "POC E-mail",
+        "POC 2nd E-mail",
+        "Job City\n",
+        "Job Shoot Address",
+        "Job Specification / Instructions",
+        "Deliverables\r\n",
+        "Package Amount\r\n",
+        "Operations Cost (Non-Taxable Amount)\r\n",
+        "Taxable Amount\n",
+        "GST\r\n",
+        "Package Amount With Tax\n",
+        "Is Token Received\n",
+        "Planned",
+        "Actual 1",
+        "Time Delay 1",
+        "Photographer Name",
+        "Contact Number",
+        "Remarks",
+        "Planned 2",
+        "Actual 2",
+        "Time Delay 2",
+        "Final Photographer Name",
+        "Final Contact Number",
+        "Approval Status",
+        "Approval Remarks",
+        "Planned 3",
+        "Actual 3",
+        "Time Delay 3",
+        "Assistant Photographer (Yes / No)",
+        "Videographer Assigned (Yes / No)",
+        "Equipment Required (Camera / Drone / Lights)",
+        "Allotment Confirmation Status",
+        "Allotment Remarks",
+        "Planned 5",
+        "Actual 5",
+        "Time Delay 5",
+        "Token Amount",
+        "Payment Mode (UPI / Cash / Bank Transfer)",
+        "Payment Received Date",
+        "Receipt Number",
+        "Payment Remarks",
+        "Planned 6",
+        "Actual 6",
+        "Time Delay 6",
+        "Briefing Mode (Call / WhatsApp / Meeting)",
+        "Story Theme / Vision",
+        "Shoot Style",
+        "Key Moments / Priority Events",
+        "Reference Link",
+        "Shot List Received (Yes / No)",
+        "Special Client Instructions",
+        "Brief Shared with Creative Team (Yes / No)",
+        "Final Brief Status (Completed / Pending)",
+        "Planned 7",
+        "Actual 7",
+        "Time Delay 7",
+        "Moodboard Required (Yes / No)",
+        "Moodboard Created By (Creative Team)",
+        "Reference Inputs Received (Yes / No)",
+        "Reference Link (Client / Online)",
+        "Moodboard Shared with Client (Yes / No)\n",
+        "Client Feedback Status (Approved / Changes / Pending)\n",
+        "Revision Count",
+        "Final Moodboard Approval Date",
+        "Final Moodboard Status (Completed / Pending)",
+        "Planned 8",
+        "Actual 8",
+        "Time Delay 8",
+        "Moodboard Delivery Mode (WhatsApp / Email / Drive)\n",
+        "Delivered By (Ops / Creative Team)\n",
+        "Client Acknowledgement Received (Yes / No)\n",
+        "Special Client Instructions1",
+        "Revision Required (Yes / No)\n",
+        "Final Approval Received (Yes / No)\n",
+        "Final Approval Date",
+        "Moodboard Delivery Status (Completed / Pending)",
+        "Planned 9",
+        "Actual 9",
+        "Time Delay 9",
+        "Briefing Mode (Call / WhatsApp / Meeting)1",
+        "Client Availability Confirmed (Yes / No)",
+        "Shoot Timeline Explained (Yes / No)",
+        "Deliverables Explained (Yes / No)",
+        "Client Confirmation Status",
+        "Briefing Remarks1",
+        "Planned 10",
+        "Actual 10",
+        "Time Delay 10",
+        "Briefing Mode",
+        "Location Shared (Yes / No)",
+        "Client Expectation Shared (Yes / No)",
+        "Shot List Shared (Yes / No)",
+        "Reporting Time Confirmed",
+        "Contact Person Shared",
+        "Photographer Confirmation (Yes / No)",
+        "Briefing Remarks2"
+      ],
+      "formulas": [
+        {
+          "column": "ORD-Order Number ",
+          "row": 1,
+          "formula": "=now()",
+          "description": "5/9/2026 13:39:47"
+        },
+        {
+          "column": "Client",
+          "row": 1,
+          "formula": "=E1/24-D1/24",
+          "description": "0.3333333333"
+        },
+        {
+          "column": "Planned 5",
+          "row": 5,
+          "formula": "=1/24",
+          "description": "1:00:00"
+        },
+        {
+          "column": "Planned 6",
+          "row": 5,
+          "formula": "=1/24",
+          "description": "1:00:00"
+        },
+        {
+          "column": "Planned 7",
+          "row": 5,
+          "formula": "=1/24",
+          "description": "1:00:00"
+        },
+        {
+          "column": "Planned 8",
+          "row": 5,
+          "formula": "=1/24",
+          "description": "1:00:00"
+        },
+        {
+          "column": "ORD-Order Number ",
+          "row": 6,
+          "formula": "=ARRAYFORMULA(IF(C6:C=\"\",\"\", CONCAT(\"ORD-\", IF(LEN(C6:C),IF(ROW(A:A)=1,\"Order Number \",TEXT(ROW(C:C)-1,\"00\")),))))",
+          "description": "ORD-Order Number "
+        },
+        {
+          "column": "Planned",
+          "row": 6,
+          "formula": "=ArrayFormula(TO_DATE(IF(ROW(A6:A)=6,\"Planned\",if(B6:B,WORKDAY.INTL(B6:B,Z$5,\"0000001\")+hour(B6:B)/24+MINUTE(B6:B)/1440,\"\"))))",
+          "description": "Planned"
+        }
+      ],
+      "total_rows": 7,
+      "total_cols": 109
+    },
+    {
+      "sheet_name": "All DB(OTP+PMS)",
+      "headers": [
+        "Column_0",
+        "Column_1",
+        "Column_2",
+        "Column_3",
+        "Column_4",
+        "Column_5"
+      ],
+      "formulas": [],
+      "total_rows": 54,
+      "total_cols": 6
+    },
+    {
+      "sheet_name": "OTP-MIS",
+      "headers": [
+        "Anish Agrawal",
+        "BBJB-20022026065406-76a74b88-3d94-4c69-8054-465078dacbc3",
+        "VsnapU",
+        "Take Advance ",
+        "26/03/2026",
+        "21/02/2026",
+        "Column_6",
+        "21/02/2026",
+        "Column_8",
+        "Photographer Allotment",
+        "Column_10",
+        "Saurabh Sharma "
+      ],
+      "formulas": [
+        {
+          "column": "BBJB-20022026065406-76a74b88-3d94-4c69-8054-465078dacbc3",
+          "row": 1,
+          "formula": "=NOW()",
+          "description": "5/9/2026 13:39:47"
+        },
+        {
+          "column": "VsnapU",
+          "row": 1,
+          "formula": "=MIN(Orders!A8:A)",
+          "description": "28/01/2026"
+        },
+        {
+          "column": "Take Advance ",
+          "row": 1,
+          "formula": "=TODAY()",
+          "description": "09/05/2026"
+        },
+        {
+          "column": "Saurabh Sharma ",
+          "row": 2,
+          "formula": "=UNIQUE(A:A)",
+          "description": ""
+        },
+        {
+          "column": "Anish Agrawal",
+          "row": 3,
+          "formula": "=ARRAYFORMULA(\nIF(D3:D=J3, \"Anish Agrawal\",\nIF(D3:D=J4, \"Prithwish Dutta\",\nIF(D3:D=J6, \"Vartika Mishra\",\nIF(D3:D=J8, \"Anish Agrawal\",\nIF(D3:D=J9,\n   IFNA(VLOOKUP(B3:B, {'Story Briefing'!C:C,'Story Briefing'!S:S}, 2, 0)),\nIF(D3:D=J10,\n   IFNA(VLOOKUP(B3:B, {'Moodboard Creation'!C:C,'Moodboard Creation'!N:N}, 2, 0)),\n   IFERROR(VLOOKUP(B3:B, {FMS!B:B, FMS!AE:AE}, 2, 0))\n)))))))",
+          "description": "Anish Agrawal"
+        },
+        {
+          "column": "BBJB-20022026065406-76a74b88-3d94-4c69-8054-465078dacbc3",
+          "row": 3,
+          "formula": "=QUERY(\n  {\n    {\n      Orders!B9:B,\n      Orders!D9:D,\n      ARRAYFORMULA(IF(Orders!B9:B<>\"\", J3, )),\n      Orders!AB9:AD\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J4, )),\n      FMS!AB9:AD\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J5, )),\n      FMS!AF9:AH\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J6, )),\n      FMS!AN9:AP\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J7, )),\n      FMS!BU9:BW\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J8, )),\n      FMS!CD9:CF\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J9, )),\n      FMS!CN9:CP\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J10, )),\n      FMS!DF9:DH\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J11, )),\n      FMS!DS9:DU\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J12, )),\n      FMS!EF9:EH\n    };\n    {\n      FMS!B9:B,\n      FMS!D9:D,\n      ARRAYFORMULA(IF(FMS!B9:B<>\"\", J13, )),\n      FMS!EO9:EQ\n    }\n  },\n  \"Select * \n   where Col4 >= datetime '\"&TEXT(C1,\"yyyy-MM-dd 00:00:00\")&\"' \n   and Col4 < datetime '\"&TEXT(D1+1,\"yyyy-MM-dd 00:00:00\")&\"'\",\n  0\n)",
+          "description": "BBJB-20022026065406-edf9ba2d-f26c-481b-b34d-dbf8b6452ea5"
+        },
+        {
+          "column": "21/02/2026",
+          "row": 3,
+          "formula": "=ARRAYFORMULA(TEXT(F3:F,\"dd/mm/yyyy\"))",
+          "description": "21/02/2026"
+        }
+      ],
+      "total_rows": 11000,
+      "total_cols": 12
+    },
+    {
+      "sheet_name": "Confirmation From Client",
+      "headers": [
+        "Timestamp",
+        "JobID",
+        "ProjectID",
+        "Venue",
+        "Confirmed Date",
+        "Confirmation Status",
+        "Moodboard Required",
+        "Remarks",
+        "DB",
+        "Column_9"
+      ],
+      "formulas": [],
+      "total_rows": 93,
+      "total_cols": 10
+    },
+    {
+      "sheet_name": "PC DB",
+      "headers": [
+        "jobid",
+        "Planned Date",
+        "Step Name",
+        "Who",
+        "Project ID",
+        "Client Name",
+        "POC Name",
+        "Job Date",
+        "Assigned person name",
+        "Time Delay",
+        "Seroial Number",
+        "Person Name",
+        "Pending Steps count",
+        "Query",
+        "Step Name",
+        "Who1"
+      ],
+      "formulas": [
+        {
+          "column": "jobid",
+          "row": 2,
+          "formula": "=IFNA(QUERY({\nIFNA(QUERY({Orders!B9:B, Orders!AB9:AC}, N2), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!AB8:AC}, N3), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!AF8:AG}, N4), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!AN8:AO}, N5), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!BU8:BV}, N6), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!CD8:CE}, N7), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!CN8:CO}, N8), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!DF8:DG}, N9), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!DS8:DST}, N10),{\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!EF8:EG}, N11), {\"\",\"\",\"\",\"\"});\nIFNA(QUERY({FMS!B8:B, FMS!EO8:EP}, N12), {\"\",\"\",\"\",\"\"})\n},\n\"select * where Col1 is not null and Col2 is not null\",\n0))",
+          "description": "BBJB-27032026060449-b0dd8e2f-a609-42c6-83fb-32781c146d8f"
+        },
+        {
+          "column": "Project ID",
+          "row": 2,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(A2:A, {Orders!B8:D,Orders!L8:L,Orders!I8:I},{2,3,4,5},0))) ",
+          "description": "FB-26-00592"
+        },
+        {
+          "column": "Assigned person name",
+          "row": 2,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(A2:A, {FMS!B7:B, FMS!AE7:AE},2,0)))",
+          "description": ""
+        },
+        {
+          "column": "Time Delay",
+          "row": 2,
+          "formula": "=ARRAYFORMULA(IFERROR(VLOOKUP(A2:A&C2:C,{Orders!B:B&\"Take Advance\",Orders!AD:AD},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Assign Operation Executive\",FMS!AD:AD},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Confirmation From Client\",FMS!AH:AH},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Photographer Allotment\",FMS!AP:AP},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Photographer Briefing\",FMS!BW:BW},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Make Token Payment To Photographer\",FMS!CF:CF},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Pre-Shoot Briefing Provided by Client (Moodboard Disscussion)\",FMS!CP:CP},2,FALSE),\n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Moodboard Creation & Development\",FMS!DH:DH},2,FALSE),  \n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Moodboard Delivery to Client\",FMS!DU:DU},2,FALSE),  \n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Client Briefing Before Shoot\",FMS!EH:EH},2,FALSE),   \n              IFERROR(VLOOKUP(A2:A&C2:C,{FMS!B:B&\"Photographer Briefing Before Shoot\",FMS!EQ:EQ},2,FALSE),       \n)))         )))))))))",
+          "description": ""
+        },
+        {
+          "column": "Seroial Number",
+          "row": 2,
+          "formula": "=SEQUENCE(COUNTA(D2:D))",
+          "description": "1"
+        },
+        {
+          "column": "Person Name",
+          "row": 2,
+          "formula": "=ArrayFormula(IF(D2:D=\"\",\"\", IF(D2:D=\"Anish\", \"Anish\", if(D2:D= \"Prithwish / Vishal\", \"Prithwish / Vishal\", if(D2:D=\"Vartika\",\"Vartika\", IF(D2:D=\"Neeraj Lucky\",\"Neeraj Lucky\", if(D2:D<>\"\", I2:I)))))))",
+          "description": "Anish"
+        },
+        {
+          "column": "Pending Steps count",
+          "row": 2,
+          "formula": "=ARRAYFORMULA(COUNTIF(C2:C, O2:O12))",
+          "description": "18"
+        },
+        {
+          "column": "Query",
+          "row": 2,
+          "formula": "=\" Select Col1,Col2,'\"&O2&\"','\"&P2&\"' Where Col3 is null And Col2 Is not null Label '\"&O2&\"''','\"&P2&\"''' \"",
+          "description": " Select Col1,Col2,'Take Advance ','Anish' Where Col3 is null And Col2 Is not null Label 'Take Advance ''','Anish''' "
+        },
+        {
+          "column": "Query",
+          "row": 3,
+          "formula": "=\" Select Col1,Col2,'\"&O3&\"','\"&P3&\"' Where Col3 is null And Col2 Is not null Label '\"&O3&\"''','\"&P3&\"''' \"",
+          "description": " Select Col1,Col2,'Assign operation executive','Prithwish / Vishal' Where Col3 is null And Col2 Is not null Label 'Assign operation executive''','Prithwish / Vishal''' "
+        },
+        {
+          "column": "Query",
+          "row": 4,
+          "formula": "=\" Select Col1,Col2,'\"&O4&\"','\"&P4&\"' Where Col3 is null And Col2 Is not null Label '\"&O4&\"''','\"&P4&\"''' \"",
+          "description": " Select Col1,Col2,'Confirmation From Client','Rohan Saurab Monika Prithwish Parth' Where Col3 is null And Col2 Is not null Label 'Confirmation From Client''','Rohan Saurab Monika Prithwish Parth''' "
+        },
+        {
+          "column": "Query",
+          "row": 5,
+          "formula": "=\" Select Col1,Col2,'\"&O5&\"','\"&P5&\"' Where Col3 is null And Col2 Is not null Label '\"&O5&\"''','\"&P5&\"''' \"",
+          "description": " Select Col1,Col2,'Photographer Allotment','Vartika' Where Col3 is null And Col2 Is not null Label 'Photographer Allotment''','Vartika''' "
+        },
+        {
+          "column": "Query",
+          "row": 6,
+          "formula": "=\" Select Col1,Col2,'\"&O6&\"','\"&P6&\"' Where Col3 is null And Col2 Is not null Label '\"&O6&\"''','\"&P6&\"''' \"",
+          "description": " Select Col1,Col2,'Photographer Briefing','Rohan Saurab Monika Prithwish Parth ' Where Col3 is null And Col2 Is not null Label 'Photographer Briefing''','Rohan Saurab Monika Prithwish Parth ''' "
+        },
+        {
+          "column": "Query",
+          "row": 7,
+          "formula": "=\" Select Col1,Col2,'\"&O7&\"','\"&P7&\"' Where Col3 is null And Col2 Is not null Label '\"&O7&\"''','\"&P7&\"''' \"",
+          "description": " Select Col1,Col2,'Make Token Payment To Photographer','Anish' Where Col3 is null And Col2 Is not null Label 'Make Token Payment To Photographer''','Anish''' "
+        },
+        {
+          "column": "Query",
+          "row": 8,
+          "formula": "=\" Select Col1,Col2,'\"&O8&\"','\"&P8&\"' Where Col3 is null And Col2 Is not null Label '\"&O8&\"''','\"&P8&\"''' \"",
+          "description": " Select Col1,Col2,'Pre-Shoot Briefing Provided by Client (Moodboard Disscussion)','Rohan Neeraj Lucky Saurab Monika Prithwish Vishal Ashish Parth' Where Col3 is null And Col2 Is not null Label 'Pre-Shoot Briefing Provided by Client (Moodboard Disscussion)''','Rohan Neeraj Lucky Saurab Monika Prithwish Vishal Ashish Parth''' "
+        },
+        {
+          "column": "Query",
+          "row": 9,
+          "formula": "=\" Select Col1,Col2,'\"&O9&\"','\"&P9&\"' Where Col3 is null And Col2 Is not null Label '\"&O9&\"''','\"&P9&\"''' \"",
+          "description": " Select Col1,Col2,'Moodboard Creation & Development','Neeraj Lucky' Where Col3 is null And Col2 Is not null Label 'Moodboard Creation & Development''','Neeraj Lucky''' "
+        },
+        {
+          "column": "Query",
+          "row": 10,
+          "formula": "=\" Select Col1,Col2,'\"&O10&\"','\"&P10&\"' Where Col3 is null And Col2 Is not null Label '\"&O10&\"''','\"&P10&\"''' \"",
+          "description": " Select Col1,Col2,'Moodboard Delivery to Client','Rohan Saurab Monika Prithwish Parth' Where Col3 is null And Col2 Is not null Label 'Moodboard Delivery to Client''','Rohan Saurab Monika Prithwish Parth''' "
+        },
+        {
+          "column": "Query",
+          "row": 11,
+          "formula": "=\" Select Col1,Col2,'\"&O11&\"','\"&P11&\"' Where Col3 is null And Col2 Is not null Label '\"&O11&\"''','\"&P11&\"''' \"",
+          "description": " Select Col1,Col2,'Client Briefing Before Shoot','Rohan Saurab Monika Prithwish Parth Vishal' Where Col3 is null And Col2 Is not null Label 'Client Briefing Before Shoot''','Rohan Saurab Monika Prithwish Parth Vishal''' "
+        },
+        {
+          "column": "Query",
+          "row": 12,
+          "formula": "=\" Select Col1,Col2,'\"&O12&\"','\"&P12&\"' Where Col3 is null And Col2 Is not null Label '\"&O12&\"''','\"&P12&\"''' \"",
+          "description": " Select Col1,Col2,'Photographer Briefing Before Shoot','Rohan Saurab Monika Prithwish Parth ' Where Col3 is null And Col2 Is not null Label 'Photographer Briefing Before Shoot''','Rohan Saurab Monika Prithwish Parth ''' "
+        }
+      ],
+      "total_rows": 958,
+      "total_cols": 16
+    },
+    {
+      "sheet_name": "New ops allot",
+      "headers": [
+        "jobId",
+        "stakeholderId",
+        "stakeholderName",
+        "allottedOn",
+        "allottedByUserId",
+        "allottedByUserName",
+        "last update date"
+      ],
+      "formulas": [],
+      "total_rows": 200,
+      "total_cols": 7
+    },
+    {
+      "sheet_name": "Payment-Benchmarks",
+      "headers": [
+        "jobId",
+        "jobName",
+        "amountReceived",
+        "category",
+        "receivedOn",
+        "last update date",
+        "Project ID"
+      ],
+      "formulas": [
+        {
+          "column": "Project ID",
+          "row": 2,
+          "formula": "=ARRAYFORMULA(IFNA(VLOOKUP(A2:A,Orders!B9:C,2,0)))",
+          "description": ""
+        }
+      ],
+      "total_rows": 2924,
+      "total_cols": 7
+    },
+    {
+      "sheet_name": "Ops-Allotments",
+      "headers": [
+        "jobId",
+        "stakeholderId",
+        "stakeholderName",
+        "allottedOn",
+        "allottedByUserId",
+        "allottedByUserName",
+        "last update date"
+      ],
+      "formulas": [],
+      "total_rows": 414,
+      "total_cols": 7
+    },
+    {
+      "sheet_name": "Photographer-Allotments",
+      "headers": [
+        "jobId",
+        "photographerId",
+        "photographerName",
+        "allottedOn",
+        "allottedByUserId",
+        "allottedByUserName",
+        "last update date",
+        "mobile"
+      ],
+      "formulas": [],
+      "total_rows": 5539,
+      "total_cols": 8
+    },
+    {
+      "sheet_name": "master",
+      "headers": [
+        "Column_0",
+        "ITS OPERATION EXECUTIVE IS SAME AS SALES EXEECUTIVE.",
+        "Column_2",
+        "Column_3",
+        "Operation Assigned Member Name",
+        "E-mail Id",
+        "Column_6",
+        "Column_7",
+        "Column_8",
+        "Column_9",
+        "Payment Type ",
+        "Column_11",
+        "Column_12",
+        "Column_13",
+        "Column_14",
+        "Column_15",
+        "Column_16",
+        "Column_17",
+        "Column_18",
+        "Column_19",
+        "Column_20",
+        "Column_21",
+        "Column_22",
+        "Column_23",
+        "Column_24",
+        "Column_25"
+      ],
+      "formulas": [],
+      "total_rows": 13,
+      "total_cols": 26
+    },
+    {
+      "sheet_name": "Existing photographer list",
+      "headers": [
+        "Photographer ID",
+        "Code",
+        "Name",
+        "Mobile"
+      ],
+      "formulas": [
+        {
+          "column": "Mobile",
+          "row": 3,
+          "formula": "=+919891257926",
+          "description": "919891257926"
+        },
+        {
+          "column": "Mobile",
+          "row": 5,
+          "formula": "=+447837603031",
+          "description": "447837603031"
+        },
+        {
+          "column": "Mobile",
+          "row": 6,
+          "formula": "=+916283303229",
+          "description": "916283303229"
+        },
+        {
+          "column": "Mobile",
+          "row": 7,
+          "formula": "=+919999999999",
+          "description": "919999999999"
+        },
+        {
+          "column": "Mobile",
+          "row": 8,
+          "formula": "=+919866983975",
+          "description": "919866983975"
+        },
+        {
+          "column": "Mobile",
+          "row": 9,
+          "formula": "=+919656332115",
+          "description": "919656332115"
+        },
+        {
+          "column": "Mobile",
+          "row": 11,
+          "formula": "=+919303227175",
+          "description": "919303227175"
+        },
+        {
+          "column": "Mobile",
+          "row": 12,
+          "formula": "=+971556449303",
+          "description": "971556449303"
+        },
+        {
+          "column": "Mobile",
+          "row": 13,
+          "formula": "=+916006365677",
+          "description": "916006365677"
+        },
+        {
+          "column": "Mobile",
+          "row": 14,
+          "formula": "=+917006169367",
+          "description": "917006169367"
+        },
+        {
+          "column": "Mobile",
+          "row": 16,
+          "formula": "=+919566206478",
+          "description": "919566206478"
+        },
+        {
+          "column": "Mobile",
+          "row": 17,
+          "formula": "=+919831010760",
+          "description": "919831010760"
+        },
+        {
+          "column": "Mobile",
+          "row": 20,
+          "formula": "=+917018078501",
+          "description": "917018078501"
+        },
+        {
+          "column": "Mobile",
+          "row": 21,
+          "formula": "=+917239835571",
+          "description": "917239835571"
+        },
+        {
+          "column": "Mobile",
+          "row": 22,
+          "formula": "=+919967555356",
+          "description": "919967555356"
+        },
+        {
+          "column": "Mobile",
+          "row": 23,
+          "formula": "=+918286128820",
+          "description": "918286128820"
+        },
+        {
+          "column": "Mobile",
+          "row": 24,
+          "formula": "=+919711279005",
+          "description": "919711279005"
+        },
+        {
+          "column": "Mobile",
+          "row": 25,
+          "formula": "=+919665212934",
+          "description": "919665212934"
+        },
+        {
+          "column": "Mobile",
+          "row": 26,
+          "formula": "=+971525177357",
+          "description": "971525177357"
+        },
+        {
+          "column": "Mobile",
+          "row": 27,
+          "formula": "=+917006593448",
+          "description": "917006593448"
+        }
+      ],
+      "total_rows": 2146,
+      "total_cols": 4
+    },
+    {
+      "sheet_name": "MMT Photgrapher List",
+      "headers": [
+        "City and Location Name",
+        "Photgrapher Name",
+        "Contact Number",
+        "Email ID"
+      ],
+      "formulas": [],
+      "total_rows": 1,
+      "total_cols": 4
+    },
+    {
+      "sheet_name": "Work Pending",
+      "headers": [
+        "1.) Where Client Type is - MMT2 , automation assign the Kiran Patel"
+      ],
+      "formulas": [],
+      "total_rows": 2,
+      "total_cols": 1
+    },
+    {
+      "sheet_name": "Payment",
+      "headers": [],
+      "formulas": [],
+      "total_rows": 0,
+      "total_cols": 0
+    }
+  ],
+  "intelligent_analysis": {
+    "Workflow Stages": [
+      "Initial Order Placement",
+      "Management Approval",
+      "Advance Payment Handling",
+      "Story Briefing",
+      "Moodboard Creation and Delivery",
+      "Token Payment",
+      "Photographer Allotment and Briefing",
+      "Final Approvals and Confirmation",
+      "Payment Processing"
+    ],
+    "Flow": {
+      "Initial Order Placement": {
+        "source_sheet": "Orders",
+        "target_sheets": [
+          "Take advance",
+          "Update",
+          "FMS"
+        ],
+        "description": "Orders are recorded initially in the 'Orders' sheet with details such as client information, job details, and financial specifics."
+      },
+      "Management Approval": {
+        "source_sheet": "Orders",
+        "target_sheet": "Management Approval",
+        "description": "Management approval is given for orders that require it, and relevant details are updated back in the 'Orders' sheet."
+      },
+      "Advance Payment Handling": {
+        "source_sheet": "Take advance",
+        "target_sheet": "Orders",
+        "description": "Handles the financial part of orders, storing data about the advance requested and received. Links back to the 'Orders' sheet to update advance statuses."
+      },
+      "Story Briefing": {
+        "source_sheet": "Story Briefing",
+        "target_sheet": "Orders",
+        "description": "Client requirements and vision are captured and updated for creative briefing and execution."
+      },
+      "Moodboard Creation and Delivery": {
+        "source_sheets": [
+          "Moodboard Creation",
+          "Moodboard Delivery"
+        ],
+        "description": "Moodboards are created based on briefings and delivered. Updates made in 'FMS' for project status."
+      },
+      "Token Payment": {
+        "source_sheet": "Token Payment",
+        "description": "Financial records of token payments are maintained and reconciled with the 'Orders' sheet."
+      },
+      "Photographer Allotment and Briefing": {
+        "source_sheets": [
+          "Photographer-Allotments",
+          "Photographer Search"
+        ],
+        "target_sheet": "FMS",
+        "description": "Assigns photographers for jobs and manages their briefings. Updates referenced in 'FMS' for logistics purposes."
+      },
+      "Final Approvals and Confirmation": {
+        "source_sheet": "Approval",
+        "target_sheets": [
+          "FMS",
+          "Orders"
+        ],
+        "description": "Once all requirements are met, final approval is given, and this status updates the main job sheet."
+      },
+      "Payment Processing": {
+        "source_sheets": [
+          "Payment-Benchmarks",
+          "Payment"
+        ],
+        "description": "Records and processes various payment milestones and statuses across projects."
+      }
+    },
+    "Formula Logic": {
+      "Orders": {
+        "Planned and Actual Dates": "Uses WORKDAY.INTL and VLOOKUP to calculate and verify planned and actual event timelines.",
+        "Advance Calculations": "Calculates advance required percentages and status using ARRAYFORMULA."
+      },
+      "FMS": {
+        "Photographer Allotments and Time Delays": "Manages planned times and captures delays using WORKDAY.INTL and ARRAYFORMULA.",
+        "Detailed Linking": "Integrates data from several workflows to ensure all aspects tied back to FMS."
+      },
+      "Management Approval": {
+        "VLOOKUP Utilization": "Looks up data for approvals and denials to streamline approval statuses."
+      },
+      "Photographer Search & Allotments": {
+        "VLOOKUP and IFNA Functions": "Checks available photographers and assigns verified personnel."
+      },
+      "Updates for Merged Processes": {
+        "QUERY Functions": "Generates timelines and assigns task-specific data, and alters statuses across workflows."
+      }
+    },
+    "Schema Summary": {
+      "Management Approval": {
+        "columns": [
+          "Timestamp",
+          "ProjectID",
+          "JobID",
+          "Advance Denial Reason",
+          "Exception Approval Required",
+          "Approved By",
+          "Approval Status",
+          "Approval Date",
+          "Approved Without Advance",
+          "Risk Level",
+          "Management Remarks"
+        ],
+        "role": "Captures details of management's decision on project approvals."
+      },
+      "Take advance": {
+        "columns": [
+          "Timestamp",
+          "ProjectID",
+          "JobID",
+          "Advance Required (%)",
+          "Advance Amount",
+          "Payment Mode",
+          "Advance Payment Status",
+          "Advance Received Date",
+          "Transaction / Reference ID",
+          "Invoice / Receipt Shared",
+          "Invoice No.  ( if Yes)",
+          "Ops Remarks",
+          "Column_12",
+          "TAKE ADVANCE FORM"
+        ],
+        "role": "Records details of advance payments requested and completed."
+      },
+      "Story Briefing": {
+        "columns": [
+          "Timestamp",
+          "ProjectID",
+          "JobID",
+          "Briefing Mode",
+          "Story Theme / Vision",
+          "Shoot Style",
+          "Key Moments / Priority Events",
+          "Reference Link",
+          "Preferrable 3 locations for shoot",
+          "Preferrable 3 outfits for Bride",
+          "Preferrable 3 outfits for Groom",
+          "Video editing style",
+          "Additional requirements",
+          "Special Client Instructions",
+          "Voice Upload",
+          "Shot List Received",
+          "Brief Shared with Creative Team",
+          "Final Brief Status",
+          "Story Briefing From Client Form Submitted by"
+        ],
+        "role": "Captures client briefing details for shoot styling, themes, and expectations."
+      },
+      "Moodboard Delivery": {
+        "columns": [
+          "Timestamp",
+          "ProjectID",
+          "JobID",
+          "Moodboard Delivery Mode",
+          "Delivered By",
+          "Delivered By (Name)",
+          "Client Acknowledgement Received",
+          "Client Feedback Received",
+          "Special Client Instructions",
+          "Revision Required",
+          "Final Approval Received",
+          "Final Approval Date",
+          "Moodboard Delivery Status"
+        ],
+        "role": "Tracks creation and delivery status of moodboards."
+      }
+    }
+  }
+}

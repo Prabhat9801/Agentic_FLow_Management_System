@@ -12,6 +12,14 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from openai import OpenAI
 
+# Fix Windows encoding for emojis
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except (AttributeError, Exception):
+        pass
+
 # Load environment
 load_dotenv()
 

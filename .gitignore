@@ -41,6 +41,10 @@ env/
 
 # Google OAuth Credentials
 client_secret*.json
+service_account.json
+.env
+sheet_analyzer/service_account.json
+sheet_analyzer/.env
 
 credentials.json
 token.json
